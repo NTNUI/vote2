@@ -1,6 +1,6 @@
 import React from "react";
 
-function genfors() {
+function assembly() {
     return (
         <p>Genfors dashboard</p>
     )
