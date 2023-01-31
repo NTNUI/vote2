@@ -14,5 +14,4 @@ describe("App test", () => {
         expect(screen.getByRole("button")).toBeDefined()
     })
 
-    
 })
