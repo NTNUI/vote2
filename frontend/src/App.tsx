@@ -16,12 +16,11 @@ function App() {
         </a>
       </div>
       <h1
-        data-cy="header-title"
+        data-testid="header-title"
       >Vite + React</h1>
       <div className="card">
         <button 
         onClick={() => setCount((count) => count + 1)}
-        data-cy="button-counter"
         data-testid="button-counter"
         >
           count is {count}
