@@ -1,7 +1,6 @@
 import React from "react"
-import { render } from "react-dom"
 
-function login() {
+function Login() {
 
 
     return (
