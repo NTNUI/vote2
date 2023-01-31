@@ -7,3 +7,4 @@ function CheckIn() {
         <p>CheckIn</p>
     )
 }
+export default CheckIn;

@@ -6,3 +6,4 @@ function Vote() {
         <p>Vote page</p>
     )
 }
+export default Vote;

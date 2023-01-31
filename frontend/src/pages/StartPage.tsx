@@ -6,3 +6,4 @@ function StartPage() {
         <p>Start page</p>
     )
 }
+export default StartPage;

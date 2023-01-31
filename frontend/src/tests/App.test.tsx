@@ -11,7 +11,7 @@ describe("App test", () => {
 
     test("Should show button", () =>{
         render(<App />)
-        expect(screen.getByRole("button")).toBeDefined()
+        expect(screen.getByTestId("button-counter")).toBeDefined()
     })
 
 })

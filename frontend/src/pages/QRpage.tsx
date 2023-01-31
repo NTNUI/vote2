@@ -7,3 +7,4 @@ function QR() {
         <p>QR code here</p>
     )
 }
+export default QR;

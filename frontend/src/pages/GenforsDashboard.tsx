@@ -5,3 +5,4 @@ function Assembly() {
         <p>Genfors dashboard</p>
     )
 }
+export default Assembly;
