@@ -1,10 +1,16 @@
-import express, { Request, Response } from "express";
-import login from "../controllers/auth";
+import { Router } from "express";
+import { refresh, login, verify } from "../controllers/auth";
 
-const authRoutes = express.Router()
+const authRoutes = Router();
 
 // Login route
 // Return access and refresh tokens
-authRoutes.get("/", login);
+authRoutes.get("/login", login);
+
+authRoutes.get("/logout", login);
+
+authRoutes.get("/refresh", refresh);
+
+authRoutes.get("/verify", verify);
 
 export default authRoutes;
