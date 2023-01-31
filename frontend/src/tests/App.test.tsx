@@ -8,4 +8,11 @@ describe("App test", () => {
         render(<App />)
         expect(screen.getByText("Vite + React")).toBeDefined()
     })
+
+    test("Should show button", () =>{
+        render(<App />)
+        expect(screen.getByRole("button")).toBeDefined()
+    })
+
+    
 })
