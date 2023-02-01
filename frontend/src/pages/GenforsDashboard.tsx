@@ -1,6 +1,6 @@
 import React from "react";
 
-function Assembly() {
+export function Assembly() {
     return (
         <p>Genfors dashboard</p>
     )

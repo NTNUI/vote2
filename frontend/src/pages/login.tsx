@@ -1,10 +1,7 @@
-import React from "react"
+import React, { useState } from "react"
 
-function Login() {
+export function Login() {
 
-
-    return (
-        <p>Login</p>
-    )
+   return (<p>Login</p>)
 
 }
