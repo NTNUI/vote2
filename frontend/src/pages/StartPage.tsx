@@ -1,6 +1,6 @@
 import React from "react";
 
-function StartPage() {
+export function StartPage() {
 
     return (
         <p>Start page</p>

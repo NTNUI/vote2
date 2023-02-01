@@ -1,6 +1,6 @@
 import React from "react";
 
-function Vote() {
+export function Vote() {
 
     return (
         <p>Vote page</p>

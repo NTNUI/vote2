@@ -1,38 +1,49 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
-
+import { Login } from './pages/Login'
+import { StartPage } from './pages/StartPage'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { ProtectRoutes } from './utils/ProtectedRouter/protectedRoutes'
+import { Vote } from './pages/VotePage'
+import { QR } from './pages/QRpage'
+import { Assembly } from './pages/GenforsDashboard'
+import { CheckIn } from './pages/CheckIn'
+import { AdminDashboard } from './pages/AdminDashboard'
 function App() {
-  const [count, setCount] = useState(0)
+  const [ isAuth, setIsAuth ] = useState("false");
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1
-        data-testid="header-title"
-      >Vite + React</h1>
-      <div className="card">
-        <button 
-        onClick={() => setCount((count) => count + 1)}
-        data-testid="button-counter"
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+ 
+    
+  const toggle = () => {
+    if (isAuth == "false") {
+      setIsAuth("true")
+    }
+    else {
+      setIsAuth("false")
+    }
+    localStorage.setItem("Auth", isAuth)
+  }
+
+  return (<>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route element={<ProtectRoutes />}>
+        <Route path="/start" element={<StartPage />} />
+        <Route path="/vote" element={<Vote />} />
+        <Route path="/QR" element={<QR />} />
+        <Route path='/assemly' element={<Assembly />} />
+        <Route path='/CheckIn' element={<CheckIn />} />
+        <Route path='/admin' element={<AdminDashboard />} />
+      </Route>
+  </Routes>{
+      isAuth == "true" || isAuth == "" ? 
+      <><button onClick={() => toggle()}
+      data-testid="login-button">Login</button></>
+      
+    : <><button onClick={() => toggle()}
+      data-testid="login-button">Logout</button>
+      <a href='/QR'>QR</a></>}</>
+
   )
 }
 

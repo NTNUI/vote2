@@ -1,6 +1,6 @@
 import React from "react";
 
-function QR() {
+export function QR() {
 
 
     return (
