@@ -2,7 +2,7 @@ import express, { Application, Request, Response } from "express";
 import authRoutes from "./routes/auth";
 import mongoConnect from "./utils/db";
 import dotenv from "dotenv";
-import cookieParser = require('cookie-parser')
+import cookieParser = require('cookie-parser');
 
 dotenv.config();
 

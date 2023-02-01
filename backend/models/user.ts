@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+import { userRole } from "../enums/userRole";
 import { GroupType, UserType } from "../types/user";
 
 export const groupSchema = new Schema<GroupType>(
@@ -7,8 +8,9 @@ export const groupSchema = new Schema<GroupType>(
       type: String,
       required: true,
     },
-    roleInGroup: {
+    role: {
       type: String,
+      enum: userRole,
       required: true,
     },
   },
@@ -29,7 +31,7 @@ const userSchema = new Schema<UserType>(
       type: String,
       required: true,
     },
-    committees: {
+    groups: {
       type: [groupSchema],
       required: false,
     },

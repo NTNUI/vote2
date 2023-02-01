@@ -15,18 +15,18 @@ export async function login(req: Request, res: Response) {
     const userProfile = await getNtnuiProfile(tokens.access);
 
     // Get committees and role in committee
-    let committees: GroupType[] = [];
+    let groups: GroupType[] = [];
     userProfile.data.memberships.forEach((membership: { slug: string }) => {
-      committees.push({
+      groups.push({
         groupName: membership.slug,
-        roleInGroup: membership.type,
+        role: membership.type,
       });
     });
 
     // Create or update user
     await User.findByIdAndUpdate(
       userProfile.data.ntnui_no,
-      { $set: { ...userProfile.data, committees: committees } },
+      { $set: { ...userProfile.data, groups: groups } },
       { upsert: true }
     );
 
