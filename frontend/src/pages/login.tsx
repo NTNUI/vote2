@@ -1,7 +1,13 @@
-import React, { useState } from "react"
+import { Button } from '@mantine/core'
+import { LoginForm } from '../components/LoginForm'
+
 
 export function Login() {
 
-   return (<p>Login</p>)
 
+	return (
+		<LoginForm />
+	)
 }
+
+
