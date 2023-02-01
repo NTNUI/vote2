@@ -2,7 +2,7 @@ services:
   # MongoDB
   vote-db:
     container_name: vote-db
-    image: mongo:latest
+    image: mongo:6.0.3
     env_file:
       - .env
     ports:
