@@ -1,6 +1,6 @@
 import React from "react";
 
-function CheckIn() {
+export function CheckIn() {
 
 
     return (
