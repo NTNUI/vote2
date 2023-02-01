@@ -21,41 +21,25 @@ function App() {
     else {
       setIsAuth("false")
     }
-    sessionStorage.setItem("Auth", isAuth)
+    localStorage.setItem("Auth", isAuth)
   }
 
-  return (
-      isAuth == "true" || isAuth == "" ? <><button onClick={() => toggle()}>Login</button>
-      <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route element={<ProtectRoutes />}>
-          <Route path="/start" element={<StartPage />} />
-          <Route path="/vote" element={<Vote />} />
-          <Route path="/QR" element={<QR />} />
-          <Route path='/assemly' element={<Assembly />} />
-          <Route path='/CheckIn' element={<CheckIn />} />
-          <Route path='/admin' element={<AdminDashboard />} />
-        </Route>
-      </Routes>
+  return (<>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route element={<ProtectRoutes />}>
+        <Route path="/start" element={<StartPage />} />
+        <Route path="/vote" element={<Vote />} />
+        <Route path="/QR" element={<QR />} />
+        <Route path='/assemly' element={<Assembly />} />
+        <Route path='/CheckIn' element={<CheckIn />} />
+        <Route path='/admin' element={<AdminDashboard />} />
+      </Route>
+  </Routes>{
+      isAuth == "true" || isAuth == "" ? 
+      <><button onClick={() => toggle()}>Login</button></>
+    : <><button onClick={() => toggle()}>Logout</button><a href='/QR'>QR</a></>}</>
 
-    </BrowserRouter></>
-    : <><button onClick={() => toggle()}>Logout</button>
-    <a href='/QR'>QR</a>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route element={<ProtectRoutes />}>
-          <Route path="/start" element={<StartPage />} />
-          <Route path="/vote" element={<Vote />} />
-          <Route path="/QR" element={<QR />} />
-          <Route path='/assemly' element={<Assembly />} />
-          <Route path='/CheckIn' element={<CheckIn />} />
-          <Route path='/admin' element={<AdminDashboard />} />
-        </Route>
-      </Routes>
-
-    </BrowserRouter></>
   )
 }
 

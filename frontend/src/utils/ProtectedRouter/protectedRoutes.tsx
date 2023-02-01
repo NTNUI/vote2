@@ -3,7 +3,7 @@ import { Login } from "../../pages/login";
 
 
 export const ProtectRoutes = () => {
-    const Auth = sessionStorage.getItem("Auth")
+    const Auth = localStorage.getItem("Auth")
 
     return Auth == "true" ? <Outlet/> : <Navigate to="/"/>
     
