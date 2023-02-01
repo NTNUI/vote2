@@ -1,6 +1,6 @@
 import React from "react";
 
-function AdminDashboard() {
+export function AdminDashboard() {
 
     return (
         <p>Admion Dashboard</p>
