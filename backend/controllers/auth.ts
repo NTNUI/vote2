@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import {
   getNtnuiToken,
-  isValidNtnuiToken,
-  refreshNtnuiToken,
   getNtnuiProfile,
 } from "ntnui-tools";
 import { User } from "../models/user";
@@ -32,44 +30,32 @@ export async function login(req: Request, res: Response) {
       { upsert: true }
     );
 
-    return res.status(200).send(tokens);
+    return res
+    .cookie('accessToken', tokens.access, {
+      maxAge: 1800000, // 30 minutes
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: true,
+    })
+    .cookie('refreshToken', tokens.refresh, {
+      maxAge: 86400000, // 1 day
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: true,
+    })
+    .status(200)
+    .json({ message: 'Successful login' })
   } catch (error) {
     return res.status(401).send({
       message: "Unauthorized",
-    });
-  }
-}
-
-export async function refresh(req: Request, res: Response) {
-  try {
-    const access = await refreshNtnuiToken(req.body.refresh);
-    return res.status(200).send(access);
-  } catch (error) {
-    return res.status(401).send({
-      message: "Unauthorized",
-    });
-  }
-}
-
-export async function verify(req: Request, res: Response) {
-  try {
-    const access = await isValidNtnuiToken(req.body.access);
-    console.log(access);
-    if (access) {
-      return res.status(200).send({ message: "ok" });
-    }
-    return res.status(401).send({
-      message: "Unauthorized",
-    });
-  } catch (error) {
-    return res.status(401).send({
-      message: "Error",
     });
   }
 }
 
 export async function logout(req: Request, res: Response) {
-  return res.status(401).send({
-    message: "Not yet implemented",
-  });
+	return res
+		.clearCookie('accessToken')
+		.clearCookie('refreshToken')
+		.status(200)
+		.json({ message: 'Successfully logged out' })
 }
