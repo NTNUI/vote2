@@ -26,8 +26,8 @@ Initialize and start a local MongoDB:
 (Requires docker installed on machine)  
 `npm run db`  
 Delete/stop MongoDB:  
-`npm run stop-db`
-
+`npm run stop-db`  
+ 
 Start frontend (dev):  
 `npm run frontend`
 
