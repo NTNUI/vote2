@@ -21,7 +21,7 @@ const useStyles = createStyles((theme) => ({
 		width: '100%',
 		marginBottom: '1rem',
 		display: 'grid',
-		gridTemplateColumns: '1fr 1fr',
+		gridTemplateColumns: '0.8fr 1.2fr',
 		gridTemplateRows: '1fr auto',
 		gridTemplateAreas: `
         "label label"
@@ -33,7 +33,7 @@ const useStyles = createStyles((theme) => ({
 			color: 'white',
 			display: 'flex',
 			alignItems: 'center',
-			margin: 0,
+			marginBottom: '5px',
 		},
 	},
 	selectCountryCodeInput: {
@@ -42,7 +42,7 @@ const useStyles = createStyles((theme) => ({
 		input: {
 			gridArea: 'country_code',
 			backgroundColor: 'transparent',
-			borderRadius: '5px 0 0 5px',
+			borderRadius: '5px 5px 0 5px',
 			color: 'white',
 			width: '100%',
 			transition: '0.3s',
@@ -52,11 +52,10 @@ const useStyles = createStyles((theme) => ({
 	},
 	numberInput: {
 		input: {
-			borderLeft: 0,
 			gridArea: 'phone_number',
 			backgroundColor: 'transparent',
 			color: 'white',
-			borderRadius: '0px 5px 5px 0px',
+			borderRadius: '5px 5px 0px 5px',
 			width: '100%',
 		},
 		'.mantine-TextInput-error': {
@@ -69,7 +68,7 @@ const useStyles = createStyles((theme) => ({
 			color: 'white',
 			display: 'flex',
 			alignItems: 'center',
-			margin: 0,
+			marginBottom: '5px',
 			span: {
 				display: 'none',
 			},
@@ -131,6 +130,7 @@ export function LoginForm() {
     land: string;
     kode: string;
   };
+
   const form = useForm({
     initialValues: {
       country_code: "47",
@@ -140,7 +140,7 @@ export function LoginForm() {
 
     validate: {
       phone_number: (value) =>
-        !/^[0-9]{8,}$/.test(value) ? "Formatet er ugyldig" : null,
+        !/^[0-9]{8,}$/.test(value) ? "Unvalid format" : null,
     },
   });
 
@@ -181,10 +181,10 @@ export function LoginForm() {
       <Input.Wrapper
         label={
           <>
-            Telefon
+            PHONE
             {NtnuiInfoTooltip(
               <>
-                Logg inn med samme telefonnummer som du bruker på{" "}
+                Log in with the same phone number you use at{" "}
                 <a
                   className={classes.link}
                   href="https://medlem.ntnui.no/login"
@@ -199,19 +199,19 @@ export function LoginForm() {
       >
         <Select
           required
-          aria-label="Velg din landskode"
+          aria-label="Choose country code"
           data={countryCodesToSelect}
-          rightSection={<ChevronDown size={18} />}
+          rightSection={<ChevronDown size={20} />}
           rightSectionWidth={30}
-          icon={<World size={18} />}
+          icon={<World size={20} />}
           className={classes.selectCountryCodeInput}
           {...form.getInputProps("country_code")}
         />
         <TextInput
           required
           type="tel"
-          placeholder="Telefon"
-          icon={<Phone size={18} />}
+          placeholder="Phone"
+          icon={<Phone size={20} />}
           className={classes.numberInput}
           {...form.getInputProps("phone_number")}
           onBlur={() => form.validateField("phone_number")}
@@ -222,10 +222,10 @@ export function LoginForm() {
         autoComplete="password"
         label={
           <>
-            Passord
+            PASSWORD
             {NtnuiInfoTooltip(
               <p>
-                Logg inn med samme passord som du bruker på{" "}
+                Log in with the same password you use at{" "}
                 <a
                   className={classes.link}
                   href="https://medlem.ntnui.no/login"
@@ -236,14 +236,14 @@ export function LoginForm() {
             )}
           </>
         }
-        placeholder="Passord"
-        icon={<Lock size={18} />}
+        placeholder="Password"
+        icon={<Lock size={20} />}
         className={classes.passwordInput}
         {...form.getInputProps("password")}
       />
       {error && (
         <Notification
-          title="Kunne ikke logge inn!"
+          title="Could not log in!"
           disallowClose
           classNames={{
             root: classes.loginErrorRoot,
@@ -251,10 +251,10 @@ export function LoginForm() {
             description: classes.loginErrorText,
           }}
           onClose={() => {}}
-          icon={<X size={18} />}
+          icon={<X size={20} />}
           color="red"
         >
-          Finner ingen bruker med dette nummeret og dette passordet
+          Cannot find any user with this password and username
         </Notification>
       )}
       <Button
@@ -263,7 +263,7 @@ export function LoginForm() {
         className={classes.submitButton}
         type="submit"
       >
-        Logg inn
+        Log in
       </Button>
     </form>
   );
