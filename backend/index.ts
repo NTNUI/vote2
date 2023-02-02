@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import authRoutes from "./routes/auth";
 import mongoConnect from "./utils/db";
 import dotenv from "dotenv";
+import cookieParser = require("cookie-parser");
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ const port = process.env.BACKEND_PORT;
 
 mongoConnect();
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -24,5 +26,5 @@ try {
   if (error instanceof Error) {
     console.error(`Error: ${error.message}`);
   }
-  console.error("Something went very wrong (failed to output error message)");
+  console.error("Something went very wrong (is your .env correct?)");
 }
