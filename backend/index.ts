@@ -2,12 +2,15 @@ import express, { Application, Request, Response } from "express";
 import authRoutes from "./routes/auth";
 import mongoConnect from "./utils/db";
 import dotenv from "dotenv";
+import cors from 'cors';
 import cookieParser = require('cookie-parser');
 
 dotenv.config();
 
 
 const app: Application = express();
+app.use(cors());
+app.options('http://localhost:5173/', cors());
 const port = process.env.BACKEND_PORT;
 
 mongoConnect();
