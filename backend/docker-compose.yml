@@ -1,9 +1,9 @@
 services:
- # MongoDB
- vote-db:
-  container_name: vote-db
-  image: mongo:latest
-  env_file:
-   - .env
-  ports:
-   - '27017:27017'
+  # MongoDB
+  vote-db:
+    container_name: vote-db
+    image: mongo:6.0.3
+    env_file:
+      - .env
+    ports:
+      - "27017:27017"
