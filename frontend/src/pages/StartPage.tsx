@@ -1,8 +1,5 @@
 import React from "react";
 
 export function StartPage() {
-
-    return (
-        <p>Start page</p>
-    )
+  return <p>Start page</p>;
 }

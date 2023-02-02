@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import login from "../controllers/auth";
 
-const authRoutes = express.Router()
+const authRoutes = express.Router();
 
 // Login route
 // Return access and refresh tokens
