@@ -154,7 +154,8 @@ export function LoginForm() {
       login(credentials.phone_number, credentials.password)
         .then(() => {
           setIsLoading(false);
-          navigate("/dashboard");
+          
+          navigate("/start");
         })
         .catch(() => {
           setIsLoading(false);

@@ -5,7 +5,7 @@ const authRoutes = Router();
 
 // Login route
 // Return access and refresh tokens
-authRoutes.get("/login", login);
+authRoutes.post("/login", login);
 
 authRoutes.get("/logout", logout);
 
