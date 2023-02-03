@@ -1,10 +1,10 @@
 import { Outlet, Navigate } from "react-router-dom";
-import Cookies from 'universal-cookie'
+import Cookies from 'js-cookie';
 
 
 export const ProtectRoutes = () => {
-    const cookie = new Cookies()
-    return cookie.get("accessToken") ? <Outlet/> : <Navigate to="/"/>
+    
+    return Cookies.get("accessToken") ? <Outlet/> : <Navigate to="/"/>
     
 
 }

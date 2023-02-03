@@ -9,12 +9,12 @@ import { CheckIn } from "./pages/CheckIn";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { MantineProvider, Text } from "@mantine/core";
 import colors from "./utils/theme";
-import { Login } from "./pages/login";
+import { Login } from "./pages/Login";
 import axios from 'axios'
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3000"
-  
+  axios.defaults.withCredentials = true
 
   return (
     <MantineProvider
@@ -25,14 +25,14 @@ function App() {
     >
       <Routes>
         <Route path="/" element={<Login />} />
-        {/* <Route element={<ProtectRoutes />}> */}
-        <Route path="/start" element={<StartPage />} />
-        <Route path="/vote" element={<Vote />} />
-        <Route path="/QR" element={<QR />} />
-        <Route path="/assembly" element={<Assembly />} />
-        <Route path="/CheckIn" element={<CheckIn />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        {/* </Route> */}
+        <Route element={<ProtectRoutes />}>
+          <Route path="/start" element={<StartPage />} />
+          <Route path="/vote" element={<Vote />} />
+          <Route path="/QR" element={<QR />} />
+          <Route path="/assembly" element={<Assembly />} />
+          <Route path="/CheckIn" element={<CheckIn />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Route>
       </Routes>
     </MantineProvider>
   );
