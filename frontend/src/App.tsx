@@ -10,11 +10,12 @@ import { AdminDashboard } from "./pages/AdminDashboard";
 import { MantineProvider, Text } from "@mantine/core";
 import colors from "./utils/theme";
 import { Login } from "./pages/Login";
-import axios from 'axios'
+import axios from "axios";
+import Header from "./components/Header";
 
 function App() {
-  axios.defaults.baseURL = "http://localhost:3000"
-  axios.defaults.withCredentials = true
+  axios.defaults.baseURL = "http://localhost:3000";
+  axios.defaults.withCredentials = true;
 
   return (
     <MantineProvider
@@ -26,12 +27,60 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route element={<ProtectRoutes />}>
-          <Route path="/start" element={<StartPage />} />
-          <Route path="/vote" element={<Vote />} />
-          <Route path="/QR" element={<QR />} />
-          <Route path="/assembly" element={<Assembly />} />
-          <Route path="/CheckIn" element={<CheckIn />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route
+            path="/start"
+            element={
+              <>
+                <Header />
+                <StartPage />
+              </>
+            }
+          />
+          <Route
+            path="/vote"
+            element={
+              <>
+                <Header />
+                <Vote />
+              </>
+            }
+          />
+          <Route
+            path="/QR"
+            element={
+              <>
+                <Header />
+                <QR />
+              </>
+            }
+          />
+          <Route
+            path="/assembly"
+            element={
+              <>
+                <Header />
+                <Assembly />
+              </>
+            }
+          />
+          <Route
+            path="/CheckIn"
+            element={
+              <>
+                <Header />
+                <CheckIn />
+              </>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <>
+                <Header />
+                <AdminDashboard />
+              </>
+            }
+          />
         </Route>
       </Routes>
     </MantineProvider>
