@@ -4,7 +4,8 @@
   "description": "NTNUI Vote Backend",
   "main": "index.ts",
   "scripts": {
-    "dev": "ts-node-dev --transpile-only ./index.ts",
+    "build": "tsc",
+    "dev": "ts-node-dev ./index.ts",
     "db": "docker compose up -d",
     "stop-db": "docker compose down",
     "test": "echo \"Error: no test specified\" && exit 1"
