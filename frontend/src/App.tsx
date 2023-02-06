@@ -9,7 +9,7 @@ import { CheckIn } from "./pages/CheckIn";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { MantineProvider, Text } from "@mantine/core";
 import colors from "./utils/theme";
-import { Login } from "./pages/Login";
+import { Login } from "./pages/LoginPage";
 import axios from "axios";
 import Header from "./components/Header";
 
