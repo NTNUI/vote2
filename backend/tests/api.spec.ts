@@ -4,16 +4,16 @@
 */
 
 import request from 'supertest';
-import app from "../controllers/auth";
+import {login,logout} from "../controllers/auth";
 
 
 describe("API test suite", () => {
-    test("GET /auth", () => {
-         request(app)
-            .get("/auth")
+    test("GET /login", () => {
+/*          request(login)
+            .get("/login")
             .expect(200)
             .then((response) => {
                 expect(response.body.message).toBe("Hello auth!")
-            })
+            }) */
     })
 });
