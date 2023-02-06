@@ -2,26 +2,19 @@ import express, { Application, Request, Response } from "express";
 import authRoutes from "./routes/auth";
 import mongoConnect from "./utils/db";
 import dotenv from "dotenv";
-import cors from 'cors';
-import cookieParser = require('cookie-parser');
+import cors from "cors";
+import cookieParser = require("cookie-parser");
 
 dotenv.config();
 
-
 const app: Application = express();
-var corsOptions = {
-  origin: 'http://localhost:5173',
-  credentials: true
-}
-
-app.use(cors(corsOptions));
-
-// app.options('http://localhost:5173/', cors());
+app.use(cors());
+app.options("http://localhost:5173/", cors());
 const port = process.env.BACKEND_PORT;
 
 mongoConnect();
 
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

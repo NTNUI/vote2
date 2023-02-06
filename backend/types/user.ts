@@ -9,5 +9,5 @@ export type UserType = {
 
 export type GroupType = {
   groupName: string;
-  role: userRole;
+  role: string;
 };
