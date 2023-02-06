@@ -1,34 +1,33 @@
-
 {
-    "name": "ntnui-general-assembly-voting-system",
-    "version": "1.0.0",
-    "description": "This application will authenticate and register attendants at general assemblies for the groups in NTNUI.",
-    "scripts": {
-      "install:all": "npm ci && cd backend && npm ci && cd ../frontend && npm ci",
-      "frontend": "cd frontend && npm run dev",
-      "backend": "cd backend && npm run dev",
-      "backend:build": "cd backend && npm run build",
-      "frontend:build": "cd frontend && npm run build",
-      "db": "cd backend && npm run db",
-      "stop-db": "cd backend && npm run stop-db",
-      "prettier:format": "npx prettier --write .",
-      "prettier:check": "prettier --check .",
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/ntnui/vote2.git"
-    },
-    "keywords": [
-      "NTNUI"
-    ],
-    "author": "NTNUI",
-    "license": "MIT",
-    "bugs": {
-      "url": "https://github.com/ntnui/vote2/issues"
-    },
-    "homepage": "https://github.com/ntnui/vote2#readme",
-    "devDependencies": {
-      "prettier": "^2.8.3"
-    }
+  "name": "ntnui-general-assembly-voting-system",
+  "version": "1.0.0",
+  "description": "This application will authenticate and register attendants at general assemblies for the groups in NTNUI.",
+  "scripts": {
+    "install:all": "npm ci && cd backend && npm ci && cd ../frontend && npm ci",
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && npm run dev",
+    "backend:build": "cd backend && npm run build",
+    "frontend:build": "cd frontend && npm run build",
+    "db": "cd backend && npm run db",
+    "stop-db": "cd backend && npm run stop-db",
+    "prettier:format": "npx prettier --write .",
+    "prettier:check": "prettier --check .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ntnui/vote2.git"
+  },
+  "keywords": [
+    "NTNUI"
+  ],
+  "author": "NTNUI",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ntnui/vote2/issues"
+  },
+  "homepage": "https://github.com/ntnui/vote2#readme",
+  "devDependencies": {
+    "prettier": "^2.8.3"
   }
+}

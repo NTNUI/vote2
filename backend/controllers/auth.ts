@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
-import {
-  getNtnuiToken,
-  getNtnuiProfile,
-} from "ntnui-tools";
+import { getNtnuiToken, getNtnuiProfile } from "ntnui-tools";
 import { User } from "../models/user";
 import { GroupType } from "../types/user";
 
@@ -31,20 +28,20 @@ export async function login(req: Request, res: Response) {
     );
 
     return res
-    .cookie('accessToken', tokens.access, {
-      maxAge: 1800000, // 30 minutes
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: true,
-    })
-    .cookie('refreshToken', tokens.refresh, {
-      maxAge: 86400000, // 1 day
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: true,
-    })
-    .status(200)
-    .json({ message: 'Successful login' })
+      .cookie("accessToken", tokens.access, {
+        maxAge: 1800000, // 30 minutes
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: true,
+      })
+      .cookie("refreshToken", tokens.refresh, {
+        maxAge: 86400000, // 1 day
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: true,
+      })
+      .status(200)
+      .json({ message: "Successful login" });
   } catch (error) {
     return res.status(401).send({
       message: "Unauthorized",
@@ -53,9 +50,9 @@ export async function login(req: Request, res: Response) {
 }
 
 export async function logout(req: Request, res: Response) {
-	return res
-		.clearCookie('accessToken')
-		.clearCookie('refreshToken')
-		.status(200)
-		.json({ message: 'Successfully logged out' })
+  return res
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .status(200)
+    .json({ message: "Successfully logged out" });
 }
