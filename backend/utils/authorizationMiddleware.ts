@@ -1,8 +1,8 @@
-import { Response, NextFunction } from 'express'
-import jsonwebtoken from 'jsonwebtoken'
-import { isValidNtnuiToken, refreshNtnuiToken } from 'ntnui-tools'
-import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
-import { RequestWithNtnuiNo } from './request'
+import { Response, NextFunction } from "express";
+import jsonwebtoken from "jsonwebtoken";
+import { isValidNtnuiToken, refreshNtnuiToken } from "ntnui-tools";
+import { CustomError, UnauthorizedUserError } from "ntnui-tools/customError";
+import { RequestWithNtnuiNo } from "./request";
 
 /**
  * # The authorization middleware - Provided by NTNUI
@@ -17,45 +17,45 @@ import { RequestWithNtnuiNo } from './request'
  *     - Allow user through middleware with next()
  */
 const authorization = async (
-	req: RequestWithNtnuiNo,
-	res: Response,
-	next: NextFunction
+  req: RequestWithNtnuiNo,
+  res: Response,
+  next: NextFunction
 ) => {
-	let { accessToken } = req.cookies
-	const { refreshToken } = req.cookies
-	try {
-		if (!refreshToken && !accessToken) {
-			throw new CustomError('No tokens sent', 401)
-		}
-		const isValid = await isValidNtnuiToken(accessToken)
-		if (!isValid) {
-			// Try to refresh
-			if (!refreshToken) {
-				throw new CustomError('No refresh-token sent', 401)
-			}
-			const newToken = await refreshNtnuiToken(refreshToken)
-			if (newToken) {
-				accessToken = newToken.access
-				// Set cookies
-				res.cookie('accessToken', newToken.access, {
-					maxAge: 1800000, // 30 minutes
-					httpOnly: true,
-					secure: process.env.NODE_ENV === 'production',
-					sameSite: true,
-				})
-			} else {
-				throw new CustomError('Invalid token', 401)
-			}
-		}
-		const decoded = jsonwebtoken.decode(accessToken)
-		if (decoded && typeof decoded !== 'string') {
-			req.ntnuiNo = decoded.ntnui_no
-			return next()
-		}
-		throw UnauthorizedUserError
-	} catch (error) {
-		return next(error)
-	}
-}
+  let { accessToken } = req.cookies;
+  const { refreshToken } = req.cookies;
+  try {
+    if (!refreshToken && !accessToken) {
+      throw new CustomError("No tokens sent", 401);
+    }
+    const isValid = await isValidNtnuiToken(accessToken);
+    if (!isValid) {
+      // Try to refresh
+      if (!refreshToken) {
+        throw new CustomError("No refresh-token sent", 401);
+      }
+      const newToken = await refreshNtnuiToken(refreshToken);
+      if (newToken) {
+        accessToken = newToken.access;
+        // Set cookies
+        res.cookie("accessToken", newToken.access, {
+          maxAge: 1800000, // 30 minutes
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: true,
+        });
+      } else {
+        throw new CustomError("Invalid token", 401);
+      }
+    }
+    const decoded = jsonwebtoken.decode(accessToken);
+    if (decoded && typeof decoded !== "string") {
+      req.ntnuiNo = decoded.ntnui_no;
+      return next();
+    }
+    throw UnauthorizedUserError;
+  } catch (error) {
+    return next(error);
+  }
+};
 
-export default authorization
+export default authorization;
