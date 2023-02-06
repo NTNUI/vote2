@@ -7,3 +7,15 @@ export const login = (phone_number: string, password: string) => {
 		password: password,
 	})
 }
+
+// QR
+
+// Admin CRUD
+
+// Vote
+
+// Fetch group
+
+// see results
+
+

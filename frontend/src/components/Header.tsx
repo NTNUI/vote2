@@ -29,6 +29,7 @@ function Header() {
       .get("/auth/logout")
       .then(() => {
         navigate("/");
+        localStorage.setItem("isLoggedIn", "false");
       })
       .catch((err) => {
         console.log("Something went wrong while logging out");

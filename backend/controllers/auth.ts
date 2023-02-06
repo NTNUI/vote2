@@ -33,17 +33,15 @@ export async function login(req: Request, res: Response) {
     return res
     .cookie('accessToken', tokens.access, {
       maxAge: 1800000, // 30 minutes
-      httpOnly: false,
-      // secure: process.env.NODE_ENV === 'production',
-      secure: true,
-      sameSite: 'none',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: true,
     })
     .cookie('refreshToken', tokens.refresh, {
       maxAge: 86400000, // 1 day
-      httpOnly: false,
-      // secure: process.env.NODE_ENV === 'production',
-      secure: true,
-      sameSite: 'none',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: true,
     })
     .status(200)
     .json({ message: 'Successful login' })

@@ -155,10 +155,12 @@ export function LoginForm() {
         .then(() => {
           setIsLoading(false);
           navigate("/start");
+          localStorage.setItem("isLoggedIn", "true");
         })
         .catch(() => {
           setIsLoading(false);
           setError(true);
+          localStorage.setItem("isLoggedIn", "false");
         });
     } catch (error) {
       setIsLoading(false);

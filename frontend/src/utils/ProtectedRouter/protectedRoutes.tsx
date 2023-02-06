@@ -3,8 +3,5 @@ import Cookies from 'js-cookie';
 
 
 export const ProtectRoutes = () => {
-    
-    return Cookies.get("accessToken") ? <Outlet/> : <Navigate to="/"/>
-    
-
+    return localStorage.getItem("isLoggedIn") == "true" ? <Outlet/> : <Navigate to="/"/>
 }
