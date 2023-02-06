@@ -40,4 +40,3 @@ Check prettier:
 
 Auto format whole project with prettier:  
 `npm run prettier:format`
-test
