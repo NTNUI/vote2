@@ -13,7 +13,7 @@ export async function login(req: Request, res: Response) {
 
     // Get committees and role in committee
     let groups: GroupType[] = [];
-    userProfile.data.memberships.forEach((membership: { slug: string }) => {
+    userProfile.data.memberships.forEach((membership) => {
       groups.push({
         groupName: membership.slug,
         role: membership.type,
