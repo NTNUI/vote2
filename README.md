@@ -14,3 +14,29 @@ The assemblies and voting is organized by the organizers/main board at the given
 \* An Organizer is a board member of the given group. The main board is allowed to create a general assembly for NTNUI as a whole.
 
 This project is using the [NTNUI API](https://api.ntnui.no/), in combination with [NTNUI TOOLS](https://github.com/NTNUI/ntnui-tools) to manage user permissions. Application specific data is stored in the MongoDB database.
+
+---
+
+## Scripts
+
+Install all dependencies **(Run first)**:  
+`npm run install:all`
+
+Initialize and start a local MongoDB:  
+(Requires docker installed on machine)  
+`npm run db`  
+Delete/stop MongoDB:  
+`npm run stop-db`
+
+Start frontend (dev):  
+`npm run frontend`
+
+Start backend (dev):  
+(Requires MongoDB to be up and running)  
+`npm run backend`
+
+Check prettier:  
+`npm run prettier:check`
+
+Auto format whole project with prettier:  
+`npm run prettier:format`
