@@ -5,24 +5,23 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/logoHeader.svg";
 
 const useStyles = createStyles((theme) => ({
-    header: {
-		height: '100%',
-        margin: 0,
-		display: 'flex',
-        alignItems: 'center',
-		justifyContent: 'space-between'
-        
-	},
-    logout: {
-		color: "white",
-        background: "none",
-        fontSize: '1.2rem',
-	},
-}))
+  header: {
+    height: "100%",
+    margin: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  logout: {
+    color: "white",
+    background: "none",
+    fontSize: "1.2rem",
+  },
+}));
 
 function Header() {
   const navigate = useNavigate();
-  const { classes } = useStyles()
+  const { classes } = useStyles();
 
   const logOut = async () => {
     await axios
@@ -41,7 +40,9 @@ function Header() {
   return (
     <div className={classes.header}>
       <img src={logo} alt="NTNUI logo" width="200px"></img>
-      <Button className={classes.logout} type="submit" onClick={logOut}>Log Out </Button>
+      <Button className={classes.logout} type="submit" onClick={logOut}>
+        Log Out{" "}
+      </Button>
     </div>
   );
 }
