@@ -15,7 +15,8 @@ You can modify the given [env](.env)-file if you want, but it should already con
 Install dependencies by typing: `npm i`  
 When the database is running you start the server by typing: `npm run dev`
 
-___
+---
+
 ## Scripts
 
 Install all dependencies **(Run first)**:  
