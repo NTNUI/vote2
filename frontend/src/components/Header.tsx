@@ -40,7 +40,12 @@ function Header() {
   return (
     <div className={classes.header}>
       <img src={logo} alt="NTNUI logo" width="200px"></img>
-      <Button className={classes.logout} type="submit" onClick={logOut}>
+      <Button 
+      className={classes.logout} 
+      type="submit" 
+      onClick={logOut} 
+      data-testid="logout-button"
+>
         Log Out{" "}
       </Button>
     </div>

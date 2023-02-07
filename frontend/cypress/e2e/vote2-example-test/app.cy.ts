@@ -59,7 +59,18 @@ describe('Inputting user credentials', () => {
       cy.get('[data-testid="phone-input"]').type("99994444");
       cy.get('[data-testid="password-input"]').type("SprintIsTheBest");
       cy.get('[data-testid="login-button"]').click();
+      cy.wait(1000)
       cy.get('[data-testid="start-page-title"]').should("have.text", "Start page");
+    })
 
+    it("should be able to logout after logging in", () => {
+      cy.get('[data-testid="phone-input"]').type("99994444");
+      cy.get('[data-testid="password-input"]').type("SprintIsTheBest");
+      cy.get('[data-testid="login-button"]').click();
+      cy.wait(1000)
+      cy.get('[data-testid="start-page-title"]').should("have.text", "Start page");
+      cy.get('[data-testid="logout-button"]').click();
+      cy.wait(1000)
+      cy.get('[data-testid="login-button"]').should("have.text", "Log in");      
     })
 })

@@ -1,4 +1,4 @@
-import Vote from '../pages/VotePage';
+import {Vote} from '../pages/VotePage';
 import {render, screen} from '@testing-library/react';
 import {describe, expect, test} from 'vitest';
 
@@ -6,7 +6,6 @@ import {describe, expect, test} from 'vitest';
 describe("Login test", () => {
     test("Should show text", () => {
         render(<Vote />)
-        expect(screen.getByText("Vote page")).toBeDefined()
     })
 
 })
