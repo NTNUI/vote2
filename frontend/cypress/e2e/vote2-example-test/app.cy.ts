@@ -5,7 +5,7 @@
     Visit https://docs.cypress.io/guides/overview/why-cypress to learn more. 
 */
 
-describe('Check for text', () => {
+/* describe('Check for text', () => {
     beforeEach(() => {
       cy.visit('http://localhost:5173/')
     })
@@ -18,20 +18,48 @@ describe('Check for text', () => {
         // Best way to isolate an element. Please use this method. 
         cy.get('[data-testid="login-title"]').should('have.text', "Login")
     })
-});
+}); */
+beforeEach(() => {
+  cy.visit('http://localhost:5173/')
+})
 
-describe('Clicking on button', () => {
-    beforeEach(() => {
-        cy.visit('http://localhost:5173/')
+describe('Checking that all elements are present', () => {
+
+
+      it("should have a phonenumber field", () => {
+        cy.get('[data-testid="phone-input"]')
+      })
+
+      it("should have a country selection", () => {
+        cy.get('[data-testid="country-select"]')
+      })
+
+      it("should have a password field", () => {
+        cy.get('[data-testid="password-input"]')
       })
   
       it("should have a button", () => {
         cy.get('[data-testid="login-button"]')
       })
 
-      it("should display log in", () => {
-        cy.get('[data-testid="login-button"]').should("have.text", "LOG IN");
-      });
+      it("button should display log in", () => {
+        cy.get('[data-testid="login-button"]').should("have.text", "Log in");
+      });    
+})
 
-    
+describe('Inputting user credentials', () => {
+    it("should display an error when inputting incorrect credentials", () => {
+      cy.get('[data-testid="phone-input"]').type("12345678");
+      cy.get('[data-testid="password-input"]').type("TotallyIncorrectPassword");
+      cy.get('[data-testid="login-button"]').click();
+      cy.get('[data-testid="bad-login-notification"]').should("be.visible");
+    })
+
+    it("should login when input correct credentials", () => {
+      cy.get('[data-testid="phone-input"]').type("99994444");
+      cy.get('[data-testid="password-input"]').type("SprintIsTheBest");
+      cy.get('[data-testid="login-button"]').click();
+      cy.get('[data-testid="start-page-title"]').should("have.text", "Start page");
+
+    })
 })

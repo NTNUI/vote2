@@ -257,6 +257,7 @@ export function LoginForm() {
           onClose={() => {}}
           icon={<X size={20} />}
           color="red"
+          data-testid="bad-login-notification"
         >
           Cannot find any user with this password and username
         </Notification>
