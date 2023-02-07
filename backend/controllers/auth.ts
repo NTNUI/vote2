@@ -12,7 +12,7 @@ export async function login(req: Request, res: Response) {
     const userProfile = await getNtnuiProfile(tokens.access);
 
     // Get committees and role in committee
-    let groups: GroupType[] = [];
+    const groups: GroupType[] = [];
     userProfile.data.memberships.forEach((membership) => {
       groups.push({
         groupName: membership.slug,
