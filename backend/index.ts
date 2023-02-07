@@ -1,4 +1,4 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application } from "express";
 import authRoutes from "./routes/auth";
 import mongoConnect from "./utils/db";
 import dotenv from "dotenv";

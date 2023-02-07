@@ -1,5 +1,3 @@
-import { userRole } from "../enums/userRole";
-
 export type UserType = {
   _id: number;
   first_name: string;
