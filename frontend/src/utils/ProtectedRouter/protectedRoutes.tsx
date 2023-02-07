@@ -1,11 +1,10 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { Login } from "../../pages/login";
-
+import Cookies from "js-cookie";
 
 export const ProtectRoutes = () => {
-    const Auth = localStorage.getItem("Auth")
-
-    return Auth == "true" ? <Outlet/> : <Navigate to="/"/>
-    
-
-}
+  return localStorage.getItem("isLoggedIn") == "true" ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/" />
+  );
+};

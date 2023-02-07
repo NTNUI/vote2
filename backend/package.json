@@ -4,7 +4,8 @@
   "description": "NTNUI Vote Backend",
   "main": "index.ts",
   "scripts": {
-    "dev": "ts-node-dev --transpile-only ./index.ts",
+    "build": "tsc",
+    "dev": "ts-node-dev ./index.ts",
     "db": "docker compose up -d",
     "stop-db": "docker compose down",
     "test": "jest"
@@ -43,6 +44,6 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.9.0",
-    "ntnui-tools": "^0.2.0"
+    "ntnui-tools": "github:NTNUI/ntnui-tools"
   }
 }

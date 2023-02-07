@@ -1,9 +1,5 @@
 import React from "react";
 
 export function AdminDashboard() {
-
-    return (
-        <p>Admin Dashboard</p>
-    )
+  return <p>Admion Dashboard</p>;
 }
-export default AdminDashboard;

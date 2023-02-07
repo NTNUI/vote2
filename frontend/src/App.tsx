@@ -1,50 +1,89 @@
-import { useState } from 'react'
-import './App.css'
-import { Login } from './pages/Login'
-import { StartPage } from './pages/StartPage'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { ProtectRoutes } from './utils/ProtectedRouter/protectedRoutes'
-import { Vote } from './pages/VotePage'
-import { QR } from './pages/QRpage'
-import { Assembly } from './pages/GenforsDashboard'
-import { CheckIn } from './pages/CheckIn'
-import { AdminDashboard } from './pages/AdminDashboard'
+import "./App.css";
+import { StartPage } from "./pages/StartPage";
+import { Route, Routes } from "react-router-dom";
+import { ProtectRoutes } from "./utils/ProtectedRouter/protectedRoutes";
+import { Vote } from "./pages/VotePage";
+import { QR } from "./pages/QRpage";
+import { Assembly } from "./pages/GenforsDashboard";
+import { CheckIn } from "./pages/CheckIn";
+import { AdminDashboard } from "./pages/AdminDashboard";
+import { MantineProvider, Text } from "@mantine/core";
+import colors from "./utils/theme";
+import { Login } from "./pages/LoginPage";
+import axios from "axios";
+import Header from "./components/Header";
+
 function App() {
-  const [ isAuth, setIsAuth ] = useState("false");
+  axios.defaults.baseURL = "http://localhost:3000";
 
- 
-    
-  const toggle = () => {
-    if (isAuth == "false") {
-      setIsAuth("true")
-    }
-    else {
-      setIsAuth("false")
-    }
-    localStorage.setItem("Auth", isAuth)
-  }
-
-  return (<>
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route element={<ProtectRoutes />}>
-        <Route path="/start" element={<StartPage />} />
-        <Route path="/vote" element={<Vote />} />
-        <Route path="/QR" element={<QR />} />
-        <Route path='/assemly' element={<Assembly />} />
-        <Route path='/CheckIn' element={<CheckIn />} />
-        <Route path='/admin' element={<AdminDashboard />} />
-      </Route>
-  </Routes>{
-      isAuth == "true" || isAuth == "" ? 
-      <><button onClick={() => toggle()}
-      data-testid="login-button">Login</button></>
-      
-    : <><button onClick={() => toggle()}
-      data-testid="login-button">Logout</button>
-      <a href='/QR'>QR</a></>}</>
-
-  )
+  return (
+    <MantineProvider
+      theme={{
+        fontFamily: "Poppins, sans-serif",
+        colors: colors,
+      }}
+    >
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route element={<ProtectRoutes />}>
+          <Route
+            path="/start"
+            element={
+              <>
+                <Header />
+                <StartPage />
+              </>
+            }
+          />
+          <Route
+            path="/vote"
+            element={
+              <>
+                <Header />
+                <Vote />
+              </>
+            }
+          />
+          <Route
+            path="/QR"
+            element={
+              <>
+                <Header />
+                <QR />
+              </>
+            }
+          />
+          <Route
+            path="/assembly"
+            element={
+              <>
+                <Header />
+                <Assembly />
+              </>
+            }
+          />
+          <Route
+            path="/CheckIn"
+            element={
+              <>
+                <Header />
+                <CheckIn />
+              </>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <>
+                <Header />
+                <AdminDashboard />
+              </>
+            }
+          />
+        </Route>
+      </Routes>
+    </MantineProvider>
+  );
 }
 
-export default App
+export default App;

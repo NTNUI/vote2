@@ -29,12 +29,9 @@ describe('Clicking on button', () => {
         cy.get('[data-testid="login-button"]')
       })
 
-      it("should display logout", () => {
-        cy.get('[data-testid="login-button"]').should("have.text", "Logout");
+      it("should display log in", () => {
+        cy.get('[data-testid="login-button"]').should("have.text", "LOG IN");
       });
 
-      it("should display Logout after clicking one time", () => {
-        cy.get('[data-testid="login-button"]').click();
-        cy.get('[data-testid="login-button"]').should('have.text', "Login");
-      })
+    
 })
