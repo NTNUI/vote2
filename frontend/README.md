@@ -1,6 +1,7 @@
 # Frontend
 
 ### Make sure the Backend is running
+
 See README in vote2/backend/README
 
 ### Then install dependencies and start the app
