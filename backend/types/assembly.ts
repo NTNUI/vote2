@@ -1,10 +1,6 @@
 export type AssemblyType = {
-    _id: string;
-    votes: string[];
-    isActive: boolean;
-    participants: number;
-  };
-
-  
-  
-  
+  _id: string;
+  votes: string[];
+  isActive: boolean;
+  participants: number;
+};
