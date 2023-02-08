@@ -15,7 +15,7 @@ export async function getUserData(
   const user = await User.findById(req.ntnuiNo);
 
   let userData: UserDataResponseType;
-  let userDataGroups: UserDataGroupType[] = [];
+  const userDataGroups: UserDataGroupType[] = [];
 
   if (user) {
     userData = {
@@ -28,7 +28,7 @@ export async function getUserData(
     user.groups.forEach((membership) => {
       // TODO:
       // const assembly = Assembly.findById(membership.groupName);
-      let active: boolean = false;
+      const active = false;
 
       userDataGroups.push({
         groupName: membership.groupName,
@@ -36,7 +36,7 @@ export async function getUserData(
         hasActiveAssembly: active,
       });
 
-      if ((membership.role === "leader", "cashier", "deputy_leader")) {
+      if (["leader", "cashier", "deputy_leader"].includes(membership.role)) {
         userData.isOrganizer = true;
       }
     });
