@@ -29,16 +29,19 @@ export async function getUserData(
       // TODO:
       // const assembly = Assembly.findById(membership.groupName);
       const active = false;
-
-      userDataGroups.push({
-        groupName: membership.groupName,
-        role: membership.role,
-        hasActiveAssembly: active,
-      });
+      let role: string = "member";
 
       if (["leader", "cashier", "deputy_leader"].includes(membership.role)) {
         userData.isOrganizer = true;
+        role = "organizer"
       }
+
+      userDataGroups.push({
+        groupName: membership.groupName,
+        role: role,
+        hasActiveAssembly: active,
+      });
+
     });
 
     userData.groups = userDataGroups;
