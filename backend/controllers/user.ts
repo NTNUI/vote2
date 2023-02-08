@@ -33,7 +33,7 @@ export async function getUserData(
 
       if (["leader", "cashier", "deputy_leader"].includes(membership.role)) {
         userData.isOrganizer = true;
-        role = "organizer"
+        role = "organizer";
       }
 
       userDataGroups.push({
@@ -41,7 +41,6 @@ export async function getUserData(
         role: role,
         hasActiveAssembly: active,
       });
-
     });
 
     userData.groups = userDataGroups;
