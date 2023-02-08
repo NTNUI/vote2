@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser = require("cookie-parser");
 import userRoutes from "./routes/user";
+import assemblyRoutes from "./routes/assembly";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 // App routes
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
+app.use("/assembly", assemblyRoutes);
 
 try {
   app.listen(port, (): void => {

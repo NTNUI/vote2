@@ -1,5 +1,4 @@
-import { Request, Response } from "express";
-import { Assembly } from "../models/assembly";
+import { Response } from "express";
 import { User } from "../models/user";
 import { UserDataGroupType, UserDataResponseType } from "../types/user";
 import { RequestWithNtnuiNo } from "../utils/request";
@@ -26,8 +25,6 @@ export async function getUserData(
     };
 
     user.groups.forEach((membership) => {
-      // TODO:
-      // const assembly = Assembly.findById(membership.groupName);
       const active = false;
       let role = "member";
 
