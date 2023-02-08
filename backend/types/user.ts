@@ -9,3 +9,16 @@ export type GroupType = {
   groupName: string;
   role: string;
 };
+
+export type UserDataGroupType = {
+  groupName: string;
+  role: string;
+  hasActiveAssembly: boolean;
+};
+
+export type UserDataResponseType = {
+  firstName: string;
+  lastName: string;
+  groups: UserDataGroupType[];
+  isOrganizer: boolean;
+};
