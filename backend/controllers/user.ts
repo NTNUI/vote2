@@ -29,7 +29,7 @@ export async function getUserData(
       // TODO:
       // const assembly = Assembly.findById(membership.groupName);
       const active = false;
-      let role: string = "member";
+      let role = "member";
 
       if (["leader", "cashier", "deputy_leader"].includes(membership.role)) {
         userData.isOrganizer = true;
