@@ -10,11 +10,11 @@ dotenv.config();
 
 const app: Application = express();
 app.use(
-	cors({
-		origin:true,
-		credentials: true,
-	})
-)
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 const port = process.env.BACKEND_PORT;
 
 mongoConnect();

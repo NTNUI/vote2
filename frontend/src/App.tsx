@@ -15,7 +15,7 @@ import Header from "./components/Header";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3000";
-  axios.defaults.withCredentials=true;
+  axios.defaults.withCredentials = true;
 
   return (
     <MantineProvider
