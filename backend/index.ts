@@ -1,9 +1,10 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application } from "express";
 import authRoutes from "./routes/auth";
 import mongoConnect from "./utils/db";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser = require("cookie-parser");
+import userRoutes from "./routes/user";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // App routes
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 
 try {
   app.listen(port, (): void => {
