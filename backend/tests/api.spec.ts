@@ -3,8 +3,8 @@
     Uses supertest to test endpoints
 */
 
-import request from "supertest";
-import { login, logout } from "../controllers/auth";
+//import request from "supertest";
+//import { login, logout } from "../controllers/auth";
 
 describe("API test suite", () => {
   test("GET /login", () => {
