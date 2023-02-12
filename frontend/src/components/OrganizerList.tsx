@@ -1,4 +1,4 @@
-import { Box } from "@mantine/core";
+import { Box, Button, Flex } from "@mantine/core";
 import { throws } from "assert";
 import { useEffect, useState } from "react";
 import { getGroups } from "../services/organizer";
@@ -11,6 +11,107 @@ interface GroupData {
 
 export function OrganizerList() {
   const [organizedGroups, setOrganizedGroups] = useState<GroupData[]>([]);
+
+  function handleClick() {
+    console.log("Next page");
+  }
+
+  function createGroupBox(group: GroupData, index: number) {
+    let groupName = group.groupName;
+    groupName = groupName.charAt(0).toUpperCase() + groupName.slice(1);
+    if (group.hasActiveAssembly) {
+      return (
+        <Box
+          key={index}
+          onClick={handleClick}
+          sx={(theme) => ({
+            /* backgroundColor:
+            theme.colorScheme === "dark"
+              ? theme.colors.dark[6]
+              : theme.colors.gray[0], */
+            borderStyle: "solid",
+            borderColor: "white",
+            textAlign: "center",
+            padding: theme.spacing.xl,
+            borderRadius: theme.radius.md,
+            cursor: "pointer",
+            color: "white",
+
+            "&:hover": {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[5]
+                  : theme.colors.gray[1],
+            },
+          })}
+        >
+          {/*         <p>Group: {groupName}</p>
+        <p>Role: {group.role}</p>
+        <p>Active: {group.hasActiveAssembly.toString()}</p> */}
+          <Flex
+            mih={50}
+            gap="md"
+            justify="space-between"
+            align="flex-start"
+            direction="row"
+            wrap="wrap"
+          >
+            <h4>{groupName}</h4>
+            <div>
+              <Button color="green" radius="md">
+                Start checkin
+              </Button>
+              <Button color="gray" radius="md">
+                Edit
+              </Button>
+            </div>
+          </Flex>
+        </Box>
+      );
+    } else {
+      return (
+        <Box
+          key={index}
+          onClick={handleClick}
+          sx={(theme) => ({
+            /* backgroundColor:
+            theme.colorScheme === "dark"
+              ? theme.colors.dark[6]
+              : theme.colors.gray[0], */
+            borderStyle: "solid",
+            borderColor: "white",
+            textAlign: "center",
+            padding: theme.spacing.xl,
+            borderRadius: theme.radius.md,
+            cursor: "pointer",
+            color: "white",
+
+            "&:hover": {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[5]
+                  : theme.colors.gray[1],
+            },
+          })}
+        >
+          {/*         <p>Group: {groupName}</p>
+        <p>Role: {group.role}</p>
+        <p>Active: {group.hasActiveAssembly.toString()}</p> */}
+          <Flex
+            mih={50}
+            gap="md"
+            justify="space-between"
+            align="center"
+            direction="row"
+            wrap="wrap"
+          >
+            <h4>{groupName}</h4>
+            <Button>Create assembly</Button>
+          </Flex>
+        </Box>
+      );
+    }
+  }
 
   async function sortGroups() {
     try {
@@ -35,42 +136,15 @@ export function OrganizerList() {
 
   return (
     <>
+      <h2>Manage group assemblies</h2>
       <h4>
-        ACHTUNG!! The useState/useEffect run twice, resulting in duplicate
-        groups.{" "}
+        ACHTUNG!! The useEffect runs twice, resulting in duplicate groups.
       </h4>
       <p>
         This is because of React.StrictMode. Disabling it will fix the problem.
         This error is only supposed to affect dev builds, not prod.
       </p>
-      {organizedGroups.map((group, index) => (
-        <Box
-          key={index}
-          onClick={() => console.log(organizedGroups)}
-          sx={(theme) => ({
-            backgroundColor:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[6]
-                : theme.colors.gray[0],
-            textAlign: "center",
-            padding: theme.spacing.xl,
-            borderRadius: theme.radius.md,
-            cursor: "pointer",
-            color: "black",
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[5]
-                  : theme.colors.gray[1],
-            },
-          })}
-        >
-          <p>Group: {group.groupName}</p>
-          <p>Role: {group.role}</p>
-          <p>Active: {group.hasActiveAssembly.toString()}</p>
-        </Box>
-      ))}
+      {organizedGroups.map((group, index) => createGroupBox(group, index))}
 
       {/* <Box
       onClick={() => console.log(organizedGroups)}
