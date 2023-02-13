@@ -1,6 +1,6 @@
 import { Box, Button, Flex } from "@mantine/core";
-import { throws } from "assert";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getGroups } from "../services/organizer";
 
 interface GroupData {
@@ -11,9 +11,16 @@ interface GroupData {
 
 export function OrganizerList() {
   const [organizedGroups, setOrganizedGroups] = useState<GroupData[]>([]);
+  let navigate = useNavigate();
 
-  function handleClick() {
+
+  function handleQRClick() {
     console.log("Next page");
+    navigate("/QR");
+  }
+
+  function handleCreateAssemblyClick() {
+    navigate("/assembly");
   }
 
   function createGroupBox(group: GroupData, index: number) {
@@ -23,7 +30,6 @@ export function OrganizerList() {
       return (
         <Box
           key={index}
-          onClick={handleClick}
           sx={(theme) => ({
             /* backgroundColor:
             theme.colorScheme === "dark"
@@ -40,28 +46,25 @@ export function OrganizerList() {
             "&:hover": {
               backgroundColor:
                 theme.colorScheme === "dark"
-                  ? theme.colors.dark[5]
-                  : theme.colors.gray[1],
-            },
+                  ? theme.colors.dark[4]
+                  : theme.colors.gray[4],
+            }, 
           })}
         >
-          {/*         <p>Group: {groupName}</p>
-        <p>Role: {group.role}</p>
-        <p>Active: {group.hasActiveAssembly.toString()}</p> */}
           <Flex
             mih={50}
             gap="md"
             justify="space-between"
-            align="flex-start"
+            align="center"
             direction="row"
             wrap="wrap"
           >
             <h4>{groupName}</h4>
             <div>
-              <Button color="green" radius="md">
+              <Button color="green" radius="md" onClick={handleQRClick}>
                 Start checkin
               </Button>
-              <Button color="gray" radius="md">
+              <Button color="gray" radius="md" onClick={handleCreateAssemblyClick}>
                 Edit
               </Button>
             </div>
@@ -72,7 +75,6 @@ export function OrganizerList() {
       return (
         <Box
           key={index}
-          onClick={handleClick}
           sx={(theme) => ({
             /* backgroundColor:
             theme.colorScheme === "dark"
@@ -86,17 +88,14 @@ export function OrganizerList() {
             cursor: "pointer",
             color: "white",
 
-            "&:hover": {
+             "&:hover": {
               backgroundColor:
                 theme.colorScheme === "dark"
-                  ? theme.colors.dark[5]
-                  : theme.colors.gray[1],
-            },
+                  ? theme.colors.dark[4]
+                  : theme.colors.gray[4],
+            }, 
           })}
         >
-          {/*         <p>Group: {groupName}</p>
-        <p>Role: {group.role}</p>
-        <p>Active: {group.hasActiveAssembly.toString()}</p> */}
           <Flex
             mih={50}
             gap="md"
@@ -106,7 +105,7 @@ export function OrganizerList() {
             wrap="wrap"
           >
             <h4>{groupName}</h4>
-            <Button>Create assembly</Button>
+            <Button onClick={handleCreateAssemblyClick}>Create assembly</Button>
           </Flex>
         </Box>
       );
