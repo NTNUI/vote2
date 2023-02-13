@@ -26,6 +26,10 @@ export function OrganizerList() {
   function createGroupBox(group: GroupData, index: number) {
     let groupName = group.groupName;
     groupName = groupName.charAt(0).toUpperCase() + groupName.slice(1);
+    const startCheckinTestID:string = "checkin-button-" + group.groupName;
+    const createAssemblyTestID:string = "create-assembly-button-" + group.groupName;
+    const editAssemblyTestID:string = "edit-assembly-button-" + group.groupName;
+
     if (group.hasActiveAssembly) {
       return (
         <Box
@@ -61,10 +65,10 @@ export function OrganizerList() {
           >
             <h4>{groupName}</h4>
             <div>
-              <Button color="green" radius="md" onClick={handleQRClick}>
+              <Button color="green" radius="md" onClick={handleQRClick} data-testid={startCheckinTestID}>
                 Start checkin
               </Button>
-              <Button color="gray" radius="md" onClick={handleCreateAssemblyClick}>
+              <Button color="gray" radius="md" onClick={handleCreateAssemblyClick} data-testid={editAssemblyTestID}>
                 Edit
               </Button>
             </div>
@@ -105,7 +109,7 @@ export function OrganizerList() {
             wrap="wrap"
           >
             <h4>{groupName}</h4>
-            <Button onClick={handleCreateAssemblyClick}>Create assembly</Button>
+            <Button onClick={handleCreateAssemblyClick} data-testid={createAssemblyTestID}>Create assembly</Button>
           </Flex>
         </Box>
       );
@@ -134,7 +138,7 @@ export function OrganizerList() {
 
   return (
     <>
-      <h2>Manage group assemblies</h2>
+      <h2 data-testid="organizer-list-page-title">Manage group assemblies</h2>
       <h4>
         ACHTUNG!! The useEffect runs twice, resulting in duplicate groups.
       </h4>
