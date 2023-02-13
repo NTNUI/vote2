@@ -119,7 +119,7 @@ export function OrganizerList() {
       for (let i = 0; i < groups.length; i++) {
         let group: GroupData = groups[i];
         // Enabled member-role to also get included to the list. Only used for testing atm :)
-        if (group.role == "organizer" || group.role == "member") {
+        if (group.role == "organizer") {
           setOrganizedGroups((organizedGroups) => [...organizedGroups, group]);
         }
       }
@@ -130,7 +130,6 @@ export function OrganizerList() {
 
   useEffect(() => {
     sortGroups();
-    console.log("en gang");
   }, []);
 
   return (
