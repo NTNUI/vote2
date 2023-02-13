@@ -24,7 +24,7 @@ export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
     if (check) {
       await Assembly.findByIdAndUpdate(
         group,
-        { $set: { isActive: false, participants: 0 } },
+        { $set: { isActive: true, participants: 0 } },
         { upsert: true }
       );
       return res.status(200).json({ message: "Assembly succefully created" });

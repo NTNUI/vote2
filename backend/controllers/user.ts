@@ -1,4 +1,5 @@
 import { Response } from "express";
+import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { UserDataGroupType, UserDataResponseType } from "../types/user";
 import { RequestWithNtnuiNo } from "../utils/request";
@@ -24,20 +25,24 @@ export async function getUserData(
       isOrganizer: false,
     };
 
-    user.groups.forEach((membership) => {
-      const active = false;
+    user.groups.forEach(async (membership) => {
       let role = "member";
-
       if (["leader", "cashier", "deputy_leader"].includes(membership.role)) {
         userData.isOrganizer = true;
         role = "organizer";
       }
-
+      const assembly = await Assembly.findById(membership.groupName);
+      console.log(membership.groupName, ": ", assembly);
+      let status = false;
+      if (assembly) {
+        status = assembly.isActive;
+      }
       userDataGroups.push({
         groupName: membership.groupName,
         role: role,
-        hasActiveAssembly: active,
+        hasActiveAssembly: status,
       });
+      console.log("userDataGroup: ", userDataGroups);
     });
 
     userData.groups = userDataGroups;
