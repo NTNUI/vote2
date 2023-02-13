@@ -207,6 +207,7 @@ export function LoginForm() {
           icon={<World size={20} />}
           className={classes.selectCountryCodeInput}
           {...form.getInputProps("country_code")}
+          data-testid="country-select"
         />
         <TextInput
           required
@@ -216,6 +217,7 @@ export function LoginForm() {
           className={classes.numberInput}
           {...form.getInputProps("phone_number")}
           onBlur={() => form.validateField("phone_number")}
+          data-testid="phone-input"
         />
       </Input.Wrapper>
       <PasswordInput
@@ -241,6 +243,7 @@ export function LoginForm() {
         icon={<Lock size={20} />}
         className={classes.passwordInput}
         {...form.getInputProps("password")}
+        data-testid="password-input"
       />
       {error && (
         <Notification
@@ -254,6 +257,7 @@ export function LoginForm() {
           onClose={() => {}}
           icon={<X size={20} />}
           color="red"
+          data-testid="bad-login-notification"
         >
           Cannot find any user with this password and username
         </Notification>
@@ -263,6 +267,7 @@ export function LoginForm() {
         uppercase
         className={classes.submitButton}
         type="submit"
+        data-testid="login-button"
       >
         Log in
       </Button>
