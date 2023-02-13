@@ -44,7 +44,7 @@ export async function getUserData(
         hasActiveAssembly: status,
       });
       console.log("userDataGroup: ", userDataGroups);
-    };
+    }
 
     userData.groups = userDataGroups;
 

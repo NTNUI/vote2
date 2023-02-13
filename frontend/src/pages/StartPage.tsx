@@ -4,5 +4,5 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export function StartPage() {
-  return <p>Start page</p>;
+  return <p data-testid="start-page-title">Start page</p>;
 }
