@@ -2,6 +2,7 @@ import { Response } from "express";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
+import { isGroupOrganizer } from "./user";
 
 export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -9,19 +10,14 @@ export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
   }
   const group = req.body.group;
   const user = await User.findById(req.ntnuiNo);
-  console.log(user);
 
   if (user) {
-    let check = false;
-    user.groups.forEach((membership) => {
-      if (
-        ["leader", "cashier", "deputy_leader"].includes(membership.role) &&
-        membership.groupName == group
-      ) {
-        check = true;
-      }
-    });
-    if (check) {
+    if (
+      user.groups.some(
+        (membership) =>
+          isGroupOrganizer(membership) && membership.groupName == group
+      )
+    ) {
       await Assembly.findByIdAndUpdate(
         group,
         { $set: { isActive: false, participants: 0 } },
