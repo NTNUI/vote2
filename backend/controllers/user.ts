@@ -25,14 +25,15 @@ export async function getUserData(
       isOrganizer: false,
     };
 
-    user.groups.forEach(async (membership) => {
+    for (const membership of user.groups) {
       let role = "member";
       if (["leader", "cashier", "deputy_leader"].includes(membership.role)) {
         userData.isOrganizer = true;
         role = "organizer";
       }
+
       const assembly = await Assembly.findById(membership.groupName);
-      console.log(membership.groupName, ": ", assembly);
+
       let status = false;
       if (assembly) {
         status = assembly.isActive;
@@ -43,7 +44,7 @@ export async function getUserData(
         hasActiveAssembly: status,
       });
       console.log("userDataGroup: ", userDataGroups);
-    });
+    };
 
     userData.groups = userDataGroups;
 
