@@ -17,31 +17,6 @@ function App() {
   axios.defaults.baseURL = "http://localhost:3000";
   axios.defaults.withCredentials = true;
 
-  const links = [
-    { "link": "/about", "label": "Features" },
-    {
-      "link": "#1",
-      "label": "Learn",
-      "links": [
-        { "link": "/docs", "label": "Documentation" },
-        { "link": "/resources", "label": "Resources" },
-        { "link": "/community", "label": "Community" },
-        { "link": "/blog", "label": "Blog" }
-      ]
-    },
-    { "link": "/about", "label": "About" },
-    { "link": "/pricing", "label": "Pricing" },
-    {
-      "link": "#2",
-      "label": "Support",
-      "links": [
-        { "link": "/faq", "label": "FAQ" },
-        { "link": "/demo", "label": "Book a demo" },
-        { "link": "/forums", "label": "Forums" }
-      ]
-    }
-  ]
-
 
   return (
     <MantineProvider
@@ -50,7 +25,6 @@ function App() {
         colors: colors,
       }}
     >
-      <Header />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route element={<ProtectRoutes />}>

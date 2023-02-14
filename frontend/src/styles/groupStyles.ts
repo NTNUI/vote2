@@ -62,7 +62,7 @@ export const useStyles = createStyles(() => ({
   name: {
     flex: 0,
     flexBasis: "80%",
-    fontSize: "2.5rem",
+    fontSize: "2.3rem",
   },
   title: {
     fontSize: "1.4rem",

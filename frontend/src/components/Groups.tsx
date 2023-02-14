@@ -6,6 +6,7 @@ import {
   Text,
   Button,
   Grid,
+  Space,
 } from "@mantine/core";
 import { useStyles } from "../styles/groupStyles";
 import { getGroups } from "../services/organizer";
@@ -34,6 +35,7 @@ export function Groups() {
     <Loader></Loader>
   ) : (
     <>
+    <Space h="xl" />
       <Container className={classes.greetingBox}>
         <SimpleGrid
           className={classes.innerBox}
@@ -43,6 +45,7 @@ export function Groups() {
           breakpoints={[{ maxWidth: 768, cols: 1, spacing: "sm" }]}
         >
           <div></div>
+          
           <p className={classes.name}>Hello {userData.data.firstName}!</p>
 
           {userData.data.isOrganizer && (
