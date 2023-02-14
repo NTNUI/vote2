@@ -40,3 +40,9 @@ Check prettier:
 
 Auto format whole project with prettier:  
 `npm run prettier:format`
+
+ESlint check:  
+`npm run lint`
+
+Backend tests run:  
+`npm run test:backend`
