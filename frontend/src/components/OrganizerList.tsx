@@ -1,5 +1,4 @@
 import { Box, Button, Flex } from "@mantine/core";
-import { throws } from "assert";
 import { useEffect, useState } from "react";
 import { getGroups } from "../services/organizer";
 

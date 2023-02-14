@@ -24,6 +24,7 @@ function App() {
         colors: colors,
       }}
     >
+      <Header />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route element={<ProtectRoutes />}>
@@ -31,7 +32,6 @@ function App() {
             path="/start"
             element={
               <>
-                <Header />
                 <StartPage />
               </>
             }
@@ -40,7 +40,6 @@ function App() {
             path="/vote"
             element={
               <>
-                <Header />
                 <Vote />
               </>
             }
@@ -49,7 +48,6 @@ function App() {
             path="/QR"
             element={
               <>
-                <Header />
                 <QR />
               </>
             }
@@ -58,7 +56,6 @@ function App() {
             path="/assembly"
             element={
               <>
-                <Header />
                 <Assembly />
               </>
             }
@@ -67,7 +64,6 @@ function App() {
             path="/CheckIn"
             element={
               <>
-                <Header />
                 <CheckIn />
               </>
             }
@@ -76,7 +72,6 @@ function App() {
             path="/admin"
             element={
               <>
-                <Header />
                 <AdminDashboard />
               </>
             }
