@@ -15,6 +15,7 @@ import {HeaderAction} from "./components/Header";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3000";
+  axios.defaults.withCredentials = true;
 
   const links = [
     { "link": "/about", "label": "Features" },
@@ -49,6 +50,7 @@ function App() {
         colors: colors,
       }}
     >
+      <Header />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route element={<ProtectRoutes />}>

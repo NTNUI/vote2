@@ -9,8 +9,12 @@ import userRoutes from "./routes/user";
 dotenv.config();
 
 const app: Application = express();
-app.use(cors());
-app.options("http://localhost:5173/", cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 const port = process.env.BACKEND_PORT;
 
 mongoConnect();
