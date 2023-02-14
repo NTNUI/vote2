@@ -1,7 +1,8 @@
-import { Box, Button, Flex } from "@mantine/core";
+import { Box, Button, Flex, SimpleGrid } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getGroups } from "../services/organizer";
+import Arrow from "../assets/Arrow.svg";
 
 interface GroupData {
   groupName: string;
@@ -14,8 +15,11 @@ export function OrganizerList() {
   let navigate = useNavigate();
 
   function handleQRClick() {
-    console.log("Next page");
     navigate("/QR");
+  }
+
+  function handleBreadcrumbClick() {
+    navigate("/start");
   }
 
   function handleCreateAssemblyClick() {
@@ -138,7 +142,6 @@ export function OrganizerList() {
       const groups = groupsRequest.data.groups;
       for (let i = 0; i < groups.length; i++) {
         let group: GroupData = groups[i];
-        // Enabled member-role to also get included to the list. Only used for testing atm :)
         if (group.role == "organizer") {
           setOrganizedGroups((organizedGroups) => [...organizedGroups, group]);
         }
@@ -154,9 +157,19 @@ export function OrganizerList() {
 
   return (
     <>
-      <h2 data-testid="organizer-list-page-title">Manage group assemblies</h2>
+
+      <SimpleGrid cols={3}>
+        <div>
+          <p style={{display:"flex", alignItems:"center"}}>
+            <p style={{display: 'inline', cursor: 'pointer'}} onClick={handleBreadcrumbClick}>GROUPS </p> 
+              <img src={Arrow}></img>
+            <p style={{display: 'inline', fontWeight: 'bold'}}> ORGANIZER</p></p>
+        </div>
+        <h2 style={{display:"flex", alignItems:"center"}} data-testid="organizer-list-page-title">Manage group assemblies</h2>
+        <div></div>
+      </SimpleGrid>
       <h4>
-        ACHTUNG!! The useEffect runs twice, resulting in duplicate groups.
+        The useEffect runs twice, resulting in duplicate groups.
       </h4>
       <p>
         This is because of React.StrictMode. Disabling it will fix the problem.
