@@ -168,11 +168,6 @@ export function OrganizerList() {
         </h2>
         <div></div>
       </SimpleGrid>
-      <h4>The useEffect runs twice, resulting in duplicate groups.</h4>
-      <p>
-        This is because of React.StrictMode. Disabling it will fix the problem.
-        This error is only supposed to affect dev builds, not prod.
-      </p>
       {organizedGroups.map((group, index) => createGroupBox(group, index))}
     </>
   );
