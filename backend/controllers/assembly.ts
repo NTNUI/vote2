@@ -52,11 +52,15 @@ export async function editAssembly(req: RequestWithNtnuiNo, res: Response) {
           isGroupOrganizer(membership) && membership.groupName == group
       )
     ) {
-      await Assembly.findByIdAndUpdate(
-        group,
-        { $set: { isActive: req.body.isActive, participants: 0 } },
-        { upsert: true }
-      );
+      const assembly = await Assembly.findByIdAndUpdate(group, {
+        $set: { isActive: req.body.isActive },
+      });
+
+      if (assembly == null) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given ID found" });
+      }
       return res.status(200).json({ message: "Assembly successfully updated" });
     }
   }
@@ -80,7 +84,13 @@ export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
           isGroupOrganizer(membership) && membership.groupName == group
       )
     ) {
-      await Assembly.findByIdAndRemove(group);
+      const remove = await Assembly.findByIdAndRemove(group);
+
+      if (remove == null) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given ID found" });
+      }
       return res.status(200).json({ message: "Assembly successfully deleted" });
     }
   }
