@@ -40,10 +40,6 @@ export function OrganizerList() {
         <Box
           key={index}
           sx={(theme) => ({
-            /* backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[6]
-              : theme.colors.gray[0], */
             borderStyle: "solid",
             borderColor: "white",
             textAlign: "center",
@@ -95,10 +91,6 @@ export function OrganizerList() {
         <Box
           key={index}
           sx={(theme) => ({
-            /* backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[6]
-              : theme.colors.gray[0], */
             borderStyle: "solid",
             borderColor: "white",
             textAlign: "center",
@@ -157,42 +149,31 @@ export function OrganizerList() {
 
   return (
     <>
-
       <SimpleGrid cols={3}>
-        <div>
-          <p style={{display:"flex", alignItems:"center"}}>
-            <p style={{display: 'inline', cursor: 'pointer'}} onClick={handleBreadcrumbClick}>GROUPS </p> 
-              <img src={Arrow}></img>
-            <p style={{display: 'inline', fontWeight: 'bold'}}> ORGANIZER</p></p>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <p
+            style={{ display: "inline", cursor: "pointer" }}
+            onClick={handleBreadcrumbClick}
+          >
+            GROUPS{" "}
+          </p>
+          <img src={Arrow}></img>
+          <p style={{ display: "inline", fontWeight: "bold" }}> ORGANIZER</p>
         </div>
-        <h2 style={{display:"flex", alignItems:"center"}} data-testid="organizer-list-page-title">Manage group assemblies</h2>
+        <h2
+          style={{ display: "flex", alignItems: "center" }}
+          data-testid="organizer-list-page-title"
+        >
+          Manage group assemblies
+        </h2>
         <div></div>
       </SimpleGrid>
-      <h4>
-        The useEffect runs twice, resulting in duplicate groups.
-      </h4>
+      <h4>The useEffect runs twice, resulting in duplicate groups.</h4>
       <p>
         This is because of React.StrictMode. Disabling it will fix the problem.
         This error is only supposed to affect dev builds, not prod.
       </p>
       {organizedGroups.map((group, index) => createGroupBox(group, index))}
-
-      {/* <Box
-      onClick={() => console.log(organizedGroups)}
-      sx={(theme) => ({
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-        textAlign: 'center',
-        padding: theme.spacing.xl,
-        borderRadius: theme.radius.md,
-        cursor: 'pointer',
-
-        '&:hover': {
-          backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
-        },
-      })}
-    >
-      Box lets you add inline styles with sx prop
-    </Box> */}
     </>
   );
 }
