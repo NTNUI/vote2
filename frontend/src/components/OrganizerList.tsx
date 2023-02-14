@@ -27,7 +27,7 @@ export function OrganizerList() {
     let groupName = group.groupName;
     groupName = groupName.charAt(0).toUpperCase() + groupName.slice(1);
     const startCheckinTestID:string = "checkin-button-" + group.groupName;
-    const createAssemblyTestID:string = "create-assembly-button-" + group.groupName;
+    const createAssemblyTestID:string = "create-assembly-button-" + group.groupName + "-" + index;
     const editAssemblyTestID:string = "edit-assembly-button-" + group.groupName;
 
     if (group.hasActiveAssembly) {

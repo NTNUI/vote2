@@ -35,9 +35,9 @@
   });
 
   describe("Should be able to create an assembly", () => {
-    it("should login when input correct credentials", () => {
+    it("should be able to click on create assembly", () => {
       cy.visit("http://localhost:5173/admin");
-      cy.get('[data-testid="create-assembly-button-sprint"]').click();
+      cy.get('[data-testid="create-assembly-button-sprint-1"]').click();
       cy.wait(1000);
       cy.get('[data-testid="assembly-title"]').should("have.text", "Genfors dashboard");
     });
