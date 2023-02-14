@@ -58,7 +58,7 @@ export function OrganizerList() {
             <h4>{groupName}</h4>
             <div>
               <Button color="green" radius="md">
-                Start checkin
+                Start check-in
               </Button>
               <Button color="gray" radius="md">
                 Edit
