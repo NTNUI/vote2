@@ -27,4 +27,5 @@ jobs:
       - run: npm run lint
       - run: npm run backend:build
       - run: npm run frontend:build
+      - run: npm run db
       - run: npm run test:backend
