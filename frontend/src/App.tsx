@@ -11,10 +11,36 @@ import { MantineProvider, Text } from "@mantine/core";
 import colors from "./utils/theme";
 import { Login } from "./pages/LoginPage";
 import axios from "axios";
-import Header from "./components/Header";
+import {HeaderAction} from "./components/Header";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3000";
+
+  const links = [
+    { "link": "/about", "label": "Features" },
+    {
+      "link": "#1",
+      "label": "Learn",
+      "links": [
+        { "link": "/docs", "label": "Documentation" },
+        { "link": "/resources", "label": "Resources" },
+        { "link": "/community", "label": "Community" },
+        { "link": "/blog", "label": "Blog" }
+      ]
+    },
+    { "link": "/about", "label": "About" },
+    { "link": "/pricing", "label": "Pricing" },
+    {
+      "link": "#2",
+      "label": "Support",
+      "links": [
+        { "link": "/faq", "label": "FAQ" },
+        { "link": "/demo", "label": "Book a demo" },
+        { "link": "/forums", "label": "Forums" }
+      ]
+    }
+  ]
+
 
   return (
     <MantineProvider
@@ -30,7 +56,7 @@ function App() {
             path="/start"
             element={
               <>
-                <Header />
+                <HeaderAction/>
                 <StartPage />
               </>
             }
@@ -39,7 +65,7 @@ function App() {
             path="/vote"
             element={
               <>
-                <Header />
+                <HeaderAction/>
                 <Vote />
               </>
             }
@@ -48,7 +74,7 @@ function App() {
             path="/QR"
             element={
               <>
-                <Header />
+                <HeaderAction/>
                 <QR />
               </>
             }
@@ -57,7 +83,7 @@ function App() {
             path="/assembly"
             element={
               <>
-                <Header />
+                <HeaderAction/>
                 <Assembly />
               </>
             }
@@ -66,7 +92,7 @@ function App() {
             path="/CheckIn"
             element={
               <>
-                <Header />
+                <HeaderAction/>
                 <CheckIn />
               </>
             }
@@ -75,7 +101,7 @@ function App() {
             path="/admin"
             element={
               <>
-                <Header />
+                <HeaderAction/>
                 <AdminDashboard />
               </>
             }
