@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createAssembly, deleteAssembly, editAssembly } from "../controllers/assembly";
+import {
+  createAssembly,
+  deleteAssembly,
+  editAssembly,
+} from "../controllers/assembly";
 import authorization from "../utils/authorizationMiddleware";
 
 const assemblyRoutes = Router();

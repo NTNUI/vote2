@@ -24,6 +24,10 @@ const assemblySchema = new Schema<AssemblyType>(
       type: Number,
       required: true,
     },
+    createdBy: {
+      type: Number,
+      required: true,
+    },
   },
   { collection: "assembly", _id: false }
 );

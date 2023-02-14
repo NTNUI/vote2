@@ -1,16 +1,9 @@
 import { Response } from "express";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
-import {
-  GroupType,
-  UserDataGroupType,
-  UserDataResponseType,
-} from "../types/user";
+import { UserDataGroupType, UserDataResponseType } from "../types/user";
 import { RequestWithNtnuiNo } from "../utils/request";
-
-export function isGroupOrganizer(membership: GroupType) {
-  return ["leader", "cashier", "deputy_leader"].includes(membership.role);
-}
+import { getNameById, isGroupOrganizer } from "../utils/user";
 
 export async function getUserData(
   req: RequestWithNtnuiNo,
@@ -47,6 +40,9 @@ export async function getUserData(
         role: role,
         hasAssembly: assembly ? true : false,
         hasActiveAssembly: assembly ? assembly.isActive : false,
+        createdBy: assembly
+          ? await getNameById(Number(assembly.createdBy))
+          : null,
       });
     }
     userData.groups = userDataGroups;
