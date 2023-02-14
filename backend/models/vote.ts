@@ -12,7 +12,7 @@ const optionSchema = new Schema<OptionType>({
   },
 });
 
-export const voteSchema = new Schema<VoteType>(
+export const votationSchema = new Schema<VoteType>(
   {
     title: {
       type: String,
@@ -38,6 +38,6 @@ export const voteSchema = new Schema<VoteType>(
   { collection: "assembly" }
 );
 
-const Vote = model<VoteType>("Vote", voteSchema);
+const Votation = model<VoteType>("Votation", votationSchema);
 
-export { Vote };
+export { Votation };

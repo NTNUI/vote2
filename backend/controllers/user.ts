@@ -40,12 +40,13 @@ export async function getUserData(
         role = "organizer";
       }
 
-      const assembly = await Assembly.exists({ _id: membership.groupName });
+      const assembly = await Assembly.findById(membership.groupName);
 
       userDataGroups.push({
         groupName: membership.groupName,
         role: role,
-        hasActiveAssembly: assembly ? true : false,
+        hasAssembly: assembly ? true : false,
+        hasActiveAssembly: assembly ? assembly.isActive : false,
       });
     }
     userData.groups = userDataGroups;

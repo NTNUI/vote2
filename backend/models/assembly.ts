@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 import { AssemblyType } from "../types/assembly";
-import { voteSchema } from "./vote";
+import { votationSchema } from "./vote";
 
 const assemblySchema = new Schema<AssemblyType>(
   {
@@ -9,12 +9,16 @@ const assemblySchema = new Schema<AssemblyType>(
       required: true,
     },
     votes: {
-      type: [voteSchema],
+      type: [votationSchema],
       required: false,
     },
     isActive: {
       type: Boolean,
       required: true,
+    },
+    currentVotation: {
+      type: votationSchema,
+      required: false,
     },
     participants: {
       type: Number,
