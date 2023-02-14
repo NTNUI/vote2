@@ -19,29 +19,32 @@
         cy.get('[data-testid="login-title"]').should('have.text', "Login")
     })
 }); */
- beforeEach(() => {
-    cy.visit("http://localhost:5173");
-      cy.get('[data-testid="phone-input"]').type("99994444");
-      cy.get('[data-testid="password-input"]').type("SprintIsTheBest");
-      cy.get('[data-testid="login-button"]').click();
-      cy.wait(1000);
-  }); 
-  
-  describe("Should be able to access organizer-list", () => {
-    it("should login when input correct credentials", () => {
-      cy.visit("http://localhost:5173/admin");
-      cy.get('[data-testid="organizer-list-page-title"]').should("have.text", "Manage group assemblies");
-    });
+beforeEach(() => {
+  cy.visit("http://localhost:5173");
+  cy.get('[data-testid="phone-input"]').type("99994444");
+  cy.get('[data-testid="password-input"]').type("SprintIsTheBest");
+  cy.get('[data-testid="login-button"]').click();
+  cy.wait(1000);
+});
+
+describe("Should be able to access organizer-list", () => {
+  it("should login when input correct credentials", () => {
+    cy.visit("http://localhost:5173/admin");
+    cy.get('[data-testid="organizer-list-page-title"]').should(
+      "have.text",
+      "Manage group assemblies"
+    );
   });
+});
 
-  describe("Should be able to create an assembly", () => {
-    it("should be able to click on create assembly", () => {
-      cy.visit("http://localhost:5173/admin");
-      cy.get('[data-testid="create-assembly-button-sprint-1"]').click();
-      cy.wait(1000);
-      cy.get('[data-testid="assembly-title"]').should("have.text", "Genfors dashboard");
-    });
+describe("Should be able to create an assembly", () => {
+  it("should be able to click on create assembly", () => {
+    cy.visit("http://localhost:5173/admin");
+    cy.get('[data-testid="create-assembly-button-sprint-1"]').click();
+    cy.wait(1000);
+    cy.get('[data-testid="assembly-title"]').should(
+      "have.text",
+      "Genfors dashboard"
+    );
   });
-
-
-  
+});

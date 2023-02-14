@@ -13,7 +13,6 @@ export function OrganizerList() {
   const [organizedGroups, setOrganizedGroups] = useState<GroupData[]>([]);
   let navigate = useNavigate();
 
-
   function handleQRClick() {
     console.log("Next page");
     navigate("/QR");
@@ -26,9 +25,11 @@ export function OrganizerList() {
   function createGroupBox(group: GroupData, index: number) {
     let groupName = group.groupName;
     groupName = groupName.charAt(0).toUpperCase() + groupName.slice(1);
-    const startCheckinTestID:string = "checkin-button-" + group.groupName;
-    const createAssemblyTestID:string = "create-assembly-button-" + group.groupName + "-" + index;
-    const editAssemblyTestID:string = "edit-assembly-button-" + group.groupName;
+    const startCheckinTestID: string = "checkin-button-" + group.groupName;
+    const createAssemblyTestID: string =
+      "create-assembly-button-" + group.groupName + "-" + index;
+    const editAssemblyTestID: string =
+      "edit-assembly-button-" + group.groupName;
 
     if (group.hasActiveAssembly) {
       return (
@@ -52,7 +53,7 @@ export function OrganizerList() {
                 theme.colorScheme === "dark"
                   ? theme.colors.dark[4]
                   : theme.colors.gray[4],
-            }, 
+            },
           })}
         >
           <Flex
@@ -65,10 +66,20 @@ export function OrganizerList() {
           >
             <h4>{groupName}</h4>
             <div>
-              <Button color="green" radius="md" onClick={handleQRClick} data-testid={startCheckinTestID}>
+              <Button
+                color="green"
+                radius="md"
+                onClick={handleQRClick}
+                data-testid={startCheckinTestID}
+              >
                 Start checkin
               </Button>
-              <Button color="gray" radius="md" onClick={handleCreateAssemblyClick} data-testid={editAssemblyTestID}>
+              <Button
+                color="gray"
+                radius="md"
+                onClick={handleCreateAssemblyClick}
+                data-testid={editAssemblyTestID}
+              >
                 Edit
               </Button>
             </div>
@@ -92,12 +103,12 @@ export function OrganizerList() {
             cursor: "pointer",
             color: "white",
 
-             "&:hover": {
+            "&:hover": {
               backgroundColor:
                 theme.colorScheme === "dark"
                   ? theme.colors.dark[4]
                   : theme.colors.gray[4],
-            }, 
+            },
           })}
         >
           <Flex
@@ -109,7 +120,12 @@ export function OrganizerList() {
             wrap="wrap"
           >
             <h4>{groupName}</h4>
-            <Button onClick={handleCreateAssemblyClick} data-testid={createAssemblyTestID}>Create assembly</Button>
+            <Button
+              onClick={handleCreateAssemblyClick}
+              data-testid={createAssemblyTestID}
+            >
+              Create assembly
+            </Button>
           </Flex>
         </Box>
       );
