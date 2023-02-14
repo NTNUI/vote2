@@ -54,10 +54,10 @@ export function Groups() {
         </p>
       </Container>
       <SimpleGrid
-        className={classes.grid}
         spacing={"lg"}
         verticalSpacing={"xl"}
         cols={3}
+        style={{ justifyItems: "center" }}
         breakpoints={[
           { maxWidth: 1030, cols: 2, spacing: "md" },
           { maxWidth: 768, cols: 2, spacing: "sm" },
@@ -75,7 +75,9 @@ export function Groups() {
               : { onClick: click, className: classes.activeBox })}
           >
             {group.groupName.toUpperCase()}
-            <Text fz={"xs"}>{group.role}</Text>
+            <Text style={{ justifySelf: "right" }} fz={"xs"}>
+              {group.role}
+            </Text>
           </Container>
         ))}
       </SimpleGrid>

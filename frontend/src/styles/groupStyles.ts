@@ -38,31 +38,23 @@ export const useStyles = createStyles(() => ({
     flexWrap: "wrap",
   },
 
-  grid: {
-    justifyItems: "center",
-  },
-
-  role: {
-    justifySelf: "right",
-  },
-
   greetingBox: {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "right",
   },
+
   innerBox: {
     display: "grid",
-    gridTemplateColumns: " a bbb c",
     flexBasis: "100%",
     justifyItems: "center",
     alignItems: "center",
   },
 
   name: {
-    flex: 0,
     flexBasis: "80%",
     fontSize: "2.3rem",
+    fontWeight: 200,
   },
   title: {
     fontSize: "1.4rem",
@@ -78,7 +70,6 @@ export const useStyles = createStyles(() => ({
 
   button: {
     flexBasis: "20%",
-    flex: 0,
     borderRadius: 5,
     borderBottomRightRadius: 0,
     height: 46,
