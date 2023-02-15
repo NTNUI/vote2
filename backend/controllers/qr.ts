@@ -1,8 +1,5 @@
 import { Response } from "express";
-import {
-  getNtnuiProfile,
-  refreshNtnuiToken,
-} from "ntnui-tools";
+import { getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
@@ -59,17 +56,18 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
         if (
           scannedUser.groups.some((membership) => membership.groupName == group)
         ) {
-          const assembly = await Assembly.findByIdAndUpdate(
-            { _id: group },
-            { $addToSet: { participants: Number(scannedUser._id) } }
-          );
+          const assembly = await Assembly.findById(group);
 
-          if (assembly == null) {
+          if (assembly == null || !assembly.isActive) {
             return res.status(400).json({
               message:
                 "There is currently no active assembly on the given group",
             });
           }
+          await Assembly.findByIdAndUpdate(
+            { _id: group },
+            { $addToSet: { participants: Number(scannedUser._id) } }
+          );
           return res.status(200).json({ message: "Check-in successful" });
         }
       }
@@ -86,7 +84,6 @@ export async function assemblyCheckout(req: RequestWithNtnuiNo, res: Response) {
   }
   const group = req.body.group;
   const token = req.body.token;
-  const timestamp = req.body.timestamp;
   const user = await User.findById(req.ntnuiNo);
 
   if (
@@ -103,23 +100,23 @@ export async function assemblyCheckout(req: RequestWithNtnuiNo, res: Response) {
         ).data.ntnui_no
       );
 
-      // If user is logged inn, the correct token is provided,
-      // and timestamp is less than 15 seconds ago
-      if (scannedUser && Date.now() - timestamp < 15000) {
+      // If user is logged inn, the correct token is provided
+      if (scannedUser) {
         if (
           scannedUser.groups.some((membership) => membership.groupName == group)
         ) {
-          const assembly = await Assembly.findByIdAndUpdate(
-            { _id: group },
-            { $pull: { participants: Number(scannedUser._id) } }
-          );
+          const assembly = await Assembly.findById(group);
 
-          if (assembly == null) {
+          if (assembly == null || !assembly.isActive) {
             return res.status(400).json({
               message:
                 "There is currently no active assembly on the given group",
             });
           }
+          await Assembly.findByIdAndUpdate(
+            { _id: group },
+            { $pull: { participants: Number(scannedUser._id) } }
+          );
           return res.status(200).json({ message: "Check-out successful" });
         }
       }
