@@ -45,15 +45,7 @@ export function OrganizerList() {
             textAlign: "center",
             padding: theme.spacing.xl,
             borderRadius: theme.radius.md,
-            cursor: "pointer",
             color: "white",
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[4]
-                  : theme.colors.gray[4],
-            },
           })}
         >
           <Flex
@@ -96,15 +88,7 @@ export function OrganizerList() {
             textAlign: "center",
             padding: theme.spacing.xl,
             borderRadius: theme.radius.md,
-            cursor: "pointer",
             color: "white",
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[4]
-                  : theme.colors.gray[4],
-            },
           })}
         >
           <Flex
