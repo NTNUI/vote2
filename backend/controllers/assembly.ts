@@ -23,7 +23,6 @@ export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
         {
           $set: {
             isActive: false,
-            participants: 0,
             createdBy: Number(req.ntnuiNo),
           },
         },

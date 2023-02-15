@@ -5,6 +5,6 @@ export type AssemblyType = {
   votes: VoteType[];
   currentVotation: VoteType;
   isActive: boolean;
-  participants: number;
+  participants: number[];
   createdBy: number | null;
 };
