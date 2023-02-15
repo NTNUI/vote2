@@ -1,8 +1,12 @@
 import { Response } from "express";
-import { isValidNtnuiToken, refreshNtnuiToken } from "ntnui-tools";
+import {
+  getNtnuiProfile,
+  refreshNtnuiToken,
+} from "ntnui-tools";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
+import { isGroupOrganizer } from "../utils/user";
 
 export async function getToken(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -35,25 +39,42 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
   const timestamp = req.body.timestamp;
   const user = await User.findById(req.ntnuiNo);
 
-  // If user is logged inn, the correct token is provided,
-  // and timestamp is less than 15 seconds ago
   if (
     user &&
-    (await isValidNtnuiToken(token)) &&
-    Date.now() - timestamp < 15000
+    user.groups.some(
+      (membership) =>
+        isGroupOrganizer(membership) && membership.groupName == group
+    )
   ) {
-    if (user.groups.some((membership) => membership.groupName == group)) {
-      const assembly = await Assembly.findByIdAndUpdate(
-        { _id: group },
-        { $addToSet: { participants: Number(req.ntnuiNo) } }
+    try {
+      const scannedUser = await User.findById(
+        (
+          await getNtnuiProfile(token)
+        ).data.ntnui_no
       );
 
-      if (assembly == null) {
-        return res.status(400).json({
-          message: "There is currently no active assembly on the given group",
-        });
+      // If user is logged inn, the correct token is provided,
+      // and timestamp is less than 15 seconds ago
+      if (scannedUser && Date.now() - timestamp < 15000) {
+        if (
+          scannedUser.groups.some((membership) => membership.groupName == group)
+        ) {
+          const assembly = await Assembly.findByIdAndUpdate(
+            { _id: group },
+            { $addToSet: { participants: Number(scannedUser._id) } }
+          );
+
+          if (assembly == null) {
+            return res.status(400).json({
+              message:
+                "There is currently no active assembly on the given group",
+            });
+          }
+          return res.status(200).json({ message: "Check-in successful" });
+        }
       }
-      return res.status(200).json({ message: "Check-in successful" });
+    } catch (e) {
+      return res.status(401).json({ message: "Invalid token in body" });
     }
   }
   return res.status(401).json({ message: "Unauthorized" });
@@ -68,25 +89,42 @@ export async function assemblyCheckout(req: RequestWithNtnuiNo, res: Response) {
   const timestamp = req.body.timestamp;
   const user = await User.findById(req.ntnuiNo);
 
-  // If user is logged inn, the correct token is provided,
-  // and timestamp is less than 15 seconds ago
   if (
     user &&
-    (await isValidNtnuiToken(token)) &&
-    Date.now() - timestamp < 15000
+    user.groups.some(
+      (membership) =>
+        isGroupOrganizer(membership) && membership.groupName == group
+    )
   ) {
-    if (user.groups.some((membership) => membership.groupName == group)) {
-      const assembly = await Assembly.findByIdAndUpdate(
-        { _id: group },
-        { $pull: { participants: Number(req.ntnuiNo) } }
+    try {
+      const scannedUser = await User.findById(
+        (
+          await getNtnuiProfile(token)
+        ).data.ntnui_no
       );
 
-      if (assembly == null) {
-        return res.status(400).json({
-          message: "There is currently no active assembly on the given group",
-        });
+      // If user is logged inn, the correct token is provided,
+      // and timestamp is less than 15 seconds ago
+      if (scannedUser && Date.now() - timestamp < 15000) {
+        if (
+          scannedUser.groups.some((membership) => membership.groupName == group)
+        ) {
+          const assembly = await Assembly.findByIdAndUpdate(
+            { _id: group },
+            { $pull: { participants: Number(scannedUser._id) } }
+          );
+
+          if (assembly == null) {
+            return res.status(400).json({
+              message:
+                "There is currently no active assembly on the given group",
+            });
+          }
+          return res.status(200).json({ message: "Check-out successful" });
+        }
       }
-      return res.status(200).json({ message: "Check-out successful" });
+    } catch (e) {
+      return res.status(401).json({ message: "Invalid token in body" });
     }
   }
   return res.status(401).json({ message: "Unauthorized" });
