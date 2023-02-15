@@ -21,7 +21,7 @@ const assemblySchema = new Schema<AssemblyType>(
       required: false,
     },
     participants: {
-      type: Number,
+      type: [Number],
       required: true,
     },
     createdBy: {
