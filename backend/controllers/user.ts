@@ -9,10 +9,6 @@ import {
 import { RequestWithNtnuiNo } from "../utils/request";
 import { getNameById, isGroupOrganizer } from "../utils/user";
 
-export function isGroupOrganizer(membership: GroupType) {
-  return ["leader", "cashier", "deputy_leader"].includes(membership.role);
-}
-
 export async function getUserData(
   req: RequestWithNtnuiNo,
   res: Response<UserDataResponseType | { message: string }>
