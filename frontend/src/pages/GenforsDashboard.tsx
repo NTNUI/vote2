@@ -1,5 +1,6 @@
 import React from "react";
+import { EditAssembly } from "../components/EditAssembly";
 
 export function Assembly() {
-  return <p data-testid="assembly-title">Genfors dashboard</p>;
+  return <EditAssembly/>;
 }

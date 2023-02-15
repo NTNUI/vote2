@@ -12,6 +12,7 @@ import colors from "./utils/theme";
 import { Login } from "./pages/LoginPage";
 import axios from "axios";
 import Header from "./components/Header";
+import { OrganizerList } from "./components/OrganizerList";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3000";
@@ -72,7 +73,7 @@ function App() {
             path="/admin"
             element={
               <>
-                <AdminDashboard />
+                <OrganizerList />
               </>
             }
           />
