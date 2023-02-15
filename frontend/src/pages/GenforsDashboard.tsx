@@ -1,5 +1,5 @@
 import React from "react";
 
 export function Assembly() {
-  return <p>Genfors dashboard</p>;
+  return <p data-testid="assembly-title">Genfors dashboard</p>;
 }
