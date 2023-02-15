@@ -11,12 +11,11 @@ import { MantineProvider, Text } from "@mantine/core";
 import colors from "./utils/theme";
 import { Login } from "./pages/LoginPage";
 import axios from "axios";
-import {HeaderAction} from "./components/Header";
+import { HeaderAction } from "./components/Header";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3000";
   axios.defaults.withCredentials = true;
-
 
   return (
     <MantineProvider
@@ -32,7 +31,7 @@ function App() {
             path="/start"
             element={
               <>
-                <HeaderAction/>
+                <HeaderAction />
                 <StartPage />
               </>
             }
@@ -41,7 +40,7 @@ function App() {
             path="/vote"
             element={
               <>
-                <HeaderAction/>
+                <HeaderAction />
                 <Vote />
               </>
             }
@@ -50,7 +49,7 @@ function App() {
             path="/QR"
             element={
               <>
-                <HeaderAction/>
+                <HeaderAction />
                 <QR />
               </>
             }
@@ -59,7 +58,7 @@ function App() {
             path="/assembly"
             element={
               <>
-                <HeaderAction/>
+                <HeaderAction />
                 <Assembly />
               </>
             }
@@ -68,7 +67,7 @@ function App() {
             path="/CheckIn"
             element={
               <>
-                <HeaderAction/>
+                <HeaderAction />
                 <CheckIn />
               </>
             }
@@ -77,7 +76,7 @@ function App() {
             path="/admin"
             element={
               <>
-                <HeaderAction/>
+                <HeaderAction />
                 <AdminDashboard />
               </>
             }
