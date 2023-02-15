@@ -1,7 +1,11 @@
 import { Response } from "express";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
-import { UserDataGroupType, UserDataResponseType } from "../types/user";
+import {
+  GroupType,
+  UserDataGroupType,
+  UserDataResponseType,
+} from "../types/user";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { getNameById, isGroupOrganizer } from "../utils/user";
 
