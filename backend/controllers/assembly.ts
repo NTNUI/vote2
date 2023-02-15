@@ -67,9 +67,9 @@ export async function setAssemblyStatus(
     }
   }
 
-  return res
-    .status(401)
-    .json({ message: "You are not authorized to edit this assembly" });
+  return res.status(401).json({
+    message: "You are not authorized to change activation for this assembly",
+  });
 }
 
 export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
