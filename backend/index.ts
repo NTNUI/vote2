@@ -40,4 +40,6 @@ try {
   console.error("Something went very wrong (is your .env correct?)");
 }
 
+
+
 export default app;
