@@ -43,7 +43,8 @@ export function OrganizerList() {
             borderStyle: "solid",
             borderColor: "white",
             textAlign: "center",
-            padding: theme.spacing.xl,
+
+            //padding: theme.spacing.xl,
             borderRadius: theme.radius.md,
             color: "white",
           })}

@@ -41,7 +41,6 @@ export function HeaderAction() {
           </Text>
         </Container>
       </Header>
-      <Space h="xl" />
     </>
   );
 }
