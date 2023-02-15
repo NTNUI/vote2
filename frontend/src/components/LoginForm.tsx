@@ -126,8 +126,8 @@ export function LoginForm() {
   };
 
   type CountryCodePair = {
-    land: string;
-    kode: string;
+    name: string;
+    dialCode: string;
   };
 
   const form = useForm({
@@ -168,9 +168,9 @@ export function LoginForm() {
 
   const countryCodesToSelect = countryCodes.map((code: CountryCodePair) => {
     return {
-      key: code.land,
-      value: code.kode,
-      label: `(+${code.kode}) ${code.land}`,
+      key: code.name,
+      value: code.dialCode,
+      label: `(+${code.dialCode}) ${code.name}`,
     };
   });
 
