@@ -1,6 +1,8 @@
-import { Box, Button, Flex } from "@mantine/core";
+import { Box, Button, Flex, SimpleGrid } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getGroups } from "../services/organizer";
+import Arrow from "../assets/Arrow.svg";
 
 interface GroupData {
   groupName: string;
@@ -10,57 +12,66 @@ interface GroupData {
 
 export function OrganizerList() {
   const [organizedGroups, setOrganizedGroups] = useState<GroupData[]>([]);
+  let navigate = useNavigate();
 
-  function handleClick() {
-    console.log("Next page");
+  function handleQRClick() {
+    navigate("/QR");
+  }
+
+  function handleBreadcrumbClick() {
+    navigate("/start");
+  }
+
+  function handleCreateAssemblyClick() {
+    navigate("/assembly");
   }
 
   function createGroupBox(group: GroupData, index: number) {
     let groupName = group.groupName;
     groupName = groupName.charAt(0).toUpperCase() + groupName.slice(1);
+    const startCheckinTestID: string = "checkin-button-" + group.groupName;
+    const createAssemblyTestID: string =
+      "create-assembly-button-" + group.groupName + "-" + index;
+    const editAssemblyTestID: string =
+      "edit-assembly-button-" + group.groupName;
+
     if (group.hasActiveAssembly) {
       return (
         <Box
           key={index}
-          onClick={handleClick}
           sx={(theme) => ({
-            /* backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[6]
-              : theme.colors.gray[0], */
             borderStyle: "solid",
             borderColor: "white",
             textAlign: "center",
             padding: theme.spacing.xl,
             borderRadius: theme.radius.md,
-            cursor: "pointer",
             color: "white",
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[5]
-                  : theme.colors.gray[1],
-            },
           })}
         >
-          {/*         <p>Group: {groupName}</p>
-        <p>Role: {group.role}</p>
-        <p>Active: {group.hasActiveAssembly.toString()}</p> */}
           <Flex
             mih={50}
             gap="md"
             justify="space-between"
-            align="flex-start"
+            align="center"
             direction="row"
             wrap="wrap"
           >
             <h4>{groupName}</h4>
             <div>
-              <Button color="green" radius="md">
-                Start check-in
+              <Button
+                color="green"
+                radius="md"
+                onClick={handleQRClick}
+                data-testid={startCheckinTestID}
+              >
+                Start checkin
               </Button>
-              <Button color="gray" radius="md">
+              <Button
+                color="gray"
+                radius="md"
+                onClick={handleCreateAssemblyClick}
+                data-testid={editAssemblyTestID}
+              >
                 Edit
               </Button>
             </div>
@@ -71,31 +82,15 @@ export function OrganizerList() {
       return (
         <Box
           key={index}
-          onClick={handleClick}
           sx={(theme) => ({
-            /* backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[6]
-              : theme.colors.gray[0], */
             borderStyle: "solid",
             borderColor: "white",
             textAlign: "center",
             padding: theme.spacing.xl,
             borderRadius: theme.radius.md,
-            cursor: "pointer",
             color: "white",
-
-            "&:hover": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[5]
-                  : theme.colors.gray[1],
-            },
           })}
         >
-          {/*         <p>Group: {groupName}</p>
-        <p>Role: {group.role}</p>
-        <p>Active: {group.hasActiveAssembly.toString()}</p> */}
           <Flex
             mih={50}
             gap="md"
@@ -105,7 +100,12 @@ export function OrganizerList() {
             wrap="wrap"
           >
             <h4>{groupName}</h4>
-            <Button>Create assembly</Button>
+            <Button
+              onClick={handleCreateAssemblyClick}
+              data-testid={createAssemblyTestID}
+            >
+              Create assembly
+            </Button>
           </Flex>
         </Box>
       );
@@ -118,8 +118,7 @@ export function OrganizerList() {
       const groups = groupsRequest.data.groups;
       for (let i = 0; i < groups.length; i++) {
         let group: GroupData = groups[i];
-        // Enabled member-role to also get included to the list. Only used for testing atm :)
-        if (group.role == "organizer" || group.role == "member") {
+        if (group.role == "organizer") {
           setOrganizedGroups((organizedGroups) => [...organizedGroups, group]);
         }
       }
@@ -130,37 +129,30 @@ export function OrganizerList() {
 
   useEffect(() => {
     sortGroups();
-    console.log("en gang");
   }, []);
 
   return (
     <>
-      <h2>Manage group assemblies</h2>
-      <h4>
-        ACHTUNG!! The useEffect runs twice, resulting in duplicate groups.
-      </h4>
-      <p>
-        This is because of React.StrictMode. Disabling it will fix the problem.
-        This error is only supposed to affect dev builds, not prod.
-      </p>
+      <SimpleGrid cols={3}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <p
+            style={{ display: "inline", cursor: "pointer" }}
+            onClick={handleBreadcrumbClick}
+          >
+            GROUPS{" "}
+          </p>
+          <img src={Arrow}></img>
+          <p style={{ display: "inline", fontWeight: "bold" }}> ORGANIZER</p>
+        </div>
+        <h2
+          style={{ display: "flex", alignItems: "center" }}
+          data-testid="organizer-list-page-title"
+        >
+          Manage group assemblies
+        </h2>
+        <div></div>
+      </SimpleGrid>
       {organizedGroups.map((group, index) => createGroupBox(group, index))}
-
-      {/* <Box
-      onClick={() => console.log(organizedGroups)}
-      sx={(theme) => ({
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-        textAlign: 'center',
-        padding: theme.spacing.xl,
-        borderRadius: theme.radius.md,
-        cursor: 'pointer',
-
-        '&:hover': {
-          backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
-        },
-      })}
-    >
-      Box lets you add inline styles with sx prop
-    </Box> */}
     </>
   );
 }
