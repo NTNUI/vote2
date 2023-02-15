@@ -1,4 +1,4 @@
-import { Box, Button, Flex, SimpleGrid } from "@mantine/core";
+import { Box, Button, Flex, SimpleGrid, Space } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getGroups } from "../services/organizer";
@@ -34,83 +34,62 @@ export function OrganizerList() {
       "create-assembly-button-" + group.groupName + "-" + index;
     const editAssemblyTestID: string =
       "edit-assembly-button-" + group.groupName;
+    return (
+      <>
+        <Space h="xl" />
 
-    if (group.hasActiveAssembly) {
-      return (
         <Box
           key={index}
+          w={"100%"}
           sx={(theme) => ({
             borderStyle: "solid",
             borderColor: "white",
             textAlign: "center",
-
-            //padding: theme.spacing.xl,
             borderRadius: theme.radius.md,
             color: "white",
           })}
         >
           <Flex
             mih={50}
-            gap="md"
+            gap="xl"
             justify="space-between"
             align="center"
             direction="row"
             wrap="wrap"
           >
-            <h4>{groupName}</h4>
-            <div>
+            <h4 style={{ marginLeft: "2vw" }}>{groupName}</h4>
+            {group.hasActiveAssembly ? (
+              <div style={{ marginRight: "2vw" }}>
+                <Button
+                  color="green"
+                  radius="md"
+                  onClick={handleQRClick}
+                  data-testid={startCheckinTestID}
+                >
+                  Start checkin
+                </Button>
+                <Button
+                  color="gray"
+                  radius="md"
+                  onClick={handleCreateAssemblyClick}
+                  data-testid={editAssemblyTestID}
+                >
+                  Edit
+                </Button>
+              </div>
+            ) : (
               <Button
-                color="green"
-                radius="md"
-                onClick={handleQRClick}
-                data-testid={startCheckinTestID}
-              >
-                Start checkin
-              </Button>
-              <Button
-                color="gray"
-                radius="md"
+                style={{ marginRight: "2vw" }}
                 onClick={handleCreateAssemblyClick}
-                data-testid={editAssemblyTestID}
+                data-testid={createAssemblyTestID}
               >
-                Edit
+                Create assembly
               </Button>
-            </div>
+            )}
           </Flex>
         </Box>
-      );
-    } else {
-      return (
-        <Box
-          key={index}
-          sx={(theme) => ({
-            borderStyle: "solid",
-            borderColor: "white",
-            textAlign: "center",
-            padding: theme.spacing.xl,
-            borderRadius: theme.radius.md,
-            color: "white",
-          })}
-        >
-          <Flex
-            mih={50}
-            gap="md"
-            justify="space-between"
-            align="center"
-            direction="row"
-            wrap="wrap"
-          >
-            <h4>{groupName}</h4>
-            <Button
-              onClick={handleCreateAssemblyClick}
-              data-testid={createAssemblyTestID}
-            >
-              Create assembly
-            </Button>
-          </Flex>
-        </Box>
-      );
-    }
+      </>
+    );
   }
 
   async function sortGroups() {
@@ -134,7 +113,13 @@ export function OrganizerList() {
 
   return (
     <>
-      <SimpleGrid cols={3}>
+      <Space h="xl" />
+      <Space h="xl" />
+      <Space h="xl" />
+      <SimpleGrid
+        cols={3}
+        breakpoints={[{ maxWidth: 600, cols: 1, spacing: "sm" }]}
+      >
         <div style={{ display: "flex", alignItems: "center" }}>
           <p
             style={{ display: "inline", cursor: "pointer" }}
