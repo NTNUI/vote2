@@ -6,4 +6,5 @@ export type AssemblyType = {
   currentVotation: VoteType;
   isActive: boolean;
   participants: number;
+  createdBy: number | null;
 };

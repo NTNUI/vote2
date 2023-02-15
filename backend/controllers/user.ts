@@ -7,6 +7,7 @@ import {
   UserDataResponseType,
 } from "../types/user";
 import { RequestWithNtnuiNo } from "../utils/request";
+import { getNameById, isGroupOrganizer } from "../utils/user";
 
 export function isGroupOrganizer(membership: GroupType) {
   return ["leader", "cashier", "deputy_leader"].includes(membership.role);
@@ -47,6 +48,9 @@ export async function getUserData(
         role: role,
         hasAssembly: assembly ? true : false,
         hasActiveAssembly: assembly ? assembly.isActive : false,
+        createdBy: assembly
+          ? await getNameById(Number(assembly.createdBy))
+          : null,
       });
     }
     userData.groups = userDataGroups;
