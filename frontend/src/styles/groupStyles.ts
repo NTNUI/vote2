@@ -74,7 +74,8 @@ export const useStyles = createStyles(() => ({
     borderBottomRightRadius: 0,
     height: 46,
     width: 173,
-    backgroundColor: "grey",
+    backgroundColor: "#1A202C",
+    borderColor: "grey",
     "&:hover": {
       backgroundColor: "grey",
       borderColor: "grey",

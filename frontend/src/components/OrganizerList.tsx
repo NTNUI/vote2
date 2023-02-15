@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getGroups } from "../services/organizer";
 import Arrow from "../assets/Arrow.svg";
+import { useMediaQuery } from "@mantine/hooks";
 
 interface GroupData {
   groupName: string;
@@ -13,6 +14,7 @@ interface GroupData {
 export function OrganizerList() {
   const [organizedGroups, setOrganizedGroups] = useState<GroupData[]>([]);
   let navigate = useNavigate();
+  const matches = useMediaQuery("(min-width: 600px)");
 
   function handleQRClick() {
     navigate("/QR");
@@ -40,7 +42,6 @@ export function OrganizerList() {
 
         <Box
           key={index}
-          w={"100%"}
           sx={(theme) => ({
             borderStyle: "solid",
             borderColor: "white",
@@ -119,6 +120,7 @@ export function OrganizerList() {
       <SimpleGrid
         cols={3}
         breakpoints={[{ maxWidth: 600, cols: 1, spacing: "sm" }]}
+        {...(!matches && { style: { width: "100vw" } })}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
           <p
@@ -133,6 +135,7 @@ export function OrganizerList() {
         <h2
           style={{ display: "flex", alignItems: "center" }}
           data-testid="organizer-list-page-title"
+          {...(!matches && { style: { textAlign: "center" } })}
         >
           Manage group assemblies
         </h2>
