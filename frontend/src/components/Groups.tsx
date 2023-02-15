@@ -67,7 +67,7 @@ export function Groups() {
         {userData.data.groups.map((group) => (
           <Container
             key={group.groupName}
-            {...(group.hasActiveAssembly
+            {...(!group.hasActiveAssembly
               ? {
                   opacity: 0.5,
                   className: classes.inActiveBox,

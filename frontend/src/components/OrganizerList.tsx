@@ -38,8 +38,7 @@ export function OrganizerList() {
       "edit-assembly-button-" + group.groupName;
     return (
       <>
-        <Space h="xl" />
-
+        <Space h="sm" />
         <Box
           key={index}
           sx={(theme) => ({
@@ -114,12 +113,10 @@ export function OrganizerList() {
 
   return (
     <>
-      <Space h="xl" />
-      <Space h="xl" />
-      <Space h="xl" />
       <SimpleGrid
         cols={3}
         breakpoints={[{ maxWidth: 600, cols: 1, spacing: "sm" }]}
+        style={{ marginTop: "10vh" }}
         {...(!matches && { style: { width: "100vw" } })}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
