@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   createAssembly,
   deleteAssembly,
-  editAssembly,
+  setAssemblyStatus,
 } from "../controllers/assembly";
 import authorization from "../utils/authorizationMiddleware";
 
@@ -10,7 +10,7 @@ const assemblyRoutes = Router();
 
 assemblyRoutes.post("/", authorization, createAssembly);
 
-assemblyRoutes.put("/", authorization, editAssembly);
+assemblyRoutes.put("/activation", authorization, setAssemblyStatus);
 
 assemblyRoutes.delete("/", authorization, deleteAssembly);
 

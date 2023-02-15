@@ -8,6 +8,7 @@ export const isGroupOrganizer = (membership: GroupType) => {
 export const getNameById = async (id: number) => {
   try {
     const user = await User.findById(id);
+
     return user?.first_name + " " + user?.last_name;
   } catch (error) {
     return null;

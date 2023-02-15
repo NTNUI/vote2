@@ -38,7 +38,10 @@ export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
     .json({ message: "You are not authorized to create this assembly" });
 }
 
-export async function editAssembly(req: RequestWithNtnuiNo, res: Response) {
+export async function setAssemblyStatus(
+  req: RequestWithNtnuiNo,
+  res: Response
+) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -84,13 +87,19 @@ export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
           isGroupOrganizer(membership) && membership.groupName == group
       )
     ) {
-      const remove = await Assembly.findByIdAndRemove(group);
+      const assembly = await Assembly.findById(group);
 
-      if (remove == null) {
+      if (assembly == null) {
         return res
           .status(400)
           .json({ message: "No assembly with the given ID found" });
       }
+      if (assembly.isActive) {
+        return res.status(400).json({
+          message: "Can't delete a active assembly, deactivate first.",
+        });
+      }
+      await Assembly.remove(assembly);
       return res.status(200).json({ message: "Assembly successfully deleted" });
     }
   }
