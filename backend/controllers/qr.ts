@@ -34,7 +34,6 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
   const token = req.body.token;
   const timestamp = req.body.timestamp;
   const user = await User.findById(req.ntnuiNo);
-  console.log(user);
 
   // If user is logged inn, the correct token is provided,
   // and timestamp is less than 15 seconds ago
@@ -50,13 +49,44 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
       );
 
       if (assembly == null) {
-        return res
-          .status(400)
-          .json({
-            message: "There is currently no active assembly on the given group",
-          });
+        return res.status(400).json({
+          message: "There is currently no active assembly on the given group",
+        });
       }
       return res.status(200).json({ message: "Check-in successful" });
+    }
+  }
+  return res.status(401).json({ message: "Unauthorized" });
+}
+
+export async function assemblyCheckout(req: RequestWithNtnuiNo, res: Response) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const group = req.body.group;
+  const token = req.body.token;
+  const timestamp = req.body.timestamp;
+  const user = await User.findById(req.ntnuiNo);
+
+  // If user is logged inn, the correct token is provided,
+  // and timestamp is less than 15 seconds ago
+  if (
+    user &&
+    (await isValidNtnuiToken(token)) &&
+    Date.now() - timestamp < 15000
+  ) {
+    if (user.groups.some((membership) => membership.groupName == group)) {
+      const assembly = await Assembly.findByIdAndUpdate(
+        { _id: group },
+        { $pull: { participants: Number(req.ntnuiNo) } }
+      );
+
+      if (assembly == null) {
+        return res.status(400).json({
+          message: "There is currently no active assembly on the given group",
+        });
+      }
+      return res.status(200).json({ message: "Check-out successful" });
     }
   }
   return res.status(401).json({ message: "Unauthorized" });
