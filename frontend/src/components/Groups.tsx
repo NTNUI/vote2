@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader, SimpleGrid, Container, Text, Button } from "@mantine/core";
 import { useStyles } from "../styles/groupStyles";
-import { getGroups } from "../services/organizer";
+import { getUserData } from "../services/organizer";
 import { UserDataResponseType } from "../types/user";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ export function Groups() {
     undefined
   );
   const fetchData = async () => {
-    setUserData(await getGroups());
+    setUserData(await getUserData());
   };
   const click = () => {
     console.log("cliked");
@@ -37,9 +37,9 @@ export function Groups() {
         >
           <div></div>
 
-          <p className={classes.name}>Hello {userData.data.firstName}!</p>
+          <p className={classes.name}>Hello {userData.firstName}!</p>
 
-          {userData.data.isOrganizer && (
+          {userData.isOrganizer && (
             <Button
               onClick={() => navigate("/admin")}
               className={classes.button}
@@ -64,7 +64,7 @@ export function Groups() {
           { maxWidth: 640, cols: 1, spacing: "sm" },
         ]}
       >
-        {userData.data.groups.map((group) => (
+        {userData.groups.map((group) => (
           <Container
             key={group.groupName}
             {...(!group.hasActiveAssembly
