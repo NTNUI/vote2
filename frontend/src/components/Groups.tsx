@@ -1,5 +1,17 @@
 import { useEffect, useState } from "react";
-import { Loader, SimpleGrid, Container, Text, Button, Group, Box, Center, Flex, Grid, Stack } from "@mantine/core";
+import {
+  Loader,
+  SimpleGrid,
+  Container,
+  Text,
+  Button,
+  Group,
+  Box,
+  Center,
+  Flex,
+  Grid,
+  Stack,
+} from "@mantine/core";
 import { useStyles } from "../styles/groupStyles";
 import { getUserData } from "../services/organizer";
 import { UserDataResponseType } from "../types/user";
@@ -54,7 +66,12 @@ export function Groups() {
         </p>
       </Container>
 
-      <Flex justify={"center"} wrap="wrap" gap="3rem" style={{marginLeft: "10rem", marginRight: "10rem"}}>
+      <Flex
+        justify={"center"}
+        wrap="wrap"
+        gap="3rem"
+        style={{ marginLeft: "10rem", marginRight: "10rem" }}
+      >
         {userData.groups.map((group) => (
           <Box
             key={group.groupName}
@@ -71,7 +88,7 @@ export function Groups() {
             </Text>
           </Box>
         ))}
-        </Flex>
+      </Flex>
     </>
   );
 }
