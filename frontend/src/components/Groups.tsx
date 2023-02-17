@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader, SimpleGrid, Container, Text, Button } from "@mantine/core";
+import { Loader, SimpleGrid, Container, Text, Button, Group, Box, Center, Flex, Grid, Stack } from "@mantine/core";
 import { useStyles } from "../styles/groupStyles";
 import { getUserData } from "../services/organizer";
 import { UserDataResponseType } from "../types/user";
@@ -53,19 +53,10 @@ export function Groups() {
           Overview of your groups and active annual general assemblies
         </p>
       </Container>
-      <SimpleGrid
-        spacing={"lg"}
-        verticalSpacing={"xl"}
-        cols={3}
-        style={{ justifyItems: "center" }}
-        breakpoints={[
-          { maxWidth: 1030, cols: 2, spacing: "md" },
-          { maxWidth: 768, cols: 2, spacing: "sm" },
-          { maxWidth: 640, cols: 1, spacing: "sm" },
-        ]}
-      >
+
+      <Flex justify={"center"} wrap="wrap" gap="3rem" style={{marginLeft: "10rem", marginRight: "10rem"}}>
         {userData.groups.map((group) => (
-          <Container
+          <Box
             key={group.groupName}
             {...(!group.hasActiveAssembly
               ? {
@@ -78,9 +69,9 @@ export function Groups() {
             <Text style={{ justifySelf: "right" }} fz={"xs"}>
               {group.role}
             </Text>
-          </Container>
+          </Box>
         ))}
-      </SimpleGrid>
+        </Flex>
     </>
   );
 }
