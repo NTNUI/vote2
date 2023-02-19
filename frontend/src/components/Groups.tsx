@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  Loader,
-  SimpleGrid,
-  Container,
-  Text,
-  Button,
-  Grid,
-} from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Loader, SimpleGrid, Container, Text, Button } from "@mantine/core";
 import { useStyles } from "../styles/groupStyles";
 import { getGroups } from "../services/organizer";
 import { UserDataResponseType } from "../types/user";
@@ -43,6 +36,7 @@ export function Groups() {
           breakpoints={[{ maxWidth: 768, cols: 1, spacing: "sm" }]}
         >
           <div></div>
+
           <p className={classes.name}>Hello {userData.data.firstName}!</p>
 
           {userData.data.isOrganizer && (
@@ -60,10 +54,10 @@ export function Groups() {
         </p>
       </Container>
       <SimpleGrid
-        className={classes.grid}
         spacing={"lg"}
         verticalSpacing={"xl"}
         cols={3}
+        style={{ justifyItems: "center" }}
         breakpoints={[
           { maxWidth: 1030, cols: 2, spacing: "md" },
           { maxWidth: 768, cols: 2, spacing: "sm" },
@@ -81,7 +75,9 @@ export function Groups() {
               : { onClick: click, className: classes.activeBox })}
           >
             {group.groupName.toUpperCase()}
-            <Text fz={"xs"}>{group.role}</Text>
+            <Text style={{ justifySelf: "right" }} fz={"xs"}>
+              {group.role}
+            </Text>
           </Container>
         ))}
       </SimpleGrid>

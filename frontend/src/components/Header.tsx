@@ -1,27 +1,15 @@
-import React from "react";
-import { Button, createStyles } from "@mantine/core";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logoHeader.svg";
+import logoSmall from "../assets/ntnuiLogo.svg";
+import { Header, Container, Group, Text, Space } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { useStyles } from "../styles/headerStyles";
 
-const useStyles = createStyles((theme) => ({
-  header: {
-    height: "100%",
-    margin: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  logout: {
-    color: "white",
-    background: "none",
-    fontSize: "1.2rem",
-  },
-}));
-
-function Header() {
-  const navigate = useNavigate();
+export function HeaderAction() {
+  const matches = useMediaQuery("(min-width: 321px)");
   const { classes } = useStyles();
+  const navigate = useNavigate();
 
   const logOut = async () => {
     await axios
@@ -38,18 +26,21 @@ function Header() {
   };
 
   return (
-    <div className={classes.header}>
-      <img src={logo} alt="NTNUI logo" width="200px"></img>
-      <Button
-        className={classes.logout}
-        type="submit"
-        onClick={logOut}
-        data-testid="logout-button"
-      >
-        Log Out{" "}
-      </Button>
-    </div>
+    <>
+      <Header className={classes.header} sx={{ borderBottom: 0 }} height={60}>
+        <Container className={classes.inner} fluid>
+          <Group>
+            {matches ? (
+              <img src={logo} alt="NTNUI logo" width="200px"></img>
+            ) : (
+              <img src={logoSmall} alt="NTNUI logo" width="100px"></img>
+            )}
+          </Group>
+          <Text className={classes.button} onClick={logOut}>
+            LOG OUT
+          </Text>
+        </Container>
+      </Header>
+    </>
   );
 }
-
-export default Header;

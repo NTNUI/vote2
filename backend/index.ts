@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser = require("cookie-parser");
 import userRoutes from "./routes/user";
+import assemblyRoutes from "./routes/assembly";
+import qrRoutes from "./routes/qr";
 
 dotenv.config();
 
@@ -26,6 +28,8 @@ app.use(express.urlencoded({ extended: true }));
 // App routes
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
+app.use("/assembly", assemblyRoutes);
+app.use("/qr", qrRoutes);
 
 try {
   app.listen(port, (): void => {
@@ -37,3 +41,5 @@ try {
   }
   console.error("Something went very wrong (is your .env correct?)");
 }
+
+export default app;

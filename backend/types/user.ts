@@ -14,6 +14,8 @@ export type UserDataGroupType = {
   groupName: string;
   role: string;
   hasActiveAssembly: boolean;
+  hasAssembly: boolean;
+  createdBy: string | null;
 };
 
 export type UserDataResponseType = {

@@ -11,8 +11,7 @@ import { MantineProvider, Text } from "@mantine/core";
 import colors from "./utils/theme";
 import { Login } from "./pages/LoginPage";
 import axios from "axios";
-import Header from "./components/Header";
-import { OrganizerList } from "./components/OrganizerList";
+import { HeaderAction } from "./components/Header";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3000";
@@ -25,7 +24,6 @@ function App() {
         colors: colors,
       }}
     >
-      <Header />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route element={<ProtectRoutes />}>
@@ -33,6 +31,7 @@ function App() {
             path="/start"
             element={
               <>
+                <HeaderAction />
                 <StartPage />
               </>
             }
@@ -41,6 +40,7 @@ function App() {
             path="/vote"
             element={
               <>
+                <HeaderAction />
                 <Vote />
               </>
             }
@@ -49,6 +49,7 @@ function App() {
             path="/QR"
             element={
               <>
+                <HeaderAction />
                 <QR />
               </>
             }
@@ -57,6 +58,7 @@ function App() {
             path="/assembly"
             element={
               <>
+                <HeaderAction />
                 <Assembly />
               </>
             }
@@ -65,6 +67,7 @@ function App() {
             path="/CheckIn"
             element={
               <>
+                <HeaderAction />
                 <CheckIn />
               </>
             }
@@ -73,7 +76,8 @@ function App() {
             path="/admin"
             element={
               <>
-                <OrganizerList />
+                <HeaderAction />
+                <AdminDashboard />
               </>
             }
           />
