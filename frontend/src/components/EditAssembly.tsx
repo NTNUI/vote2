@@ -162,13 +162,15 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               Start Assembly
             </Button>
           )}
+          {!group.hasActiveAssembly && (
+            <Button
+              color={"red"}
+              onClick={() => handleDeleteAssemblyClick(group.groupName)}
+            >
+              Delete assembly
+            </Button>
+          )}
 
-          <Button
-            color={"red"}
-            onClick={() => handleDeleteAssemblyClick(group.groupName)}
-          >
-            Delete assembly
-          </Button>
           <Button onClick={addCase}>Add case</Button>
         </div>
 
