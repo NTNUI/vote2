@@ -1,964 +1,295 @@
 const countryCodes = [
-  {
-    land: "Afghanistan",
-    kode: "93",
-  },
-  {
-    land: "Albania",
-    kode: "355",
-  },
-  {
-    land: "Algerie",
-    kode: "213",
-  },
-  {
-    land: "Andorra",
-    kode: "376",
-  },
-  {
-    land: "Angola",
-    kode: "244",
-  },
-  {
-    land: "Anguilla (Leeward-øyene)",
-    kode: "1264",
-  },
-  {
-    land: "Antigua & Barbuda (Leewardøyene)",
-    kode: "1268",
-  },
-  {
-    land: "Argentina",
-    kode: "54",
-  },
-  {
-    land: "Armenia",
-    kode: "374",
-  },
-  {
-    land: "Aruba",
-    kode: "297",
-  },
-  {
-    land: "Ascension",
-    kode: "247",
-  },
-  {
-    land: "Aserbajdsjan",
-    kode: "994",
-  },
-  {
-    land: "Australia",
-    kode: "61",
-  },
-  {
-    land: "Bahamas",
-    kode: "1242",
-  },
-  {
-    land: "Bahrain",
-    kode: "973",
-  },
-  {
-    land: "Bangladesh",
-    kode: "880",
-  },
-  {
-    land: "Barbados",
-    kode: "1246",
-  },
-  {
-    land: "Belgia",
-    kode: "32",
-  },
-  {
-    land: "Belize",
-    kode: "501",
-  },
-  {
-    land: "Benin",
-    kode: "229",
-  },
-  {
-    land: "Bermuda",
-    kode: "1441",
-  },
-  {
-    land: "Bhutan",
-    kode: "975",
-  },
-  {
-    land: "Bolivia",
-    kode: "591",
-  },
-  {
-    land: "Bosnia-Hercegovina",
-    kode: "387",
-  },
-  {
-    land: "Botswana",
-    kode: "267",
-  },
-  {
-    land: "Brasil",
-    kode: "55",
-  },
-  {
-    land: "Brunei",
-    kode: "673",
-  },
-  {
-    land: "Bulgaria",
-    kode: "359",
-  },
-  {
-    land: "Burkina Faso",
-    kode: "226",
-  },
-  {
-    land: "Burundi",
-    kode: "257",
-  },
-  {
-    land: "Canada",
-    kode: "1",
-  },
-  {
-    land: "Cayman-øyene",
-    kode: "1345",
-  },
-  {
-    land: "Chile",
-    kode: "56",
-  },
-  {
-    land: "Colombia",
-    kode: "57",
-  },
-  {
-    land: "Cook-øyene",
-    kode: "682",
-  },
-  {
-    land: "Costa Rica",
-    kode: "506",
-  },
-  {
-    land: "Cuba",
-    kode: "53",
-  },
-  {
-    land: "Danmark",
-    kode: "45",
-  },
-  {
-    land: "De Forente Arabiske Emirater",
-    kode: "971",
-  },
-  {
-    land: "De Nederlandske Antiller",
-    kode: "599",
-  },
-  {
-    land: "Den Demokratiske Republikk Kongo (Zaire)",
-    kode: "243",
-  },
-  {
-    land: "Den Dominikanske Republikk",
-    kode: "1809",
-  },
-  {
-    land: "Den Sentralafrikanske Rep.",
-    kode: "236",
-  },
-  {
-    land: "Diego Garcia",
-    kode: "246",
-  },
-  {
-    land: "Djibouti",
-    kode: "253",
-  },
-  {
-    land: "Dominica (Winward-øyene)",
-    kode: "1767",
-  },
-  {
-    land: "Ecuador",
-    kode: "593",
-  },
-  {
-    land: "Egypt",
-    kode: "20",
-  },
-  {
-    land: "Ekvatorial-Guinea",
-    kode: "240",
-  },
-  {
-    land: "El Salvador",
-    kode: "503",
-  },
-  {
-    land: "Elfenbenskysten",
-    kode: "225",
-  },
-  {
-    land: "England",
-    kode: "44",
-  },
-  {
-    land: "Eritrea",
-    kode: "291",
-  },
-  {
-    land: "Estland",
-    kode: "372",
-  },
-  {
-    land: "Etiopia",
-    kode: "251",
-  },
-  {
-    land: "Falklandsøyene",
-    kode: "500",
-  },
-  {
-    land: "Fiji",
-    kode: "679",
-  },
-  {
-    land: "Filippinene",
-    kode: "63",
-  },
-  {
-    land: "Finland",
-    kode: "358",
-  },
-  {
-    land: "Frankrike",
-    kode: "33",
-  },
-  {
-    land: "Fransk Guyana",
-    kode: "594",
-  },
-  {
-    land: "Fransk Polynesia",
-    kode: "689",
-  },
-  {
-    land: "Færøyene",
-    kode: "298",
-  },
-  {
-    land: "Gabon",
-    kode: "241",
-  },
-  {
-    land: "Gambia",
-    kode: "220",
-  },
-  {
-    land: "Gaza & Khan Younes",
-    kode: "9708",
-  },
-  {
-    land: "Georgia",
-    kode: "995",
-  },
-  {
-    land: "Ghana",
-    kode: "233",
-  },
-  {
-    land: "Gibraltar",
-    kode: "350",
-  },
-  {
-    land: "Grenada (Winwardøyene)",
-    kode: "1473",
-  },
-  {
-    land: "Grønland",
-    kode: "299",
-  },
-  {
-    land: "Guadelope",
-    kode: "590",
-  },
-  {
-    land: "Guam",
-    kode: "671",
-  },
-  {
-    land: "Guatemala",
-    kode: "502",
-  },
-  {
-    land: "Guinea",
-    kode: "224",
-  },
-  {
-    land: "Guinea Bissau",
-    kode: "245",
-  },
-  {
-    land: "Guyana",
-    kode: "592",
-  },
-  {
-    land: "Haiti",
-    kode: "509",
-  },
-  {
-    land: "Hellas",
-    kode: "30",
-  },
-  {
-    land: "Holland",
-    kode: "31",
-  },
-  {
-    land: "Honduras",
-    kode: "504",
-  },
-  {
-    land: "Hong Kong",
-    kode: "852",
-  },
-  {
-    land: "Hviterussland",
-    kode: "375",
-  },
-  {
-    land: "India",
-    kode: "91",
-  },
-  {
-    land: "Indonesia",
-    kode: "62",
-  },
-  {
-    land: "Irak",
-    kode: "964",
-  },
-  {
-    land: "Iran",
-    kode: "98",
-  },
-  {
-    land: "Irland",
-    kode: "353",
-  },
-  {
-    land: "Island",
-    kode: "354",
-  },
-  {
-    land: "Israel",
-    kode: "972",
-  },
-  {
-    land: "Italia",
-    kode: "39",
-  },
-  {
-    land: "Jamaica",
-    kode: "1876",
-  },
-  {
-    land: "Japan",
-    kode: "81",
-  },
-  {
-    land: "Jomfruøyene - Brit.",
-    kode: "1284",
-  },
-  {
-    land: "Jomfruøyene - US",
-    kode: "1340",
-  },
-  {
-    land: "Jordan",
-    kode: "962",
-  },
-  {
-    land: "Kambodia",
-    kode: "855",
-  },
-  {
-    land: "Kamerun",
-    kode: "237",
-  },
-  {
-    land: "Kapp Verde-øyene",
-    kode: "238",
-  },
-  {
-    land: "Kazakhstan",
-    kode: "7",
-  },
-  {
-    land: "Kenya",
-    kode: "254",
-  },
-  {
-    land: "Kina (folkerep.)",
-    kode: "86",
-  },
-  {
-    land: "Kirghistan",
-    kode: "996",
-  },
-  {
-    land: "Kiribati",
-    kode: "686",
-  },
-  {
-    land: "Komorene",
-    kode: "269",
-  },
-  {
-    land: "Kongo",
-    kode: "242",
-  },
-  {
-    land: "Korea, Nord",
-    kode: "850",
-  },
-  {
-    land: "Korea, Sør",
-    kode: "82",
-  },
-  {
-    land: "Kosovo",
-    kode: "383",
-  },
-  {
-    land: "Kroatia",
-    kode: "385",
-  },
-  {
-    land: "Kuwait",
-    kode: "965",
-  },
-  {
-    land: "Kypros (Nord)",
-    kode: "357",
-  },
-  {
-    land: "Kypros (Sør)",
-    kode: "357",
-  },
-  {
-    land: "Laos",
-    kode: "856",
-  },
-  {
-    land: "Latvia",
-    kode: "371",
-  },
-  {
-    land: "Lesotho",
-    kode: "266",
-  },
-  {
-    land: "Libanon",
-    kode: "961",
-  },
-  {
-    land: "Liberia",
-    kode: "231",
-  },
-  {
-    land: "Libya",
-    kode: "218",
-  },
-  {
-    land: "Liechtenstein",
-    kode: "41",
-  },
-  {
-    land: "Litauen",
-    kode: "370",
-  },
-  {
-    land: "Luxembourg",
-    kode: "352",
-  },
-  {
-    land: "Macau",
-    kode: "853",
-  },
-  {
-    land: "Madagaskar",
-    kode: "261",
-  },
-  {
-    land: "Makedonia",
-    kode: "389",
-  },
-  {
-    land: "Malawi",
-    kode: "265",
-  },
-  {
-    land: "Malaysia",
-    kode: "60",
-  },
-  {
-    land: "Maldivene",
-    kode: "960",
-  },
-  {
-    land: "Mali",
-    kode: "223",
-  },
-  {
-    land: "Malta",
-    kode: "356",
-  },
-  {
-    land: "Marokko",
-    kode: "212",
-  },
-  {
-    land: "Marshalløyene",
-    kode: "692",
-  },
-  {
-    land: "Martinique",
-    kode: "596",
-  },
-  {
-    land: "Mauritania",
-    kode: "222",
-  },
-  {
-    land: "Mauritius",
-    kode: "230",
-  },
-  {
-    land: "Mexico",
-    kode: "52",
-  },
-  {
-    land: "Midway",
-    kode: "808",
-  },
-  {
-    land: "Mikronesia",
-    kode: "691",
-  },
-  {
-    land: "Moldova",
-    kode: "373",
-  },
-  {
-    land: "Monaco",
-    kode: "377",
-  },
-  {
-    land: "Mongolia",
-    kode: "976",
-  },
-  {
-    land: "Montserrat (Leeward-øyene)",
-    kode: "1664",
-  },
-  {
-    land: "Mosambik",
-    kode: "258",
-  },
-  {
-    land: "Myanmar (Burma)",
-    kode: "95",
-  },
-  {
-    land: "Namibia",
-    kode: "264",
-  },
-  {
-    land: "Nauru",
-    kode: "674",
-  },
-  {
-    land: "Nederland",
-    kode: "31",
-  },
-  {
-    land: "Nepal",
-    kode: "977",
-  },
-  {
-    land: "New Zealand",
-    kode: "64",
-  },
-  {
-    land: "Nicaragua",
-    kode: "505",
-  },
-  {
-    land: "Niger",
-    kode: "227",
-  },
-  {
-    land: "Nigeria",
-    kode: "234",
-  },
-  {
-    land: "Niue",
-    kode: "683",
-  },
-  {
-    land: "Norge",
-    kode: "47",
-  },
-  {
-    land: "Norfolk-øyene",
-    kode: "672",
-  },
-  {
-    land: "Ny Caledonia",
-    kode: "687",
-  },
-  {
-    land: "Oman",
-    kode: "968",
-  },
-  {
-    land: "Pakistan",
-    kode: "92",
-  },
-  {
-    land: "Palau",
-    kode: "608",
-  },
-  {
-    land: "Palestina",
-    kode: "970",
-  },
-  {
-    land: "Panama",
-    kode: "507",
-  },
-  {
-    land: "Papua - Ny Guinea",
-    kode: "675",
-  },
-  {
-    land: "Paraguay",
-    kode: "595",
-  },
-  {
-    land: "Peru",
-    kode: "51",
-  },
-  {
-    land: "Polen",
-    kode: "48",
-  },
-  {
-    land: "Portugal",
-    kode: "351",
-  },
-  {
-    land: "Puerto Rico",
-    kode: "1787",
-  },
-  {
-    land: "Quatar",
-    kode: "974",
-  },
-  {
-    land: "Reunion",
-    kode: "262",
-  },
-  {
-    land: "Romania",
-    kode: "40",
-  },
-  {
-    land: "Russland",
-    kode: "7",
-  },
-  {
-    land: "Rwanda",
-    kode: "250",
-  },
-  {
-    land: "Saipan",
-    kode: "1670",
-  },
-  {
-    land: "Salomon-øyene",
-    kode: "677",
-  },
-  {
-    land: "Samoa - US",
-    kode: "684",
-  },
-  {
-    land: "Samoa - West",
-    kode: "685",
-  },
-  {
-    land: "San Marino",
-    kode: "378",
-  },
-  {
-    land: "Sao Tome & Principe",
-    kode: "239",
-  },
-  {
-    land: "Satellitt-Emast",
-    kode: "88213",
-  },
-  {
-    land: "Satellitt-GlobalStar",
-    kode: "8818",
-  },
-  {
-    land: "Satellitt-Inmarsat A",
-    kode: "870-4",
-  },
-  {
-    land: "Satellitt-Inmarsat B/M",
-    kode: "870-4",
-  },
-  {
-    land: "Satellitt-Iridium 8816",
-    kode: "8816",
-  },
-  {
-    land: "Satellitt-Iridium 8817",
-    kode: "8817",
-  },
-  {
-    land: "Satellitt-MCP",
-    kode: "88232",
-  },
-  {
-    land: "Satellitt-Thuarya",
-    kode: "88216",
-  },
-  {
-    land: "Saudi Arabia",
-    kode: "966",
-  },
-  {
-    land: "Senegal",
-    kode: "221",
-  },
-  {
-    land: "Serbia og Montenegro",
-    kode: "381",
-  },
-  {
-    land: "Seychellene",
-    kode: "248",
-  },
-  {
-    land: "Sierra Leone",
-    kode: "232",
-  },
-  {
-    land: "Singapore",
-    kode: "65",
-  },
-  {
-    land: "Slovakia",
-    kode: "421",
-  },
-  {
-    land: "Slovenia",
-    kode: "386",
-  },
-  {
-    land: "Somalia",
-    kode: "252",
-  },
-  {
-    land: "Spania",
-    kode: "34",
-  },
-  {
-    land: "Sri Lanka",
-    kode: "94",
-  },
-  {
-    land: "St. Helena",
-    kode: "290",
-  },
-  {
-    land: "St. Kitts & Nevis (Leeward-øyene)",
-    kode: "1869",
-  },
-  {
-    land: "St. Lucia (Winward-øyene)",
-    kode: "1758",
-  },
-  {
-    land: "St. Pierre & Miquelon",
-    kode: "508",
-  },
-  {
-    land: "St. Vincent (Winward-øyene)",
-    kode: "1809",
-  },
-  {
-    land: "Storbritannia",
-    kode: "44",
-  },
-  {
-    land: "Sudan",
-    kode: "249",
-  },
-  {
-    land: "Surinam",
-    kode: "597",
-  },
-  {
-    land: "Sveits",
-    kode: "41",
-  },
-  {
-    land: "Sverige",
-    kode: "46",
-  },
-  {
-    land: "Swaziland",
-    kode: "268",
-  },
-  {
-    land: "Syria",
-    kode: "963",
-  },
-  {
-    land: "Sør-Afrika Republikken",
-    kode: "27",
-  },
-  {
-    land: "Sør-Sudan",
-    kode: "211",
-  },
-  {
-    land: "Tadzjikistan",
-    kode: "992",
-  },
-  {
-    land: "Taiwan",
-    kode: "886",
-  },
-  {
-    land: "Tanzania",
-    kode: "255",
-  },
-  {
-    land: "Thailand",
-    kode: "66",
-  },
-  {
-    land: "Togo",
-    kode: "228",
-  },
-  {
-    land: "Tonga",
-    kode: "676",
-  },
-  {
-    land: "Trinidad & Tobago",
-    kode: "1868",
-  },
-  {
-    land: "Tristan da Cunha",
-    kode: "2908",
-  },
-  {
-    land: "Tsjad",
-    kode: "235",
-  },
-  {
-    land: "Tsjekkia",
-    kode: "420",
-  },
-  {
-    land: "Tunisia",
-    kode: "216",
-  },
-  {
-    land: "Turcs- & Caicos-øyene",
-    kode: "1649",
-  },
-  {
-    land: "Turkmenistan",
-    kode: "993",
-  },
-  {
-    land: "Tuvalu",
-    kode: "688",
-  },
-  {
-    land: "Tyrkia",
-    kode: "90",
-  },
-  {
-    land: "Tyskland",
-    kode: "49",
-  },
-  {
-    land: "Uganda",
-    kode: "256",
-  },
-  {
-    land: "Ukraina",
-    kode: "380",
-  },
-  {
-    land: "Ungarn",
-    kode: "36",
-  },
-  {
-    land: "Uruguay",
-    kode: "598",
-  },
-  {
-    land: "USA",
-    kode: "1",
-  },
-  {
-    land: "Uzbekistan",
-    kode: "998",
-  },
-  {
-    land: "Vanuatu",
-    kode: "678",
-  },
-  {
-    land: "Venezuela",
-    kode: "58",
-  },
-  {
-    land: "Vietnam",
-    kode: "84",
-  },
-  {
-    land: "Yemen",
-    kode: "967",
-  },
-  {
-    land: "Zambia",
-    kode: "260",
-  },
-  {
-    land: "Zimbabwe",
-    kode: "263",
-  },
-  {
-    land: "Østerrike",
-    kode: "43",
-  },
+  { name: "Afghanistan (‫افغانستان‬‎)", iso2: "af", dialCode: "93" },
+  { name: "Albania (Shqipëri)", iso2: "al", dialCode: "355" },
+  { name: "Algeria (‫الجزائر‬‎)", iso2: "dz", dialCode: "213" },
+  { name: "American Samoa", iso2: "as", dialCode: "1" },
+  { name: "Andorra", iso2: "ad", dialCode: "376" },
+  { name: "Angola", iso2: "ao", dialCode: "244" },
+  { name: "Anguilla", iso2: "ai", dialCode: "1" },
+  { name: "Antigua and Barbuda", iso2: "ag", dialCode: "1" },
+  { name: "Argentina", iso2: "ar", dialCode: "54" },
+  { name: "Armenia (Հայաստան)", iso2: "am", dialCode: "374" },
+  { name: "Aruba", iso2: "aw", dialCode: "297" },
+  { name: "Australia", iso2: "au", dialCode: "61" },
+  { name: "Austria (Österreich)", iso2: "at", dialCode: "43" },
+  { name: "Azerbaijan (Azərbaycan)", iso2: "az", dialCode: "994" },
+  { name: "Bahamas", iso2: "bs", dialCode: "1" },
+  { name: "Bahrain (‫البحرين‬‎)", iso2: "bh", dialCode: "973" },
+  { name: "Bangladesh (বাংলাদেশ)", iso2: "bd", dialCode: "880" },
+  { name: "Barbados", iso2: "bb", dialCode: "1" },
+  { name: "Belarus (Беларусь)", iso2: "by", dialCode: "375" },
+  { name: "Belgium (België)", iso2: "be", dialCode: "32" },
+  { name: "Belize", iso2: "bz", dialCode: "501" },
+  { name: "Benin (Bénin)", iso2: "bj", dialCode: "229" },
+  { name: "Bermuda", iso2: "bm", dialCode: "1" },
+  { name: "Bhutan (འབྲུག)", iso2: "bt", dialCode: "975" },
+  { name: "Bolivia", iso2: "bo", dialCode: "591" },
+  {
+    name: "Bosnia and Herzegovina (Босна и Херцеговина)",
+    iso2: "ba",
+    dialCode: "387",
+  },
+  { name: "Botswana", iso2: "bw", dialCode: "267" },
+  { name: "Brazil (Brasil)", iso2: "br", dialCode: "55" },
+  { name: "British Indian Ocean Territory", iso2: "io", dialCode: "246" },
+  { name: "British Virgin Islands", iso2: "vg", dialCode: "1" },
+  { name: "Brunei", iso2: "bn", dialCode: "673" },
+  { name: "Bulgaria (България)", iso2: "bg", dialCode: "359" },
+  { name: "Burkina Faso", iso2: "bf", dialCode: "226" },
+  { name: "Burundi (Uburundi)", iso2: "bi", dialCode: "257" },
+  { name: "Cambodia (កម្ពុជា)", iso2: "kh", dialCode: "855" },
+  { name: "Cameroon (Cameroun)", iso2: "cm", dialCode: "237" },
+  { name: "Canada", iso2: "ca", dialCode: "1" },
+  { name: "Cape Verde (Kabu Verdi)", iso2: "cv", dialCode: "238" },
+  { name: "Caribbean Netherlands", iso2: "bq", dialCode: "599" },
+  { name: "Cayman Islands", iso2: "ky", dialCode: "1" },
+  {
+    name: "Central African Republic (République centrafricaine)",
+    iso2: "cf",
+    dialCode: "236",
+  },
+  { name: "Chad (Tchad)", iso2: "td", dialCode: "235" },
+  { name: "Chile", iso2: "cl", dialCode: "56" },
+  { name: "China (中国)", iso2: "cn", dialCode: "86" },
+  { name: "Christmas Island", iso2: "cx", dialCode: "61" },
+  { name: "Cocos (Keeling) Islands", iso2: "cc", dialCode: "61" },
+  { name: "Colombia", iso2: "co", dialCode: "57" },
+  { name: "Comoros (‫جزر القمر‬‎)", iso2: "km", dialCode: "269" },
+  {
+    name: "Congo (DRC) (Jamhuri ya Kidemokrasia ya Kongo)",
+    iso2: "cd",
+    dialCode: "243",
+  },
+  { name: "Congo (Republic) (Congo-Brazzaville)", iso2: "cg", dialCode: "242" },
+  { name: "Cook Islands", iso2: "ck", dialCode: "682" },
+  { name: "Costa Rica", iso2: "cr", dialCode: "506" },
+  { name: "Côte d’Ivoire", iso2: "ci", dialCode: "225" },
+  { name: "Croatia (Hrvatska)", iso2: "hr", dialCode: "385" },
+  { name: "Cuba", iso2: "cu", dialCode: "53" },
+  { name: "Curaçao", iso2: "cw", dialCode: "599" },
+  { name: "Cyprus (Κύπρος)", iso2: "cy", dialCode: "357" },
+  { name: "Czech Republic (Česká republika)", iso2: "cz", dialCode: "420" },
+  { name: "Denmark (Danmark)", iso2: "dk", dialCode: "45" },
+  { name: "Djibouti", iso2: "dj", dialCode: "253" },
+  { name: "Dominica", iso2: "dm", dialCode: "1" },
+  {
+    name: "Dominican Republic (República Dominicana)",
+    iso2: "do",
+    dialCode: "1",
+  },
+  { name: "Ecuador", iso2: "ec", dialCode: "593" },
+  { name: "Egypt (‫مصر‬‎)", iso2: "eg", dialCode: "20" },
+  { name: "El Salvador", iso2: "sv", dialCode: "503" },
+  {
+    name: "Equatorial Guinea (Guinea Ecuatorial)",
+    iso2: "gq",
+    dialCode: "240",
+  },
+  { name: "Eritrea", iso2: "er", dialCode: "291" },
+  { name: "Estonia (Eesti)", iso2: "ee", dialCode: "372" },
+  { name: "Ethiopia", iso2: "et", dialCode: "251" },
+  { name: "Falkland Islands (Islas Malvinas)", iso2: "fk", dialCode: "500" },
+  { name: "Faroe Islands (Føroyar)", iso2: "fo", dialCode: "298" },
+  { name: "Fiji", iso2: "fj", dialCode: "679" },
+  { name: "Finland (Suomi)", iso2: "fi", dialCode: "358" },
+  { name: "France", iso2: "fr", dialCode: "33" },
+  { name: "French Guiana (Guyane française)", iso2: "gf", dialCode: "594" },
+  {
+    name: "French Polynesia (Polynésie française)",
+    iso2: "pf",
+    dialCode: "689",
+  },
+  { name: "Gabon", iso2: "ga", dialCode: "241" },
+  { name: "Gambia", iso2: "gm", dialCode: "220" },
+  { name: "Georgia (საქართველო)", iso2: "ge", dialCode: "995" },
+  { name: "Germany (Deutschland)", iso2: "de", dialCode: "49" },
+  { name: "Ghana (Gaana)", iso2: "gh", dialCode: "233" },
+  { name: "Gibraltar", iso2: "gi", dialCode: "350" },
+  { name: "Greece (Ελλάδα)", iso2: "gr", dialCode: "30" },
+  { name: "Greenland (Kalaallit Nunaat)", iso2: "gl", dialCode: "299" },
+  { name: "Grenada", iso2: "gd", dialCode: "1" },
+  { name: "Guadeloupe", iso2: "gp", dialCode: "590" },
+  { name: "Guam", iso2: "gu", dialCode: "1" },
+  { name: "Guatemala", iso2: "gt", dialCode: "502" },
+  { name: "Guernsey", iso2: "gg", dialCode: "44" },
+  { name: "Guinea (Guinée)", iso2: "gn", dialCode: "224" },
+  { name: "Guinea-Bissau (Guiné Bissau)", iso2: "gw", dialCode: "245" },
+  { name: "Guyana", iso2: "gy", dialCode: "592" },
+  { name: "Haiti", iso2: "ht", dialCode: "509" },
+  { name: "Honduras", iso2: "hn", dialCode: "504" },
+  { name: "Hong Kong (香港)", iso2: "hk", dialCode: "852" },
+  { name: "Hungary (Magyarország)", iso2: "hu", dialCode: "36" },
+  { name: "Iceland (Ísland)", iso2: "is", dialCode: "354" },
+  { name: "India (भारत)", iso2: "in", dialCode: "91" },
+  { name: "Indonesia", iso2: "id", dialCode: "62" },
+  { name: "Iran (‫ایران‬‎)", iso2: "ir", dialCode: "98" },
+  { name: "Iraq (‫العراق‬‎)", iso2: "iq", dialCode: "964" },
+  { name: "Ireland", iso2: "ie", dialCode: "353" },
+  { name: "Isle of Man", iso2: "im", dialCode: "44" },
+  { name: "Israel (‫ישראל‬‎)", iso2: "il", dialCode: "972" },
+  { name: "Italy (Italia)", iso2: "it", dialCode: "39" },
+  { name: "Jamaica", iso2: "jm", dialCode: "1" },
+  { name: "Japan (日本)", iso2: "jp", dialCode: "81" },
+  { name: "Jersey", iso2: "je", dialCode: "44" },
+  { name: "Jordan (‫الأردن‬‎)", iso2: "jo", dialCode: "962" },
+  { name: "Kazakhstan (Казахстан)", iso2: "kz", dialCode: "7" },
+  { name: "Kenya", iso2: "ke", dialCode: "254" },
+  { name: "Kiribati", iso2: "ki", dialCode: "686" },
+  { name: "Kosovo", iso2: "xk", dialCode: "383" },
+  { name: "Kuwait (‫الكويت‬‎)", iso2: "kw", dialCode: "965" },
+  { name: "Kyrgyzstan (Кыргызстан)", iso2: "kg", dialCode: "996" },
+  { name: "Laos (ລາວ)", iso2: "la", dialCode: "856" },
+  { name: "Latvia (Latvija)", iso2: "lv", dialCode: "371" },
+  { name: "Lebanon (‫لبنان‬‎)", iso2: "lb", dialCode: "961" },
+  { name: "Lesotho", iso2: "ls", dialCode: "266" },
+  { name: "Liberia", iso2: "lr", dialCode: "231" },
+  { name: "Libya (‫ليبيا‬‎)", iso2: "ly", dialCode: "218" },
+  { name: "Liechtenstein", iso2: "li", dialCode: "423" },
+  { name: "Lithuania (Lietuva)", iso2: "lt", dialCode: "370" },
+  { name: "Luxembourg", iso2: "lu", dialCode: "352" },
+  { name: "Macau (澳門)", iso2: "mo", dialCode: "853" },
+  { name: "Macedonia (FYROM) (Македонија)", iso2: "mk", dialCode: "389" },
+  { name: "Madagascar (Madagasikara)", iso2: "mg", dialCode: "261" },
+  { name: "Malawi", iso2: "mw", dialCode: "265" },
+  { name: "Malaysia", iso2: "my", dialCode: "60" },
+  { name: "Maldives", iso2: "mv", dialCode: "960" },
+  { name: "Mali", iso2: "ml", dialCode: "223" },
+  { name: "Malta", iso2: "mt", dialCode: "356" },
+  { name: "Marshall Islands", iso2: "mh", dialCode: "692" },
+  { name: "Martinique", iso2: "mq", dialCode: "596" },
+  { name: "Mauritania (‫موريتانيا‬‎)", iso2: "mr", dialCode: "222" },
+  { name: "Mauritius (Moris)", iso2: "mu", dialCode: "230" },
+  { name: "Mayotte", iso2: "yt", dialCode: "262" },
+  { name: "Mexico (México)", iso2: "mx", dialCode: "52" },
+  { name: "Micronesia", iso2: "fm", dialCode: "691" },
+  { name: "Moldova (Republica Moldova)", iso2: "md", dialCode: "373" },
+  { name: "Monaco", iso2: "mc", dialCode: "377" },
+  { name: "Mongolia (Монгол)", iso2: "mn", dialCode: "976" },
+  { name: "Montenegro (Crna Gora)", iso2: "me", dialCode: "382" },
+  { name: "Montserrat", iso2: "ms", dialCode: "1" },
+  { name: "Morocco (‫المغرب‬‎)", iso2: "ma", dialCode: "212" },
+  { name: "Mozambique (Moçambique)", iso2: "mz", dialCode: "258" },
+  { name: "Myanmar (Burma) (မြန်မာ)", iso2: "mm", dialCode: "95" },
+  { name: "Namibia (Namibië)", iso2: "na", dialCode: "264" },
+  { name: "Nauru", iso2: "nr", dialCode: "674" },
+  { name: "Nepal (नेपाल)", iso2: "np", dialCode: "977" },
+  { name: "Netherlands (Nederland)", iso2: "nl", dialCode: "31" },
+  { name: "New Caledonia (Nouvelle-Calédonie)", iso2: "nc", dialCode: "687" },
+  { name: "New Zealand", iso2: "nz", dialCode: "64" },
+  { name: "Nicaragua", iso2: "ni", dialCode: "505" },
+  { name: "Niger (Nijar)", iso2: "ne", dialCode: "227" },
+  { name: "Nigeria", iso2: "ng", dialCode: "234" },
+  { name: "Niue", iso2: "nu", dialCode: "683" },
+  { name: "Norfolk Island", iso2: "nf", dialCode: "672" },
+  {
+    name: "North Korea (조선 민주주의 인민 공화국)",
+    iso2: "kp",
+    dialCode: "850",
+  },
+  { name: "Northern Mariana Islands", iso2: "mp", dialCode: "1" },
+  { name: "Norway (Norge)", iso2: "no", dialCode: "47" },
+  { name: "Oman (‫عُمان‬‎)", iso2: "om", dialCode: "968" },
+  { name: "Pakistan (‫پاکستان‬‎)", iso2: "pk", dialCode: "92" },
+  { name: "Palau", iso2: "pw", dialCode: "680" },
+  { name: "Palestine (‫فلسطين‬‎)", iso2: "ps", dialCode: "970" },
+  { name: "Panama (Panamá)", iso2: "pa", dialCode: "507" },
+  { name: "Papua New Guinea", iso2: "pg", dialCode: "675" },
+  { name: "Paraguay", iso2: "py", dialCode: "595" },
+  { name: "Peru (Perú)", iso2: "pe", dialCode: "51" },
+  { name: "Philippines", iso2: "ph", dialCode: "63" },
+  { name: "Poland (Polska)", iso2: "pl", dialCode: "48" },
+  { name: "Portugal", iso2: "pt", dialCode: "351" },
+  { name: "Puerto Rico", iso2: "pr", dialCode: "1" },
+  { name: "Qatar (‫قطر‬‎)", iso2: "qa", dialCode: "974" },
+  { name: "Réunion (La Réunion)", iso2: "re", dialCode: "262" },
+  { name: "Romania (România)", iso2: "ro", dialCode: "40" },
+  { name: "Russia (Россия)", iso2: "ru", dialCode: "7" },
+  { name: "Rwanda", iso2: "rw", dialCode: "250" },
+  { name: "Saint Barthélemy", iso2: "bl", dialCode: "590" },
+  { name: "Saint Helena", iso2: "sh", dialCode: "290" },
+  { name: "Saint Kitts and Nevis", iso2: "kn", dialCode: "1" },
+  { name: "Saint Lucia", iso2: "lc", dialCode: "1" },
+  {
+    name: "Saint Martin (Saint-Martin (partie française))",
+    iso2: "mf",
+    dialCode: "590",
+  },
+  {
+    name: "Saint Pierre and Miquelon (Saint-Pierre-et-Miquelon)",
+    iso2: "pm",
+    dialCode: "508",
+  },
+  { name: "Saint Vincent and the Grenadines", iso2: "vc", dialCode: "1" },
+  { name: "Samoa", iso2: "ws", dialCode: "685" },
+  { name: "San Marino", iso2: "sm", dialCode: "378" },
+  {
+    name: "São Tomé and Príncipe (São Tomé e Príncipe)",
+    iso2: "st",
+    dialCode: "239",
+  },
+  {
+    name: "Saudi Arabia (‫المملكة العربية السعودية‬‎)",
+    iso2: "sa",
+    dialCode: "966",
+  },
+  { name: "Senegal (Sénégal)", iso2: "sn", dialCode: "221" },
+  { name: "Serbia (Србија)", iso2: "rs", dialCode: "381" },
+  { name: "Seychelles", iso2: "sc", dialCode: "248" },
+  { name: "Sierra Leone", iso2: "sl", dialCode: "232" },
+  { name: "Singapore", iso2: "sg", dialCode: "65" },
+  { name: "Sint Maarten", iso2: "sx", dialCode: "1" },
+  { name: "Slovakia (Slovensko)", iso2: "sk", dialCode: "421" },
+  { name: "Slovenia (Slovenija)", iso2: "si", dialCode: "386" },
+  { name: "Solomon Islands", iso2: "sb", dialCode: "677" },
+  { name: "Somalia (Soomaaliya)", iso2: "so", dialCode: "252" },
+  { name: "South Africa", iso2: "za", dialCode: "27" },
+  { name: "South Korea (대한민국)", iso2: "kr", dialCode: "82" },
+  { name: "South Sudan (‫جنوب السودان‬‎)", iso2: "ss", dialCode: "211" },
+  { name: "Spain (España)", iso2: "es", dialCode: "34" },
+  { name: "Sri Lanka (ශ්‍රී ලංකාව)", iso2: "lk", dialCode: "94" },
+  { name: "Sudan (‫السودان‬‎)", iso2: "sd", dialCode: "249" },
+  { name: "Suriname", iso2: "sr", dialCode: "597" },
+  { name: "Svalbard and Jan Mayen", iso2: "sj", dialCode: "47" },
+  { name: "Swaziland", iso2: "sz", dialCode: "268" },
+  { name: "Sweden (Sverige)", iso2: "se", dialCode: "46" },
+  { name: "Switzerland (Schweiz)", iso2: "ch", dialCode: "41" },
+  { name: "Syria (‫سوريا‬‎)", iso2: "sy", dialCode: "963" },
+  { name: "Taiwan (台灣)", iso2: "tw", dialCode: "886" },
+  { name: "Tajikistan", iso2: "tj", dialCode: "992" },
+  { name: "Tanzania", iso2: "tz", dialCode: "255" },
+  { name: "Thailand (ไทย)", iso2: "th", dialCode: "66" },
+  { name: "Timor-Leste", iso2: "tl", dialCode: "670" },
+  { name: "Togo", iso2: "tg", dialCode: "228" },
+  { name: "Tokelau", iso2: "tk", dialCode: "690" },
+  { name: "Tonga", iso2: "to", dialCode: "676" },
+  { name: "Trinidad and Tobago", iso2: "tt", dialCode: "1" },
+  { name: "Tunisia (‫تونس‬‎)", iso2: "tn", dialCode: "216" },
+  { name: "Turkey (Türkiye)", iso2: "tr", dialCode: "90" },
+  { name: "Turkmenistan", iso2: "tm", dialCode: "993" },
+  { name: "Turks and Caicos Islands", iso2: "tc", dialCode: "1" },
+  { name: "Tuvalu", iso2: "tv", dialCode: "688" },
+  { name: "U.S. Virgin Islands", iso2: "vi", dialCode: "1" },
+  { name: "Uganda", iso2: "ug", dialCode: "256" },
+  { name: "Ukraine (Україна)", iso2: "ua", dialCode: "380" },
+  {
+    name: "United Arab Emirates (‫الإمارات العربية المتحدة‬‎)",
+    iso2: "ae",
+    dialCode: "971",
+  },
+  { name: "United Kingdom", iso2: "gb", dialCode: "44" },
+  { name: "United States", iso2: "us", dialCode: "1" },
+  { name: "Uruguay", iso2: "uy", dialCode: "598" },
+  { name: "Uzbekistan (Oʻzbekiston)", iso2: "uz", dialCode: "998" },
+  { name: "Vanuatu", iso2: "vu", dialCode: "678" },
+  { name: "Vatican City (Città del Vaticano)", iso2: "va", dialCode: "39" },
+  { name: "Venezuela", iso2: "ve", dialCode: "58" },
+  { name: "Vietnam (Việt Nam)", iso2: "vn", dialCode: "84" },
+  { name: "Wallis and Futuna (Wallis-et-Futuna)", iso2: "wf", dialCode: "681" },
+  { name: "Western Sahara (‫الصحراء الغربية‬‎)", iso2: "eh", dialCode: "212" },
+  { name: "Yemen (‫اليمن‬‎)", iso2: "ye", dialCode: "967" },
+  { name: "Zambia", iso2: "zm", dialCode: "260" },
+  { name: "Zimbabwe", iso2: "zw", dialCode: "263" },
+  { name: "Åland Islands", iso2: "ax", dialCode: "358" },
 ];
 
 export default countryCodes;
