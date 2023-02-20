@@ -4,6 +4,8 @@ export const useStyles = createStyles((theme) => ({
   activeBox: {
     color: "white",
     minWidth: 250,
+    paddingLeft: 10,
+    paddingRight: 10,
     height: 84,
     border: "2px solid",
     backgroundColor: theme.colors.ntnui_background[0],
@@ -25,6 +27,8 @@ export const useStyles = createStyles((theme) => ({
   inActiveBox: {
     color: "white",
     minWidth: 250,
+    paddingLeft: 10,
+    paddingRight: 10,
     height: 84,
     border: "2px solid",
     backgroundColor: theme.colors.ntnui_background[0],
