@@ -134,7 +134,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           }}
           data-testid="edit-assembly-page-title"
         >
-          Edit assembly
+          Edit {group.groupName} assembly
         </h2>
         <div></div>
       </SimpleGrid>
@@ -148,16 +148,21 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               justifyContent: "center",
             }}
           >
-            {group.groupName}
+            {group.groupName.toUpperCase()}
           </h3>
           {group.hasActiveAssembly ? (
-            <Button color={"red"} onClick={() => endAssembly(group.groupName)}>
+            <Button
+              color={"red"}
+              onClick={() => endAssembly(group.groupName)}
+              m={10}
+            >
               Stop assembly
             </Button>
           ) : (
             <Button
               color={"green"}
               onClick={() => startAssembly(group.groupName)}
+              m={10}
             >
               Start Assembly
             </Button>
@@ -166,12 +171,15 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             <Button
               color={"red"}
               onClick={() => handleDeleteAssemblyClick(group.groupName)}
+              m={10}
             >
               Delete assembly
             </Button>
           )}
 
-          <Button onClick={addCase}>Add case</Button>
+          <Button onClick={addCase} m={10}>
+            Add case
+          </Button>
         </div>
 
         <div>
