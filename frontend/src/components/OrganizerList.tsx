@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { getGroups } from "../services/organizer";
 import Arrow from "../assets/Arrow.svg";
 import { useMediaQuery } from "@mantine/hooks";
+import { TextColor } from "tabler-icons-react";
+import { withTheme } from "@emotion/react";
 
 interface GroupData {
   groupName: string;
@@ -61,10 +63,13 @@ export function OrganizerList() {
             {group.hasActiveAssembly ? (
               <div style={{ marginRight: "2vw" }}>
                 <Button
-                  color="green"
+                  sx={(theme) => ({
+                  color: theme.colors.ntnui_green[0]
+                })}
                   radius="md"
                   onClick={handleQRClick}
                   data-testid={startCheckinTestID}
+                  
                 >
                   Start checkin
                 </Button>
@@ -79,7 +84,12 @@ export function OrganizerList() {
               </div>
             ) : (
               <Button
-                style={{ marginRight: "2vw" }}
+                // style={{ marginRight: "2vw" } 
+                sx={(theme) => ({
+                  backgroundColor: theme.colors.ntnui_blue[0],
+                  color: "white",
+                  marginRight: "2vw"
+                })}
                 onClick={handleCreateAssemblyClick}
                 data-testid={createAssemblyTestID}
               >
