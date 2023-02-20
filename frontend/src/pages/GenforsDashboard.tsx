@@ -1,6 +1,8 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import { EditAssembly } from "../components/EditAssembly";
 
 export function Assembly() {
-  return <EditAssembly/>;
+  const { state } = useLocation();
+  return <EditAssembly {...state} />;
 }

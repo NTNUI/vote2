@@ -1,28 +1,30 @@
-import axios from "axios"
-
+import axios from "axios";
 
 export const createAssembly = async (group: string) => {
-    return axios.post("/assembly/",
+  return axios.post(
+    "/assembly/",
     {
-        group: group,
+      group: group,
     },
-    {withCredentials: true});
-}
+    { withCredentials: true }
+  );
+};
 
 export const activateAssembly = async (group: string, isActive: boolean) => {
-    return axios.put("/assembly/activation",
+  return axios.put(
+    "/assembly/activation",
     {
-        group: group,
-        isActive: isActive,
+      group: group,
+      isActive: isActive,
     },
-    {withCredentials: true});
-}
+    { withCredentials: true }
+  );
+};
 
 export const deleteAssembly = async (group: string) => {
-    return axios.delete("/assembly/",
-    {
-        data:{
-            group: group,
-        }
-    });
-}
+  return axios.delete("/assembly/", {
+    data: {
+      group: group,
+    },
+  });
+};

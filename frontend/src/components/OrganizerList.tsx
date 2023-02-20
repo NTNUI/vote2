@@ -23,20 +23,18 @@ export function OrganizerList() {
     navigate("/start");
   }
 
-  function handleCreateAssemblyClick(groupName: string) {
+  function handleCreateAssemblyClick(group: UserDataGroupType) {
     try {
-      createAssembly(groupName)
-      .then(() => {
-        navigate("/assembly");
-      })
-    }
-    catch (error) {
-      console.log(error);  
+      createAssembly(group.groupName).then(() => {
+        navigate("/assembly", { state: { group: group } });
+      });
+    } catch (error) {
+      console.log(error);
     }
   }
 
-  function handleEditAssemblyClick() {
-    navigate("/assembly");
+  function handleEditAssemblyClick(group: UserDataGroupType) {
+    navigate("/assembly", { state: { group: group } });
   }
 
   function createGroupBox(group: UserDataGroupType, index: number) {
@@ -87,7 +85,7 @@ export function OrganizerList() {
                   style={{ marginRight: "2vw" }}
                   color="gray"
                   radius="md"
-                  onClick={(e) => handleEditAssemblyClick()}
+                  onClick={(e) => handleEditAssemblyClick(group)}
                   data-testid={editAssemblyTestID}
                 >
                   Edit
@@ -98,7 +96,7 @@ export function OrganizerList() {
                 style={{ marginRight: "2vw" }}
                 color="gray"
                 radius="md"
-                onClick={(e) => handleEditAssemblyClick()}
+                onClick={(e) => handleEditAssemblyClick(group)}
                 data-testid={editAssemblyTestID}
               >
                 Edit
@@ -106,7 +104,7 @@ export function OrganizerList() {
             ) : (
               <Button
                 style={{ marginRight: "2vw" }}
-                onClick={() => handleCreateAssemblyClick(group.groupName)}
+                onClick={() => handleCreateAssemblyClick(group)}
                 data-testid={createAssemblyTestID}
               >
                 Create assembly
@@ -169,4 +167,3 @@ export function OrganizerList() {
 function then(arg0: () => void) {
   throw new Error("Function not implemented.");
 }
-
