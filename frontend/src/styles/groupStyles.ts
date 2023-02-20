@@ -4,6 +4,8 @@ export const useStyles = createStyles(() => ({
   activeBox: {
     color: "white",
     minWidth: 250,
+    paddingLeft: 10,
+    paddingRight: 10,
     height: 84,
     border: "2px solid",
     backgroundColor: "#1A202C",
@@ -25,6 +27,8 @@ export const useStyles = createStyles(() => ({
   inActiveBox: {
     color: "white",
     minWidth: 250,
+    paddingLeft: 10,
+    paddingRight: 10,
     height: 84,
     border: "2px solid",
     backgroundColor: "#1A202C",

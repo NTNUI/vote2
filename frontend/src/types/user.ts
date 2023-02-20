@@ -11,18 +11,16 @@ export type GroupType = {
 };
 
 export type UserDataGroupType = {
+  hasAssembly: boolean;
   groupName: string;
   role: string;
   hasActiveAssembly: boolean;
-  hasAssembly: boolean;
   creator: string;
 };
 
 export type UserDataResponseType = {
-  data: {
-    firstName: string;
-    lastName: string;
-    groups: UserDataGroupType[];
-    isOrganizer: boolean;
-  };
+  firstName: string;
+  lastName: string;
+  groups: UserDataGroupType[];
+  isOrganizer: boolean;
 };

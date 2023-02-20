@@ -1,21 +1,17 @@
 import { Box, Button, Flex, SimpleGrid, Space } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getGroups } from "../services/organizer";
+import { getUserData } from "../services/organizer";
 import Arrow from "../assets/Arrow.svg";
 import { useMediaQuery } from "@mantine/hooks";
-import { UserDataResponseType } from "../types/user";
+import { UserDataGroupType } from "../types/user";
+import { createAssembly } from "../services/assembly";
+//import {createAssembly, activateAssembly, deleteAssembly} from "../services/assembly";
 
-/* interface GroupData {
-  groupName: string;
-  role: string;
-  hasActiveAssembly: boolean;
-  hasAssembly: boolean;
-  createdBy: string | null;
-}
- */
 export function OrganizerList() {
-  const [organizedGroups, setOrganizedGroups] = useState<UserDataResponseType[]>([]);
+  const [organizerGroups, setOrganizerGroups] = useState<UserDataGroupType[]>(
+    []
+  );
   let navigate = useNavigate();
   const matches = useMediaQuery("(min-width: 600px)");
 
@@ -27,13 +23,23 @@ export function OrganizerList() {
     navigate("/start");
   }
 
-  function handleCreateAssemblyClick() {
+  function handleCreateAssemblyClick(groupName: string) {
+    try {
+      createAssembly(groupName)
+      .then(() => {
+        navigate("/assembly");
+      })
+    }
+    catch (error) {
+      console.log(error);  
+    }
+  }
+
+  function handleEditAssemblyClick() {
     navigate("/assembly");
   }
 
-  function createGroupBox(group: UserDataResponseType, index: number) {
-    let groupName = group.groupName;
-    groupName = groupName.charAt(0).toUpperCase() + groupName.slice(1);
+  function createGroupBox(group: UserDataGroupType, index: number) {
     const startCheckinTestID: string = "checkin-button-" + group.groupName;
     const createAssemblyTestID: string =
       "create-assembly-button-" + group.groupName + "-" + index;
@@ -46,8 +52,11 @@ export function OrganizerList() {
           key={index}
           sx={(theme) => ({
             borderStyle: "solid",
-            borderColor: "white",
+            borderColor: "#FAF089",
+            borderWidth: "0.01rem",
             textAlign: "center",
+            marginLeft: "1rem",
+            marginRight: "1rem",
             borderRadius: theme.radius.md,
             color: "white",
           })}
@@ -60,30 +69,44 @@ export function OrganizerList() {
             direction="row"
             wrap="wrap"
           >
-            <h4 style={{ marginLeft: "2vw" }}>{groupName}</h4>
+            <h4 style={{ marginLeft: "2vw" }}>
+              {group.groupName.toUpperCase()}
+            </h4>
             {group.hasActiveAssembly ? (
-              <div style={{ marginRight: "2vw" }}>
+              <Box>
                 <Button
+                  style={{ marginRight: "2vw" }}
                   color="green"
                   radius="md"
                   onClick={handleQRClick}
                   data-testid={startCheckinTestID}
                 >
-                  Start checkin
+                  Start check-in
                 </Button>
                 <Button
+                  style={{ marginRight: "2vw" }}
                   color="gray"
                   radius="md"
-                  onClick={handleCreateAssemblyClick}
+                  onClick={(e) => handleEditAssemblyClick()}
                   data-testid={editAssemblyTestID}
                 >
                   Edit
                 </Button>
-              </div>
+              </Box>
+            ) : group.hasAssembly ? (
+              <Button
+                style={{ marginRight: "2vw" }}
+                color="gray"
+                radius="md"
+                onClick={(e) => handleEditAssemblyClick()}
+                data-testid={editAssemblyTestID}
+              >
+                Edit
+              </Button>
             ) : (
               <Button
                 style={{ marginRight: "2vw" }}
-                onClick={handleCreateAssemblyClick}
+                onClick={() => handleCreateAssemblyClick(group.groupName)}
                 data-testid={createAssemblyTestID}
               >
                 Create assembly
@@ -95,24 +118,21 @@ export function OrganizerList() {
     );
   }
 
-  async function sortGroups() {
+  async function fetchGroups() {
     try {
-      const groupsRequest = await getGroups();
-      const groups = groupsRequest.data.groups;
-      console.log(groups);
-      for (let i = 0; i < groups.length; i++) {
-        let group: GroupData = groups[i];
-        if (group.role == "organizer") {
-          setOrganizedGroups((organizedGroups) => [...organizedGroups, group]);
-        }
-      }
+      const groups = (await getUserData()).groups;
+      setOrganizerGroups(
+        groups.filter((group) => {
+          return group.role == "organizer";
+        })
+      );
     } catch (error) {
       console.log(error);
     }
   }
 
   useEffect(() => {
-    sortGroups();
+    fetchGroups();
   }, []);
 
   return (
@@ -142,7 +162,11 @@ export function OrganizerList() {
         </h2>
         <div></div>
       </SimpleGrid>
-      {organizedGroups.map((group, index) => createGroupBox(group, index))}
+      {organizerGroups.map((group, index) => createGroupBox(group, index))}
     </>
   );
 }
+function then(arg0: () => void) {
+  throw new Error("Function not implemented.");
+}
+

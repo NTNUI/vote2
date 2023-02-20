@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Arrow from "../assets/Arrow.svg";
 import { useForm } from "@mantine/form";
+import { UserDataGroupType } from "../types/user";
+import { activateAssembly, createAssembly, deleteAssembly } from "../services/assembly";
 
 interface VoteDetails {
   title: string;
@@ -47,12 +49,39 @@ export function EditAssembly() {
   }
 
   function endAssembly() {
-    console.log("Stop!");
-    setIsActive(false);
+    try {
+      activateAssembly("sprint", false)
+      .then(() => {
+        setIsActive(false);
+      })
+    }
+    catch (error) {
+      console.log(error);  
+    }
+  }
+
+  function handleDeleteAssemblyClick() {
+    try {
+      deleteAssembly("sprint")
+      .then(() => {
+        navigate("/admin");
+      })
+    }
+    catch (error) {
+      console.log(error);  
+    }
   }
 
   function startAssembly() {
-    console.log("Start!");
+    try {
+      activateAssembly("sprint", true)
+      .then(() => {
+        setIsActive(true);
+      })
+    }
+    catch (error) {
+      console.log(error);  
+    }
     setIsActive(true);
   }
 
@@ -70,6 +99,10 @@ export function EditAssembly() {
     setCases(newCases);
     console.log(cases);
   }
+
+  useEffect(() => {
+    
+  }, []);
 
   return (
     <>
@@ -110,9 +143,12 @@ export function EditAssembly() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
-          }}>-group- Assembly</h3>
-          <Button color={"green"} onClick={startAssembly} disabled={isActive}>Start Assembly</Button>
-          <Button color={"red"} onClick={endAssembly} disabled={!isActive}>End assembly</Button>
+          }}>
+            {Group.groupName}
+          </h3>
+          <Button color={"green"} onClick={startAssembly}>Start Assembly</Button>
+          <Button color={"red"} onClick={endAssembly}>Stop assembly</Button>
+          <Button color={"red"} onClick={handleDeleteAssemblyClick}>Delete assembly</Button>
           <Button onClick={addCase}>Add case</Button>
         </div>
 
