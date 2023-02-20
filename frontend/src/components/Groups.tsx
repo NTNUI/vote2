@@ -16,8 +16,7 @@ export function Groups() {
     setUserData(await getGroups());
   };
   const click = (groupName: string) => {
-    navigate("/qr");
-    console.log(groupName);
+    navigate("/qr", { state: { group: groupName } });
   };
 
   useEffect(() => {
