@@ -27,8 +27,8 @@ export function Groups() {
   const fetchData = async () => {
     setUserData(await getUserData());
   };
-  const click = () => {
-    console.log("cliked");
+  const click = (groupName: string) => {
+    navigate("/qr", { state: { group: groupName } });
   };
 
   useEffect(() => {
@@ -75,12 +75,15 @@ export function Groups() {
         {userData.groups.map((group) => (
           <Box
             key={group.groupName}
-            {...(!group.hasActiveAssembly
+            {...(group.hasActiveAssembly
               ? {
                   opacity: 0.5,
                   className: classes.inActiveBox,
                 }
-              : { onClick: click, className: classes.activeBox })}
+              : {
+                  onClick: () => click(group.groupName),
+                  className: classes.activeBox,
+                })}
           >
             {group.groupName.toUpperCase()}
             <Text style={{ justifySelf: "right" }} fz={"xs"}>

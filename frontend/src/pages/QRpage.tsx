@@ -1,5 +1,12 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
+import { QrCode } from "../components/QrCode";
 
 export function QR() {
-  return <p>QR code here</p>;
+  const { state } = useLocation();
+  return (
+    <p>
+      <QrCode {...state}></QrCode>
+    </p>
+  );
 }
