@@ -1,6 +1,6 @@
 import { createStyles } from "@mantine/core";
 
-export const useStyles = createStyles(() => ({
+export const useStyles = createStyles((theme) => ({
   activeBox: {
     color: "white",
     minWidth: 250,
@@ -8,13 +8,13 @@ export const useStyles = createStyles(() => ({
     paddingRight: 10,
     height: 84,
     border: "2px solid",
-    backgroundColor: "#1A202C",
-    borderColor: "#FAF089",
+    backgroundColor: theme.colors.ntnui_background[0],
+    borderColor: theme.colors.ntnui_yellow[0],
     borderWidth: 1,
     borderRadius: 5,
     borderBottomRightRadius: 0,
     "&:hover": {
-      backgroundColor: "#FAF089",
+      backgroundColor: theme.colors.ntnui_yellow[0],
       color: "black",
     },
 
@@ -31,8 +31,8 @@ export const useStyles = createStyles(() => ({
     paddingRight: 10,
     height: 84,
     border: "2px solid",
-    backgroundColor: "#1A202C",
-    borderColor: "#FAF089",
+    backgroundColor: theme.colors.ntnui_background[0],
+    borderColor: theme.colors.ntnui_yellow[0],
     borderWidth: 1,
     borderRadius: 5,
     borderBottomRightRadius: 0,
@@ -78,7 +78,7 @@ export const useStyles = createStyles(() => ({
     borderBottomRightRadius: 0,
     height: 46,
     width: 173,
-    backgroundColor: "#1A202C",
+    backgroundColor: theme.colors.ntnui_background[0],
     borderColor: "grey",
     "&:hover": {
       backgroundColor: "grey",

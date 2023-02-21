@@ -76,7 +76,7 @@ const useStyles = createStyles((theme) => ({
     width: "100%",
     marginBottom: "10px",
     input: {
-      backgroundColor: theme.colors.ntnui_background[9],
+      backgroundColor: theme.colors.ntnui_background[0],
       color: "white",
     },
   },
@@ -84,22 +84,22 @@ const useStyles = createStyles((theme) => ({
     transition: "0.3s",
     width: "100%",
     margin: "1rem 0 0.5rem 0",
-    backgroundColor: theme.colors.ntnui_blue[9],
-    border: "2px solid" + theme.colors.ntnui_blue[9],
+    backgroundColor: theme.colors.ntnui_blue[0],
+    border: "2px solid" + theme.colors.ntnui_blue[0],
     ":hover": {
-      border: "2px solid" + theme.colors.ntnui_blue[9],
-      color: theme.colors.ntnui_blue[9],
+      border: "2px solid" + theme.colors.ntnui_blue[0],
+      color: theme.colors.ntnui_blue[0],
       backgroundColor: "transparent",
     },
   },
   link: {
     textDecoration: "none",
-    color: theme.colors.ntnui_blue[9],
+    color: theme.colors.ntnui_blue[0],
   },
 
   loginErrorRoot: {
-    backgroundColor: theme.colors.ntnui_background[9],
-    borderColor: theme.colors.ntnui_red[9],
+    backgroundColor: theme.colors.ntnui_background[0],
+    borderColor: theme.colors.ntnui_red[0],
   },
   loginErrorText: {
     color: "white",

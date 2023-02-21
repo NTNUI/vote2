@@ -32,7 +32,7 @@ export function OrganizerGroupBox(props: {
       <Box
         sx={(theme) => ({
           borderStyle: "solid",
-          borderColor: "#FAF089",
+          borderColor: theme.colors.ntnui_yellow[0],
           borderWidth: "0.01rem",
           textAlign: "center",
           marginLeft: "1rem",
