@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Space } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import { createAssembly } from "../services/assembly";
 import { UserDataGroupType } from "../types/user";
 
 export function OrganizerGroupBox(props: {
@@ -22,8 +23,18 @@ export function OrganizerGroupBox(props: {
     navigate("/start");
   }
 
-  function handleCreateAssemblyClick() {
-    navigate("/assembly");
+  function handleCreateAssemblyClick(group: UserDataGroupType) {
+    try {
+      createAssembly(group.groupName).then(() => {
+        navigate("/assembly", { state: { group: group } });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function handleEditAssemblyClick(group: UserDataGroupType) {
+    navigate("/assembly", { state: { group: group } });
   }
 
   return (
@@ -67,7 +78,7 @@ export function OrganizerGroupBox(props: {
                 style={{ marginRight: "2vw" }}
                 color="gray"
                 radius="md"
-                onClick={handleCreateAssemblyClick}
+                onClick={() => handleEditAssemblyClick(props.group)}
                 data-testid={editAssemblyTestID}
               >
                 Edit
@@ -78,7 +89,7 @@ export function OrganizerGroupBox(props: {
               style={{ marginRight: "2vw" }}
               color="gray"
               radius="md"
-              onClick={handleCreateAssemblyClick}
+              onClick={() => handleEditAssemblyClick(props.group)}
               data-testid={editAssemblyTestID}
             >
               Edit
@@ -86,7 +97,7 @@ export function OrganizerGroupBox(props: {
           ) : (
             <Button
               style={{ marginRight: "2vw" }}
-              onClick={handleCreateAssemblyClick}
+              onClick={() => handleCreateAssemblyClick(props.group)}
               data-testid={createAssemblyTestID}
             >
               Create assembly

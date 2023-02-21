@@ -15,6 +15,7 @@ export type UserDataGroupType = {
   groupName: string;
   role: string;
   hasActiveAssembly: boolean;
+  creator: string;
 };
 
 export type UserDataResponseType = {
