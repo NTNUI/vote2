@@ -1,8 +1,10 @@
 import {
   Accordion,
   Button,
+  Container,
   MultiSelect,
   SimpleGrid,
+  Text,
   TextInput,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
@@ -107,7 +109,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
   return (
     <>
-      <SimpleGrid cols={3}>
+      {/* <SimpleGrid cols={3}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <p
             style={{ display: "inline", cursor: "pointer" }}
@@ -137,19 +139,15 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           Edit {group.groupName} assembly
         </h2>
         <div></div>
-      </SimpleGrid>
+      </SimpleGrid> */}
 
-      <SimpleGrid cols={2}>
-        <div>
-          <h3
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {group.groupName.toUpperCase()}
-          </h3>
+      <SimpleGrid
+        cols={2}
+        breakpoints={[{ maxWidth: 770, cols: 1, spacing: "sm" }]}
+        w={"80vw"}
+      >
+        <Container>
+          <h4>EDIT {group.groupName.toUpperCase()} ASSEMBLY</h4>
           {group.hasActiveAssembly ? (
             <Button
               color={"red"}
@@ -180,82 +178,82 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           <Button onClick={addCase} m={10}>
             Add case
           </Button>
-        </div>
+        </Container>
 
-        <div>
-          <Accordion
-            defaultValue={"vote1"}
-            styles={{
-              item: {
-                backgroundColor: "white",
-                //#1A202C
-                border: "solid",
-                borderColor: "white",
-                borderRadius: "5px",
-              },
-            }}
-          >
-            {cases.map((item, index) => (
-              <Accordion.Item value={String(index)}>
-                <Accordion.Control>Vote {index + 1}</Accordion.Control>
-                {!item.title || item.editable ? (
-                  <Accordion.Panel>
-                    <form
-                      onSubmit={form.onSubmit((values) =>
-                        handleSubmit(values, index)
-                      )}
-                    >
-                      <TextInput
-                        withAsterisk
-                        label="Title"
-                        placeholder="title"
-                        {...form.getInputProps("title")}
-                      />
+        <Accordion
+          defaultValue={"vote1"}
+          styles={{
+            item: {
+              backgroundColor: "white",
+              //#1A202C
+              border: "solid",
+              borderColor: "white",
+              borderRadius: "5px",
+              maxWidth: 780,
+            },
+          }}
+        >
+          {cases.map((item, index) => (
+            <Accordion.Item value={String(index)}>
+              <Accordion.Control>Vote {index + 1}</Accordion.Control>
+              {!item.title || item.editable ? (
+                <Accordion.Panel>
+                  <form
+                    onSubmit={form.onSubmit((values) =>
+                      handleSubmit(values, index)
+                    )}
+                  >
+                    <TextInput
+                      withAsterisk
+                      label="Title"
+                      placeholder="title"
+                      {...form.getInputProps("title")}
+                    />
 
-                      <TextInput
-                        withAsterisk
-                        label="Description"
-                        placeholder="description"
-                        {...form.getInputProps("description")}
-                      />
+                    <TextInput
+                      withAsterisk
+                      label="Description"
+                      placeholder="description"
+                      {...form.getInputProps("description")}
+                    />
 
-                      <MultiSelect
-                        label="Creatable MultiSelect"
-                        data={defaultOptions}
-                        placeholder="Select items"
-                        searchable
-                        creatable
-                        getCreateLabel={(query) => `+ Create ${query}`}
-                        onCreate={(query) => {
-                          const item = { value: query, label: query };
-                          //setData((current) => [...current, item]);
-                          return item;
-                        }}
-                        {...form.getInputProps("options")}
-                      />
-                      <Button type="submit">Save current vote</Button>
-                    </form>
-                  </Accordion.Panel>
-                ) : (
-                  <Accordion.Panel>
-                    <p>{item.title}</p>
-                    <p>{item.description}</p>
-                    <p>{item.options}</p>
-                    <Button
-                      onClick={() => {
-                        setEditable(item, index, true);
+                    <MultiSelect
+                      label="Creatable MultiSelect"
+                      data={defaultOptions}
+                      placeholder="Select items"
+                      searchable
+                      creatable
+                      getCreateLabel={(query) => `+ Create ${query}`}
+                      onCreate={(query) => {
+                        const item = { value: query, label: query };
+                        //setData((current) => [...current, item]);
+                        return item;
                       }}
-                    >
-                      Edit current vote
-                    </Button>
-                    <Button>Activate voting</Button>
-                    <Button>Delete voting</Button>
-                  </Accordion.Panel>
-                )}
-              </Accordion.Item>
-            ))}
-          </Accordion>
-        </div>
+                      {...form.getInputProps("options")}
+                    />
+                    <Button type="submit">Save current vote</Button>
+                  </form>
+                </Accordion.Panel>
+              ) : (
+                <Accordion.Panel>
+                  <p>{item.title}</p>
+                  <p>{item.description}</p>
+                  <p>{item.options}</p>
+                  <Button
+                    onClick={() => {
+                      setEditable(item, index, true);
+                    }}
+                    m={5}
+                  >
+                    Edit current vote
+                  </Button>
+                  <Button m={5}>Activate voting</Button>
+                  <Button m={5}>Delete voting</Button>
+                </Accordion.Panel>
+              )}
+            </Accordion.Item>
+          ))}
+        </Accordion>
       </SimpleGrid>
     </>
   );
