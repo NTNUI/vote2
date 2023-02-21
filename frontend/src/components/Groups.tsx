@@ -1,17 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Loader,
-  SimpleGrid,
-  Container,
-  Text,
-  Button,
-  Group,
-  Box,
-  Center,
-  Flex,
-  Grid,
-  Stack,
-} from "@mantine/core";
+import { Loader, Text, Button, Box, Flex, Stack } from "@mantine/core";
 import { useStyles } from "../styles/groupStyles";
 import { getUserData } from "../services/organizer";
 import { UserDataResponseType } from "../types/user";
@@ -25,7 +13,15 @@ export function Groups() {
     undefined
   );
   const fetchData = async () => {
-    setUserData(await getUserData());
+    const userData = await getUserData();
+    userData.groups.sort((group) => {
+      if (group.hasActiveAssembly) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    setUserData(userData);
   };
   const click = (groupName: string) => {
     navigate("/qr", { state: { group: groupName } });
@@ -36,20 +32,18 @@ export function Groups() {
   }, []);
 
   return !userData ? (
-    <Loader></Loader>
+    <Loader />
   ) : (
     <>
-      <Container className={classes.greetingBox}>
-        <SimpleGrid
-          className={classes.innerBox}
-          spacing={"md"}
-          verticalSpacing={"xl"}
-          cols={3}
-          breakpoints={[{ maxWidth: 768, cols: 1, spacing: "sm" }]}
+      <Stack m={10} mt={100}>
+        <Flex
+          wrap={"wrap"}
+          align={"center"}
+          justify={"center"}
+          columnGap={100}
+          rowGap={20}
         >
-          <div></div>
-
-          <p className={classes.name}>Hello {userData.firstName}!</p>
+          <Text className={classes.name}>Hello {userData.firstName}!</Text>
 
           {userData.isOrganizer && (
             <Button
@@ -59,26 +53,26 @@ export function Groups() {
               Organizer
             </Button>
           )}
-        </SimpleGrid>
-        <p className={classes.title}>Your groups</p>
-        <p className={classes.subtitle}>
-          Overview of your groups and active annual general assemblies
-        </p>
-      </Container>
+        </Flex>
+        <Text mt={10} mb={10} size={"xl"}>
+          Participate in assemblies for your groups:
+        </Text>
+      </Stack>
 
       <Flex
         justify={"center"}
         wrap="wrap"
-        gap="3rem"
-        style={{ marginLeft: "10rem", marginRight: "10rem" }}
+        rowGap={"2rem"}
+        columnGap={"2rem"}
+        m={10}
       >
         {userData.groups.map((group) => (
           <Box
             key={group.groupName}
-            {...(group.hasActiveAssembly
+            {...(!group.hasActiveAssembly
               ? {
                   opacity: 0.5,
-                  className: classes.inActiveBox,
+                  className: classes.box,
                 }
               : {
                   onClick: () => click(group.groupName),
