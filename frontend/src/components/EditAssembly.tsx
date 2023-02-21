@@ -109,44 +109,46 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
   return (
     <>
-      {/* <SimpleGrid cols={3}>
+      <SimpleGrid cols={3} style={{ position: "absolute", top: 70, left: 30 }}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <p
-            style={{ display: "inline", cursor: "pointer" }}
+            style={{ display: "inline", cursor: "pointer", fontSize: ".7rem" }}
             onClick={handleBreadcrumbGroupClick}
           >
             GROUPS{" "}
           </p>
-          <img src={Arrow}></img>
+          <img src={Arrow} width={"30px"}></img>
           <p
-            style={{ display: "inline", cursor: "pointer" }}
+            style={{ display: "inline", cursor: "pointer", fontSize: ".7rem" }}
             onClick={handleBreadcrumbOrganizerClick}
           >
             ORGANIZER
           </p>
-          <img src={Arrow}></img>
-          <p style={{ display: "inline", fontWeight: "bold" }}>CREATE/EDIT</p>
+          <img src={Arrow} width={"30px"}></img>
+          <p
+            style={{
+              display: "inline",
+              fontWeight: "bold",
+              fontSize: ".7rem",
+            }}
+          >
+            CREATE/EDIT
+          </p>
         </div>
-
-        <h2
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          data-testid="edit-assembly-page-title"
-        >
-          Edit {group.groupName} assembly
-        </h2>
         <div></div>
-      </SimpleGrid> */}
+      </SimpleGrid>
 
       <SimpleGrid
         cols={2}
         breakpoints={[{ maxWidth: 770, cols: 1, spacing: "sm" }]}
         w={"80vw"}
+        pt={120}
       >
-        <Container>
+        <Container
+          sx={() => ({
+            alignSelf: "center",
+          })}
+        >
           <h4>EDIT {group.groupName.toUpperCase()} ASSEMBLY</h4>
           {group.hasActiveAssembly ? (
             <Button
@@ -182,22 +184,42 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
         <Accordion
           defaultValue={"vote1"}
-          styles={{
-            item: {
-              backgroundColor: "white",
-              //#1A202C
-              border: "solid",
-              borderColor: "white",
-              borderRadius: "5px",
-              maxWidth: 780,
-            },
-          }}
+          sx={(theme) => ({
+            height: "fit-content",
+            backgroundColor: theme.colors.ntnui_background[9],
+            border: "solid",
+            borderColor: theme.colors.ntnui_yellow[9],
+            borderRadius: "5px",
+            borderBottomRightRadius: "0px",
+            borderBottomWidth: 0.5,
+            maxWidth: 780,
+          })}
         >
           {cases.map((item, index) => (
-            <Accordion.Item value={String(index)}>
-              <Accordion.Control>Vote {index + 1}</Accordion.Control>
+            <Accordion.Item
+              key={index}
+              value={String(index)}
+              sx={(theme) => ({
+                borderColor: theme.colors.ntnui_yellow[9],
+                borderBottomLeftRadius: "2px",
+              })}
+            >
+              <Accordion.Control
+                sx={(theme) => ({
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: theme.colors.ntnui_background[9],
+                  },
+                })}
+              >
+                Vote {index + 1}
+              </Accordion.Control>
               {!item.title || item.editable ? (
-                <Accordion.Panel>
+                <Accordion.Panel
+                  sx={(theme) => ({
+                    color: "white",
+                  })}
+                >
                   <form
                     onSubmit={form.onSubmit((values) =>
                       handleSubmit(values, index)
@@ -231,11 +253,17 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                       }}
                       {...form.getInputProps("options")}
                     />
-                    <Button type="submit">Save current vote</Button>
+                    <Button type="submit" m={5}>
+                      Save current vote
+                    </Button>
                   </form>
                 </Accordion.Panel>
               ) : (
-                <Accordion.Panel>
+                <Accordion.Panel
+                  sx={(theme) => ({
+                    color: "white",
+                  })}
+                >
                   <p>{item.title}</p>
                   <p>{item.description}</p>
                   <p>{item.options}</p>

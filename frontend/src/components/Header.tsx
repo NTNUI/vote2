@@ -7,7 +7,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useStyles } from "../styles/headerStyles";
 
 export function HeaderAction() {
-  const matches = useMediaQuery("(min-width: 321px)");
+  const matches = useMediaQuery("(min-width: 400px)");
   const { classes } = useStyles();
   const navigate = useNavigate();
 
