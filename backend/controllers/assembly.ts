@@ -116,7 +116,6 @@ export async function getAssemblyByName(
     return res.status(401).json({ message: "Unauthorized" });
   }
   const group = req.body.group;
-
   const user = await User.findById(req.ntnuiNo);
 
   if (user) {
@@ -127,12 +126,12 @@ export async function getAssemblyByName(
       )
     ) {
       const assembly = await Assembly.findById(group);
-
       if (assembly == null) {
         return res
           .status(400)
           .json({ message: "No assembly with the given ID found" });
       }
+
       return res.status(200).json(assembly);
     }
   }
