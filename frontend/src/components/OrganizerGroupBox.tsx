@@ -79,7 +79,7 @@ export function OrganizerGroupBox(props: {
           wrap="wrap"
           sx={{ padding: "1vw" }}
         >
-          <div
+          <Box
             style={{
               width: truncateText(),
               marginLeft: "2vw",
@@ -87,9 +87,9 @@ export function OrganizerGroupBox(props: {
             }}
           >
             <Text lineClamp={2} {...(breakSmall ? { fz: "lg" } : { fz: "sm" })}>
-              SKI TOURING AND FREERIDE
+              {props.group.groupName.toUpperCase()}
             </Text>
-          </div>
+          </Box>
           {props.group.hasActiveAssembly ? (
             <Box>
               <Button

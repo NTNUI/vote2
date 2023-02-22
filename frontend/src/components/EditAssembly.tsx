@@ -1,7 +1,9 @@
 import {
   Accordion,
+  Box,
   Button,
   Container,
+  Image,
   MultiSelect,
   SimpleGrid,
   Text,
@@ -13,6 +15,7 @@ import Arrow from "../assets/Arrow.svg";
 import { useForm } from "@mantine/form";
 import { UserDataGroupType } from "../types/user";
 import { activateAssembly, deleteAssembly } from "../services/assembly";
+import colors from "../utils/theme";
 
 interface VoteDetails {
   title: string;
@@ -109,7 +112,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
   return (
     <>
-      <div
+      <Box
         style={{
           position: "absolute",
           top: 70,
@@ -121,7 +124,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
         <Text fz={"sm"} fw={500} onClick={() => handleBreadcrumbGroupClick()}>
           GROUPS
         </Text>
-        <img src={Arrow}></img>
+        <Image src={Arrow}></Image>
         <Text
           fz={"sm"}
           fw={500}
@@ -129,11 +132,11 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
         >
           ORGANIZER
         </Text>
-        <img src={Arrow}></img>
+        <Image src={Arrow}></Image>
         <Text fz={"sm"} fw={700}>
           CREATE/EDIT
         </Text>
-      </div>
+      </Box>
 
       <SimpleGrid
         cols={2}
@@ -227,6 +230,11 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     <TextInput
                       withAsterisk
                       label="Title"
+                      styles={{
+                        label: {
+                          color: "white"
+                        }
+                      }}
                       placeholder="title"
                       {...form.getInputProps("title")}
                     />
@@ -234,12 +242,22 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     <TextInput
                       withAsterisk
                       label="Description"
+                      styles={{
+                        label: {
+                          color: "white"
+                        }
+                      }}
                       placeholder="description"
                       {...form.getInputProps("description")}
                     />
 
                     <MultiSelect
                       label="Creatable MultiSelect"
+                      styles={{
+                        label: {
+                          color: "white"
+                        }
+                      }}
                       data={defaultOptions}
                       placeholder="Select items"
                       searchable
@@ -259,13 +277,13 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                 </Accordion.Panel>
               ) : (
                 <Accordion.Panel
-                  sx={(theme) => ({
+                  sx={{
                     color: "white",
-                  })}
+                  }}
                 >
-                  <p>{item.title}</p>
-                  <p>{item.description}</p>
-                  <p>{item.options}</p>
+                  <Text>{item.title}</Text>
+                  <Text>{item.description}</Text>
+                  <Text>{item.options}</Text>
                   <Button
                     onClick={() => {
                       setEditable(item, index, true);

@@ -1,4 +1,4 @@
-import { Loader, SimpleGrid, Text } from "@mantine/core";
+import { Image, Loader, SimpleGrid, Text, Box } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserData } from "../services/organizer";
@@ -52,7 +52,7 @@ export function OrganizerList() {
     <Loader />
   ) : (
     <>
-      <div
+      <Box
         style={{
           position: "absolute",
           top: 70,
@@ -64,11 +64,11 @@ export function OrganizerList() {
         <Text fz={"sm"} fw={500} onClick={() => handleBreadcrumbClick()}>
           GROUPS
         </Text>
-        <img src={Arrow}></img>
+        <Image src={Arrow}></Image>
         <Text fz={"sm"} fw={700}>
           ORGANIZER
         </Text>
-      </div>
+      </Box>
       <Text
         fz={"xl"}
         fw={500}
@@ -79,6 +79,7 @@ export function OrganizerList() {
         })}
         data-testid="organizer-list-page-title"
       >
+        
         Manage group assemblies
       </Text>
 

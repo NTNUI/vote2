@@ -1,4 +1,4 @@
-import { Tooltip, createStyles } from "@mantine/core";
+import { Tooltip, createStyles, Box } from "@mantine/core";
 import { forwardRef } from "react";
 import { InfoCircle } from "tabler-icons-react";
 
@@ -34,9 +34,9 @@ const NtnuiInfoTooltip = (label: JSX.Element) => {
 
 const ReferencedInfoCircle = forwardRef<HTMLDivElement>((props, ref) => {
   return (
-    <div ref={ref} {...props}>
+    <Box ref={ref} {...props}>
       <InfoCircle size={16} />
-    </div>
+    </Box>
   );
 });
 
