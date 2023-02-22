@@ -4,9 +4,5 @@ import { QrCode } from "../components/QrCode";
 
 export function QR() {
   const { state } = useLocation();
-  return (
-    <p>
-      <QrCode {...state}></QrCode>
-    </p>
-  );
+  return <QrCode {...state}></QrCode>;
 }

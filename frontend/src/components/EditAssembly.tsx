@@ -109,34 +109,31 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
   return (
     <>
-      <SimpleGrid cols={3} style={{ position: "absolute", top: 70, left: 30 }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <p
-            style={{ display: "inline", cursor: "pointer", fontSize: ".7rem" }}
-            onClick={handleBreadcrumbGroupClick}
-          >
-            GROUPS{" "}
-          </p>
-          <img src={Arrow} width={"30px"}></img>
-          <p
-            style={{ display: "inline", cursor: "pointer", fontSize: ".7rem" }}
-            onClick={handleBreadcrumbOrganizerClick}
-          >
-            ORGANIZER
-          </p>
-          <img src={Arrow} width={"30px"}></img>
-          <p
-            style={{
-              display: "inline",
-              fontWeight: "bold",
-              fontSize: ".7rem",
-            }}
-          >
-            CREATE/EDIT
-          </p>
-        </div>
-        <div></div>
-      </SimpleGrid>
+      <div
+        style={{
+          position: "absolute",
+          top: 70,
+          left: 30,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Text fz={"sm"} fw={500} onClick={() => handleBreadcrumbGroupClick()}>
+          GROUPS
+        </Text>
+        <img src={Arrow}></img>
+        <Text
+          fz={"sm"}
+          fw={500}
+          onClick={() => handleBreadcrumbOrganizerClick()}
+        >
+          ORGANIZER
+        </Text>
+        <img src={Arrow}></img>
+        <Text fz={"sm"} fw={700}>
+          CREATE/EDIT
+        </Text>
+      </div>
 
       <SimpleGrid
         cols={2}
@@ -149,7 +146,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             alignSelf: "center",
           })}
         >
-          <h4>EDIT {group.groupName.toUpperCase()} ASSEMBLY</h4>
+          <Text fz={"xl"} fw={500}>
+            EDIT {group.groupName.toUpperCase()} ASSEMBLY
+          </Text>
           {group.hasActiveAssembly ? (
             <Button
               color={"red"}
