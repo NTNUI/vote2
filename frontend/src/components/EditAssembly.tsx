@@ -2,9 +2,9 @@ import {
   Accordion,
   Button,
   Container,
+  Loader,
   MultiSelect,
   SimpleGrid,
-  Text,
   TextInput,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
@@ -17,6 +17,7 @@ import {
   deleteAssembly,
   getAssemblyByName,
 } from "../services/assembly";
+import { AssemblyType } from "../types/assembly";
 
 interface VoteDetails {
   title: string;
@@ -30,13 +31,20 @@ const defaultOptions: string[] = ["Yes", "No", "Blank"];
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
   const [cases, setCases] = useState<VoteDetails[]>([]);
-  const assembly = getAssemblyByName(group);
+  const [assembly, setAssembly] = useState<AssemblyType | undefined>();
   const form = useForm<VoteDetails>();
+
+  useEffect(() => {
+    const fetch = async () => {
+      const assemblyData = await getAssemblyByName(group.groupName);
+      setAssembly(assemblyData);
+    };
+    fetch().catch(console.error);
+  }, []);
 
   let navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Fetches data");
     const exampleCase: VoteDetails = {
       title: "Test",
       description: "Used for testing",
@@ -55,7 +63,6 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   }
 
   function addCase() {
-    console.log("Add!");
     setCases((cases) => [
       ...cases,
       { title: "", description: "", options: [], editable: true },
@@ -103,12 +110,12 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     let newCases: VoteDetails[] = cases;
     item.editable = conditon;
     newCases[index] = item;
-    console.log("Edits.");
     setCases(newCases);
-    console.log(cases);
   }
 
-  return (
+  return !assembly ? (
+    <Loader />
+  ) : (
     <>
       <SimpleGrid cols={3} style={{ position: "absolute", top: 70, left: 30 }}>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -150,7 +157,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             alignSelf: "center",
           })}
         >
-          <h4>EDIT {group.groupName.toUpperCase()} ASSEMBLY</h4>
+          <h4>EDIT {assembly._id.toUpperCase()} ASSEMBLY</h4>
           {group.hasActiveAssembly ? (
             <Button
               color={"red"}

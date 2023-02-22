@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UserDataGroupType } from "../types/user";
+import { AssemblyType } from "../types/assembly";
 
 export const createAssembly = async (group: string) => {
   return axios.post(
@@ -30,16 +30,14 @@ export const deleteAssembly = async (group: string) => {
   });
 };
 
-// export const getAssemblyData = async (group: string) => {
-//   return axios.get("/assembly/", { data: { group: group } });
-// };
+export const getAssemblyByName = async (
+  group: string
+): Promise<AssemblyType> => {
+  return (
+    await axios.post("/assembly/", {
+      groupName: group,
 
-export const getAssemblyByName = (group: UserDataGroupType) => {
-  return axios.post(
-    "/assembly/",
-    {
-      group: group,
-    },
-    { withCredentials: true }
-  );
+      withCredentials: true,
+    })
+  ).data;
 };
