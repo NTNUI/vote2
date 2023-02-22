@@ -107,3 +107,36 @@ export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
     .status(401)
     .json({ message: "You are not authorized to delete this assembly" });
 }
+
+export async function getAssemblyByName(
+  req: RequestWithNtnuiNo,
+  res: Response
+) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const group = req.body.group;
+
+  const user = await User.findById(req.ntnuiNo);
+
+  if (user) {
+    if (
+      user.groups.some(
+        (membership) =>
+          isGroupOrganizer(membership) && membership.groupName == group
+      )
+    ) {
+      const assembly = await Assembly.findById(group);
+
+      if (assembly == null) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given ID found" });
+      }
+      return res.status(200).json(assembly);
+    }
+  }
+  return res
+    .status(401)
+    .json({ message: "You are not authorized to proceed with this request" });
+}

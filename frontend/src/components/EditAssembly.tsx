@@ -12,7 +12,11 @@ import { useNavigate } from "react-router-dom";
 import Arrow from "../assets/Arrow.svg";
 import { useForm } from "@mantine/form";
 import { UserDataGroupType } from "../types/user";
-import { activateAssembly, deleteAssembly } from "../services/assembly";
+import {
+  activateAssembly,
+  deleteAssembly,
+  getAssemblyByName,
+} from "../services/assembly";
 
 interface VoteDetails {
   title: string;
@@ -26,12 +30,9 @@ const defaultOptions: string[] = ["Yes", "No", "Blank"];
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
   const [cases, setCases] = useState<VoteDetails[]>([]);
-
-  useEffect(() => {
-    //Need endpoint to fetch a single group
-  }, []);
-
+  const assembly = getAssemblyByName(group);
   const form = useForm<VoteDetails>();
+
   let navigate = useNavigate();
 
   useEffect(() => {
