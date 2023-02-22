@@ -51,8 +51,12 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
       );
 
       // If user is logged inn, the correct token is provided,
-      // and timestamp is less than 15 seconds ago
-      if (scannedUser && Date.now() - timestamp < 15000) {
+      // and timestamp is less than 15 seconds ago and not negative (created before current time)
+      if (
+        scannedUser &&
+        Date.now() - timestamp < 15000 &&
+        Date.now() - timestamp > 0
+      ) {
         if (
           scannedUser.groups.some((membership) => membership.groupName == group)
         ) {

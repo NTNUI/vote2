@@ -8,7 +8,7 @@ export function QrCode(state: { group: string }) {
   let [access, setAccess] = useState<string>();
   let [time, setTime] = useState<number>(Date.now());
   const getCredentials = async () => {
-    setAccess(await (await getQrInfo()).access);
+    setAccess((await getQrInfo()).access);
   };
 
   //Missing refresh token update
@@ -31,9 +31,9 @@ export function QrCode(state: { group: string }) {
       <QRCodeSVG
         fgColor="#ffffff"
         bgColor="#1b202c"
-        imageSettings={{ src: logo, height: 50, width: 120, excavate: true }}
+        imageSettings={{ src: logo, height: 15, width: 40, excavate: false }}
         includeMargin={true}
-        size={500}
+        size={350}
         value={JSON.stringify({
           access: access,
           timestamp: time,

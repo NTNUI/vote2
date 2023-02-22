@@ -1,4 +1,4 @@
-import { SimpleGrid } from "@mantine/core";
+import { Loader, SimpleGrid } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserData } from "../services/organizer";
@@ -10,9 +10,7 @@ import { OrganizerGroupBox } from "./OrganizerGroupBox";
 //import {createAssembly, activateAssembly, deleteAssembly} from "../services/assembly";
 
 export function OrganizerList() {
-  const [organizerGroups, setOrganizerGroups] = useState<UserDataGroupType[]>(
-    []
-  );
+  const [organizerGroups, setOrganizerGroups] = useState<UserDataGroupType[]>();
   let navigate = useNavigate();
   const matches = useMediaQuery("(min-width: 600px)");
 
@@ -51,7 +49,9 @@ export function OrganizerList() {
     fetchGroups();
   }, []);
 
-  return (
+  return !organizerGroups ? (
+    <Loader />
+  ) : (
     <>
       <SimpleGrid
         cols={3}

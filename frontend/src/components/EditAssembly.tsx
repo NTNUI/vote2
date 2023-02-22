@@ -186,9 +186,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           defaultValue={"vote1"}
           sx={(theme) => ({
             height: "fit-content",
-            backgroundColor: theme.colors.ntnui_background[9],
+            backgroundColor: theme.colors.ntnui_background[0],
             border: "solid",
-            borderColor: theme.colors.ntnui_yellow[9],
+            borderColor: theme.colors.ntnui_yellow[0],
             borderRadius: "5px",
             borderBottomRightRadius: "0px",
             borderBottomWidth: 0.5,
@@ -200,7 +200,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               key={index}
               value={String(index)}
               sx={(theme) => ({
-                borderColor: theme.colors.ntnui_yellow[9],
+                borderColor: theme.colors.ntnui_yellow[0],
                 borderBottomLeftRadius: "2px",
               })}
             >
@@ -208,7 +208,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                 sx={(theme) => ({
                   color: "white",
                   "&:hover": {
-                    backgroundColor: theme.colors.ntnui_background[9],
+                    backgroundColor: theme.colors.ntnui_background[0],
                   },
                 })}
               >
