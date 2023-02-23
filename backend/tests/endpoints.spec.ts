@@ -273,7 +273,7 @@ describe("API test: check coordination between assemblies and userData", () => {
       .set("Cookie", cookies)
       .then((response) => {
         expect(response.statusCode).toBe(200);
-        expect(response.body["groups"][3]["role"]).toBe("organizer");
+        expect(response.body["groups"][3]["organizer"]).toBe(true);
         expect(response.body["groups"][3]["hasAssembly"]).toBe(false);
         expect(response.body["groups"][3]["hasActiveAssembly"]).toBe(false);
         done();
@@ -288,7 +288,7 @@ describe("API test: check coordination between assemblies and userData", () => {
       .set("Cookie", cookies)
       .then((response) => {
         expect(response.statusCode).toBe(200);
-        expect(response.body["groups"][3]["role"]).toBe("organizer");
+        expect(response.body["groups"][3]["organizer"]).toBe(true);
         expect(response.body["groups"][3]["hasAssembly"]).toBe(true);
         expect(response.body["groups"][3]["hasActiveAssembly"]).toBe(false);
         done();
@@ -303,7 +303,7 @@ describe("API test: check coordination between assemblies and userData", () => {
       .set("Cookie", cookies)
       .then((response) => {
         expect(response.statusCode).toBe(200);
-        expect(response.body["groups"][3]["role"]).toBe("organizer");
+        expect(response.body["groups"][3]["organizer"]).toBe(true);
         expect(response.body["groups"][3]["hasAssembly"]).toBe(true);
         expect(response.body["groups"][3]["hasActiveAssembly"]).toBe(true);
         done();
@@ -318,7 +318,7 @@ describe("API test: check coordination between assemblies and userData", () => {
       .set("Cookie", cookies)
       .then((response) => {
         expect(response.statusCode).toBe(200);
-        expect(response.body["groups"][3]["role"]).toBe("organizer");
+        expect(response.body["groups"][3]["organizer"]).toBe(true);
         expect(response.body["groups"][3]["hasAssembly"]).toBe(true);
         expect(response.body["groups"][3]["hasActiveAssembly"]).toBe(false);
         done();
@@ -333,7 +333,7 @@ describe("API test: check coordination between assemblies and userData", () => {
       .set("Cookie", cookies)
       .then((response) => {
         expect(response.statusCode).toBe(200);
-        expect(response.body["groups"][3]["role"]).toBe("organizer");
+        expect(response.body["groups"][3]["organizer"]).toBe(true);
         expect(response.body["groups"][3]["hasAssembly"]).toBe(false);
         expect(response.body["groups"][3]["hasActiveAssembly"]).toBe(false);
         done();
