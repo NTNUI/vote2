@@ -31,11 +31,11 @@ export const deleteAssembly = async (group: string) => {
 };
 
 export const getAssemblyByName = async (
-  group: string
+  groupSlug: string
 ): Promise<AssemblyType> => {
   return (
     await axios.post("/assembly/", {
-      groupName: group,
+      groupSlug: groupSlug,
     })
   ).data;
 };

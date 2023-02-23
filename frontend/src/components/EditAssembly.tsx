@@ -36,7 +36,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
   useEffect(() => {
     const fetch = async () => {
-      const assemblyData = await getAssemblyByName(group.groupName);
+      const assemblyData = await getAssemblyByName(group.groupSlug);
       setAssembly(assemblyData);
     };
     fetch().catch(console.error);

@@ -115,17 +115,17 @@ export async function getAssemblyByName(
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  const groupName = req.body.groupName;
+  const groupSlug = req.body.groupSlug;
   const user = await User.findById(req.ntnuiNo);
 
   if (user) {
     if (
       user.groups.some(
         (membership) =>
-          isGroupOrganizer(membership) && membership.groupName == groupName
+          isGroupOrganizer(membership) && membership.groupSlug == groupSlug
       )
     ) {
-      const assembly = await Assembly.findById(groupName);
+      const assembly = await Assembly.findById(groupSlug);
       if (assembly == null) {
         return res
           .status(400)
