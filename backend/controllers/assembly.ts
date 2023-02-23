@@ -15,7 +15,7 @@ export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
     if (
       user.groups.some(
         (membership) =>
-          isGroupOrganizer(membership) && membership.groupName == group
+          isGroupOrganizer(membership) && membership.groupSlug == group
       )
     ) {
       await Assembly.findByIdAndUpdate(
@@ -51,7 +51,7 @@ export async function setAssemblyStatus(
     if (
       user.groups.some(
         (membership) =>
-          isGroupOrganizer(membership) && membership.groupName == group
+          isGroupOrganizer(membership) && membership.groupSlug == group
       )
     ) {
       const assembly = await Assembly.findByIdAndUpdate(group, {
@@ -83,7 +83,7 @@ export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
     if (
       user.groups.some(
         (membership) =>
-          isGroupOrganizer(membership) && membership.groupName == group
+          isGroupOrganizer(membership) && membership.groupSlug == group
       )
     ) {
       const assembly = await Assembly.findById(group);
