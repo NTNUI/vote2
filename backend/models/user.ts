@@ -8,6 +8,10 @@ export const groupSchema = new Schema<GroupType>(
       type: String,
       required: true,
     },
+    groupSlug: {
+      type: String,
+      required: true,
+    },
     role: {
       type: String,
       enum: userRole,

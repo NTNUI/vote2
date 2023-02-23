@@ -62,9 +62,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     console.log(cases);
   }
 
-  function endAssembly(groupName: string) {
+  function endAssembly(groupSlug: string) {
     try {
-      activateAssembly(groupName, false).then(() => {
+      activateAssembly(groupSlug, false).then(() => {
         setGroup({ ...group, hasActiveAssembly: false });
       });
     } catch (error) {
@@ -72,9 +72,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     }
   }
 
-  function handleDeleteAssemblyClick(groupName: string) {
+  function handleDeleteAssemblyClick(groupSlug: string) {
     try {
-      deleteAssembly(groupName).then(() => {
+      deleteAssembly(groupSlug).then(() => {
         navigate("/admin");
       });
     } catch (error) {
@@ -82,9 +82,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     }
   }
 
-  function startAssembly(groupName: string) {
+  function startAssembly(groupSlug: string) {
     try {
-      activateAssembly(groupName, true).then(() => {
+      activateAssembly(groupSlug, true).then(() => {
         setGroup({ ...group, hasActiveAssembly: true });
       });
     } catch (error) {
@@ -153,7 +153,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           {group.hasActiveAssembly ? (
             <Button
               color={"red"}
-              onClick={() => endAssembly(group.groupName)}
+              onClick={() => endAssembly(group.groupSlug)}
               m={10}
             >
               Stop assembly
@@ -161,7 +161,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           ) : (
             <Button
               color={"green"}
-              onClick={() => startAssembly(group.groupName)}
+              onClick={() => startAssembly(group.groupSlug)}
               m={10}
             >
               Start Assembly
@@ -170,7 +170,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           {!group.hasActiveAssembly && (
             <Button
               color={"red"}
-              onClick={() => handleDeleteAssemblyClick(group.groupName)}
+              onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
               m={10}
             >
               Delete assembly
