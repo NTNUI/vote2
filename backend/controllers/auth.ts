@@ -15,7 +15,8 @@ export async function login(req: Request, res: Response) {
     const groups: GroupType[] = [];
     userProfile.data.memberships.forEach((membership) => {
       groups.push({
-        groupName: membership.slug,
+        groupName: membership.group,
+        groupSlug: membership.slug,
         role: membership.type,
       });
     });

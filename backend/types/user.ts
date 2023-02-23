@@ -7,11 +7,13 @@ export type UserType = {
 
 export type GroupType = {
   groupName: string;
+  groupSlug: string;
   role: string;
 };
 
 export type UserDataGroupType = {
   groupName: string;
+  groupSlug: string;
   role: string;
   hasActiveAssembly: boolean;
   hasAssembly: boolean;

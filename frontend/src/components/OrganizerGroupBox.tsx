@@ -9,11 +9,11 @@ export function OrganizerGroupBox(props: {
 }) {
   let navigate = useNavigate();
 
-  const startCheckinTestID: string = "checkin-button-" + props.group.groupName;
+  const startCheckinTestID: string = "checkin-button-" + props.group.groupSlug;
   const createAssemblyTestID: string =
-    "create-assembly-button-" + props.group.groupName + "-" + props.index;
+    "create-assembly-button-" + props.group.groupSlug + "-" + props.index;
   const editAssemblyTestID: string =
-    "edit-assembly-button-" + props.group.groupName;
+    "edit-assembly-button-" + props.group.groupSlug;
 
   function handleQRClick() {
     navigate("/QR");
@@ -25,7 +25,7 @@ export function OrganizerGroupBox(props: {
 
   function handleCreateAssemblyClick(group: UserDataGroupType) {
     try {
-      createAssembly(group.groupName).then(() => {
+      createAssembly(group.groupSlug).then(() => {
         navigate("/assembly", { state: { group: group } });
       });
     } catch (error) {

@@ -4,7 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { getQrInfo } from "../services/qr";
 import logo from "../assets/ntnuiColor.svg";
 
-export function QrCode(state: { group: string }) {
+export function QrCode(state: { groupName: string; groupSlug: string }) {
   let [access, setAccess] = useState<string>();
   let [time, setTime] = useState<number>(Date.now());
   const getCredentials = async () => {
@@ -27,7 +27,7 @@ export function QrCode(state: { group: string }) {
     <Loader></Loader>
   ) : (
     <>
-      <Text size={"xl"}>Check-in for {state.group.toUpperCase()}</Text>
+      <Text size={"xl"}>Check-in for {state.groupName.toUpperCase()}</Text>
       <QRCodeSVG
         fgColor="#ffffff"
         bgColor="#1b202c"
@@ -37,7 +37,7 @@ export function QrCode(state: { group: string }) {
         value={JSON.stringify({
           access: access,
           timestamp: time,
-          group: state.group,
+          group: state.groupSlug,
         })}
       />
     </>
