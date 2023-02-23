@@ -37,7 +37,6 @@ export const getAssemblyByName = async (
     await axios.post("/assembly/", {
       groupName: group,
 
-      withCredentials: true,
     })
   ).data;
 };
