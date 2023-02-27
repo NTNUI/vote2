@@ -23,8 +23,8 @@ export function Groups() {
     });
     setUserData(userData);
   };
-  const click = (groupName: string) => {
-    navigate("/qr", { state: { group: groupName } });
+  const click = (groupName: string, groupSlug: string) => {
+    navigate("/qr", { state: { groupName: groupName, groupSlug: groupSlug } });
   };
 
   useEffect(() => {
@@ -68,20 +68,20 @@ export function Groups() {
       >
         {userData.groups.map((group) => (
           <Box
-            key={group.groupName}
+            key={group.groupSlug}
             {...(!group.hasActiveAssembly
               ? {
                   opacity: 0.5,
                   className: classes.box,
                 }
               : {
-                  onClick: () => click(group.groupName),
+                  onClick: () => click(group.groupName, group.groupSlug),
                   className: classes.activeBox,
                 })}
           >
             {group.groupName.toUpperCase()}
             <Text style={{ justifySelf: "right" }} fz={"xs"}>
-              {group.role}
+              {group.organizer ? "Organizer" : "Member"}
             </Text>
           </Box>
         ))}

@@ -3,7 +3,7 @@ import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { UserDataGroupType, UserDataResponseType } from "../types/user";
 import { RequestWithNtnuiNo } from "../utils/request";
-import { getNameById, isGroupOrganizer } from "../utils/user";
+import { getNameById } from "../utils/user";
 
 export async function getUserData(
   req: RequestWithNtnuiNo,
@@ -27,17 +27,16 @@ export async function getUserData(
     };
 
     for (const membership of user.groups) {
-      let role = "member";
-      if (isGroupOrganizer(membership)) {
+      if (membership.organizer) {
         userData.isOrganizer = true;
-        role = "organizer";
       }
 
-      const assembly = await Assembly.findById(membership.groupName);
+      const assembly = await Assembly.findById(membership.groupSlug);
 
       userDataGroups.push({
         groupName: membership.groupName,
-        role: role,
+        groupSlug: membership.groupSlug,
+        organizer: membership.organizer,
         hasAssembly: assembly ? true : false,
         hasActiveAssembly: assembly ? assembly.isActive : false,
         createdBy: assembly

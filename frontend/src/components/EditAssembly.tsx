@@ -4,18 +4,19 @@ import {
   Button,
   Container,
   Image,
+  Loader,
   MultiSelect,
   SimpleGrid,
-  Text,
   TextInput,
+  Text,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Arrow from "../assets/Arrow.svg";
 import { useForm } from "@mantine/form";
 import { UserDataGroupType } from "../types/user";
-import { activateAssembly, deleteAssembly } from "../services/assembly";
-import colors from "../utils/theme";
+import { activateAssembly, deleteAssembly, getAssemblyByName } from "../services/assembly";
+import { AssemblyType } from "../types/assembly";
 
 interface VoteDetails {
   title: string;
@@ -29,16 +30,20 @@ const defaultOptions: string[] = ["Yes", "No", "Blank"];
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
   const [cases, setCases] = useState<VoteDetails[]>([]);
+  const [assembly, setAssembly] = useState<AssemblyType | undefined>();
+  const form = useForm<VoteDetails>();
 
   useEffect(() => {
-    //Need endpoint to fetch a single group
+    const fetch = async () => {
+      const assemblyData = await getAssemblyByName(group.groupSlug);
+      setAssembly(assemblyData);
+    };
+    fetch().catch(console.error);
   }, []);
 
-  const form = useForm<VoteDetails>();
   let navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Fetches data");
     const exampleCase: VoteDetails = {
       title: "Test",
       description: "Used for testing",
@@ -57,7 +62,6 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   }
 
   function addCase() {
-    console.log("Add!");
     setCases((cases) => [
       ...cases,
       { title: "", description: "", options: [], editable: true },
@@ -65,9 +69,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     console.log(cases);
   }
 
-  function endAssembly(groupName: string) {
+  function endAssembly(groupSlug: string) {
     try {
-      activateAssembly(groupName, false).then(() => {
+      activateAssembly(groupSlug, false).then(() => {
         setGroup({ ...group, hasActiveAssembly: false });
       });
     } catch (error) {
@@ -75,9 +79,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     }
   }
 
-  function handleDeleteAssemblyClick(groupName: string) {
+  function handleDeleteAssemblyClick(groupSlug: string) {
     try {
-      deleteAssembly(groupName).then(() => {
+      deleteAssembly(groupSlug).then(() => {
         navigate("/admin");
       });
     } catch (error) {
@@ -85,9 +89,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     }
   }
 
-  function startAssembly(groupName: string) {
+  function startAssembly(groupSlug: string) {
     try {
-      activateAssembly(groupName, true).then(() => {
+      activateAssembly(groupSlug, true).then(() => {
         setGroup({ ...group, hasActiveAssembly: true });
       });
     } catch (error) {
@@ -105,12 +109,12 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     let newCases: VoteDetails[] = cases;
     item.editable = conditon;
     newCases[index] = item;
-    console.log("Edits.");
     setCases(newCases);
-    console.log(cases);
   }
 
-  return (
+  return !assembly ? (
+    <Loader />
+  ) : (
     <>
       <Box
         style={{
@@ -155,7 +159,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           {group.hasActiveAssembly ? (
             <Button
               color={"red"}
-              onClick={() => endAssembly(group.groupName)}
+              onClick={() => endAssembly(group.groupSlug)}
               m={10}
             >
               Stop assembly
@@ -163,7 +167,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           ) : (
             <Button
               color={"green"}
-              onClick={() => startAssembly(group.groupName)}
+              onClick={() => startAssembly(group.groupSlug)}
               m={10}
             >
               Start Assembly
@@ -172,7 +176,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           {!group.hasActiveAssembly && (
             <Button
               color={"red"}
-              onClick={() => handleDeleteAssemblyClick(group.groupName)}
+              onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
               m={10}
             >
               Delete assembly

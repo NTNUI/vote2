@@ -1,8 +1,9 @@
 import axios from "axios";
+import { AssemblyType } from "../types/assembly";
 
 export const createAssembly = async (group: string) => {
   return axios.post(
-    "/assembly/",
+    "/assembly/create",
     {
       group: group,
     },
@@ -27,4 +28,14 @@ export const deleteAssembly = async (group: string) => {
       group: group,
     },
   });
+};
+
+export const getAssemblyByName = async (
+  groupSlug: string
+): Promise<AssemblyType> => {
+  return (
+    await axios.post("/assembly/", {
+      groupSlug: groupSlug,
+    })
+  ).data;
 };
