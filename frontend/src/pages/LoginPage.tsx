@@ -7,7 +7,12 @@ export function Login() {
   const navigate = useNavigate();
   return (
     <>
-      <Image sx={{position:"absolute", top:0,left:0}} src={logo} alt="NTNUI logo" width="200px"></Image>
+      <Image
+        sx={{ position: "absolute", top: 0, left: 0 }}
+        src={logo}
+        alt="NTNUI logo"
+        width="200px"
+      ></Image>
       <LoginForm />
     </>
   );

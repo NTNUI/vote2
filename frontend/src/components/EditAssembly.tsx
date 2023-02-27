@@ -15,7 +15,11 @@ import { useNavigate } from "react-router-dom";
 import Arrow from "../assets/Arrow.svg";
 import { useForm } from "@mantine/form";
 import { UserDataGroupType } from "../types/user";
-import { activateAssembly, deleteAssembly, getAssemblyByName } from "../services/assembly";
+import {
+  activateAssembly,
+  deleteAssembly,
+  getAssemblyByName,
+} from "../services/assembly";
 import { AssemblyType } from "../types/assembly";
 
 interface VoteDetails {
@@ -236,8 +240,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                       label="Title"
                       styles={{
                         label: {
-                          color: "white"
-                        }
+                          color: "white",
+                        },
                       }}
                       placeholder="title"
                       {...form.getInputProps("title")}
@@ -248,8 +252,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                       label="Description"
                       styles={{
                         label: {
-                          color: "white"
-                        }
+                          color: "white",
+                        },
                       }}
                       placeholder="description"
                       {...form.getInputProps("description")}
@@ -259,8 +263,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                       label="Creatable MultiSelect"
                       styles={{
                         label: {
-                          color: "white"
-                        }
+                          color: "white",
+                        },
                       }}
                       data={defaultOptions}
                       placeholder="Select items"

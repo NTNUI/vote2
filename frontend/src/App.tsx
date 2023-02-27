@@ -14,7 +14,7 @@ import axios from "axios";
 import { HeaderAction } from "./components/Header";
 
 function App() {
-  axios.defaults.baseURL = "http://10.22.148.163:3000";
+  axios.defaults.baseURL = "http://localhost:3000";
   axios.defaults.withCredentials = true;
 
   return (

@@ -68,7 +68,6 @@ export function OrganizerList() {
         })}
         data-testid="organizer-list-page-title"
       >
-        
         Manage group assemblies
       </Text>
 
