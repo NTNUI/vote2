@@ -5,9 +5,7 @@ import { getUserData } from "../services/organizer";
 import Arrow from "../assets/Arrow.svg";
 import { useMediaQuery } from "@mantine/hooks";
 import { UserDataGroupType } from "../types/user";
-import { createAssembly } from "../services/assembly";
 import { OrganizerGroupBox } from "./OrganizerGroupBox";
-//import {createAssembly, activateAssembly, deleteAssembly} from "../services/assembly";
 
 export function OrganizerList() {
   const [organizerGroups, setOrganizerGroups] = useState<UserDataGroupType[]>();
@@ -22,22 +20,12 @@ export function OrganizerList() {
     navigate("/start");
   }
 
-  function handleCreateAssemblyClick(group: UserDataGroupType) {
-    try {
-      createAssembly(group.groupName).then(() => {
-        navigate("/assembly", { state: { group: group } });
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   async function fetchGroups() {
     try {
       const groups = (await getUserData()).groups;
       setOrganizerGroups(
         groups.filter((group) => {
-          return group.role == "organizer";
+          return group.organizer == true;
         })
       );
     } catch (error) {

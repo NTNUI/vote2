@@ -1,8 +1,7 @@
 import { User } from "../models/user";
-import { GroupType } from "../types/user";
 
-export const isGroupOrganizer = (membership: GroupType) => {
-  return ["leader", "cashier", "deputy_leader"].includes(membership.role);
+export const groupOrganizers = () => {
+  return ["board_member", "leader", "cashier", "deputy_leader"];
 };
 
 export const getNameById = async (id: number) => {

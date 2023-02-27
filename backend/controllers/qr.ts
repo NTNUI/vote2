@@ -3,7 +3,6 @@ import { getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
-import { isGroupOrganizer } from "../utils/user";
 
 export async function getToken(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -39,8 +38,7 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
   if (
     user &&
     user.groups.some(
-      (membership) =>
-        isGroupOrganizer(membership) && membership.groupSlug == group
+      (membership) => membership.organizer && membership.groupSlug == group
     )
   ) {
     try {
@@ -93,8 +91,7 @@ export async function assemblyCheckout(req: RequestWithNtnuiNo, res: Response) {
   if (
     user &&
     user.groups.some(
-      (membership) =>
-        isGroupOrganizer(membership) && membership.groupSlug == group
+      (membership) => membership.organizer && membership.groupSlug == group
     )
   ) {
     try {

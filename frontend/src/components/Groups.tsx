@@ -81,7 +81,7 @@ export function Groups() {
           >
             {group.groupName.toUpperCase()}
             <Text style={{ justifySelf: "right" }} fz={"xs"}>
-              {group.role}
+              {group.organizer ? "Organizer" : "Member"}
             </Text>
           </Box>
         ))}
