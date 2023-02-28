@@ -1,5 +1,12 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
+import { VotationBox } from "../components/VotationBox";
 
 export function Vote() {
-  return <p>Vote page</p>;
+  const { state } = useLocation();
+  return (
+    <>
+      <VotationBox {...state}> </VotationBox>
+    </>
+  );
 }
