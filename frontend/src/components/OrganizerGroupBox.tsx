@@ -1,4 +1,5 @@
-import { Box, Button, Flex, Space } from "@mantine/core";
+import { Box, Button, Flex, Space, Text } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 import { createAssembly } from "../services/assembly";
 import { UserDataGroupType } from "../types/user";
@@ -8,6 +9,9 @@ export function OrganizerGroupBox(props: {
   index: number;
 }) {
   let navigate = useNavigate();
+  const breakMedium = useMediaQuery("(min-width: 601px)");
+  const breakSmall = useMediaQuery("(min-width: 546px)");
+  const breakMini = useMediaQuery("(min-width: 390px)");
 
   const startCheckinTestID: string = "checkin-button-" + props.group.groupSlug;
   const createAssemblyTestID: string =
@@ -37,6 +41,18 @@ export function OrganizerGroupBox(props: {
     navigate("/assembly", { state: { group: group } });
   }
 
+  function truncateText(): string {
+    if (breakMedium) {
+      return "300px";
+    } else if (breakSmall) {
+      return "150px";
+    } else if (breakMini) {
+      return "100px";
+    } else {
+      return "70px";
+    }
+  }
+
   return (
     <>
       <Space h="sm" />
@@ -55,14 +71,25 @@ export function OrganizerGroupBox(props: {
         <Flex
           mih={50}
           gap="xl"
-          justify="space-between"
+          {...(!breakSmall
+            ? { justify: "center" }
+            : { justify: "space-between" })}
           align="center"
           direction="row"
           wrap="wrap"
+          sx={{ padding: "1vw" }}
         >
-          <h4 style={{ marginLeft: "2vw" }}>
-            {props.group.groupName.toUpperCase()}
-          </h4>
+          <Box
+            style={{
+              width: truncateText(),
+              marginLeft: "2vw",
+              textAlign: "left",
+            }}
+          >
+            <Text lineClamp={2} {...(breakSmall ? { fz: "lg" } : { fz: "sm" })}>
+              {props.group.groupName.toUpperCase()}
+            </Text>
+          </Box>
           {props.group.hasActiveAssembly ? (
             <Box>
               <Button

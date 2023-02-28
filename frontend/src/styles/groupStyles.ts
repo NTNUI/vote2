@@ -22,6 +22,7 @@ export const useStyles = createStyles((theme) => ({
     alignItems: "center",
     flexWrap: "wrap",
     cursor: "pointer",
+    fontFamily: "Poppins, sans-serif",
   },
 
   box: {
@@ -40,6 +41,7 @@ export const useStyles = createStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
     flexWrap: "wrap",
+    fontFamily: "Poppins, sans-serif",
   },
 
   name: {
