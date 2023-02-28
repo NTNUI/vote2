@@ -1,11 +1,14 @@
 import {
   Accordion,
+  Box,
   Button,
   Container,
+  Image,
   Loader,
   MultiSelect,
   SimpleGrid,
   TextInput,
+  Text,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -117,34 +120,31 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     <Loader />
   ) : (
     <>
-      <SimpleGrid cols={3} style={{ position: "absolute", top: 70, left: 30 }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <p
-            style={{ display: "inline", cursor: "pointer", fontSize: ".7rem" }}
-            onClick={handleBreadcrumbGroupClick}
-          >
-            GROUPS{" "}
-          </p>
-          <img src={Arrow} width={"30px"}></img>
-          <p
-            style={{ display: "inline", cursor: "pointer", fontSize: ".7rem" }}
-            onClick={handleBreadcrumbOrganizerClick}
-          >
-            ORGANIZER
-          </p>
-          <img src={Arrow} width={"30px"}></img>
-          <p
-            style={{
-              display: "inline",
-              fontWeight: "bold",
-              fontSize: ".7rem",
-            }}
-          >
-            CREATE/EDIT
-          </p>
-        </div>
-        <div></div>
-      </SimpleGrid>
+      <Box
+        style={{
+          position: "absolute",
+          top: 70,
+          left: 30,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Text fz={"sm"} fw={500} onClick={() => handleBreadcrumbGroupClick()}>
+          GROUPS
+        </Text>
+        <Image src={Arrow}></Image>
+        <Text
+          fz={"sm"}
+          fw={500}
+          onClick={() => handleBreadcrumbOrganizerClick()}
+        >
+          ORGANIZER
+        </Text>
+        <Image src={Arrow}></Image>
+        <Text fz={"sm"} fw={700}>
+          CREATE/EDIT
+        </Text>
+      </Box>
 
       <SimpleGrid
         cols={2}
@@ -157,7 +157,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             alignSelf: "center",
           })}
         >
-          <h4>EDIT {assembly._id.toUpperCase()} ASSEMBLY</h4>
+          <Text fz={"xl"} fw={500}>
+            EDIT {group.groupName.toUpperCase()} ASSEMBLY
+          </Text>
           {group.hasActiveAssembly ? (
             <Button
               color={"red"}
@@ -236,6 +238,11 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     <TextInput
                       withAsterisk
                       label="Title"
+                      styles={{
+                        label: {
+                          color: "white",
+                        },
+                      }}
                       placeholder="title"
                       {...form.getInputProps("title")}
                     />
@@ -243,12 +250,22 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     <TextInput
                       withAsterisk
                       label="Description"
+                      styles={{
+                        label: {
+                          color: "white",
+                        },
+                      }}
                       placeholder="description"
                       {...form.getInputProps("description")}
                     />
 
                     <MultiSelect
                       label="Creatable MultiSelect"
+                      styles={{
+                        label: {
+                          color: "white",
+                        },
+                      }}
                       data={defaultOptions}
                       placeholder="Select items"
                       searchable
@@ -268,13 +285,13 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                 </Accordion.Panel>
               ) : (
                 <Accordion.Panel
-                  sx={(theme) => ({
+                  sx={{
                     color: "white",
-                  })}
+                  }}
                 >
-                  <p>{item.title}</p>
-                  <p>{item.description}</p>
-                  <p>{item.options}</p>
+                  <Text>{item.title}</Text>
+                  <Text>{item.description}</Text>
+                  <Text>{item.options}</Text>
                   <Button
                     onClick={() => {
                       setEditable(item, index, true);
