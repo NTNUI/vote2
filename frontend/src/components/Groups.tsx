@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Loader, SimpleGrid, Container, Text, Button } from "@mantine/core";
+import { Loader, Text, Button, Box, Flex, Stack } from "@mantine/core";
 import { useStyles } from "../styles/groupStyles";
-import { getGroups } from "../services/organizer";
+import { getUserData } from "../services/organizer";
 import { UserDataResponseType } from "../types/user";
 import { useNavigate } from "react-router-dom";
 
@@ -13,10 +13,18 @@ export function Groups() {
     undefined
   );
   const fetchData = async () => {
-    setUserData(await getGroups());
+    const userData = await getUserData();
+    userData.groups.sort((group) => {
+      if (group.hasActiveAssembly) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    setUserData(userData);
   };
-  const click = () => {
-    console.log("cliked");
+  const click = (groupName: string, groupSlug: string) => {
+    navigate("/qr", { state: { groupName: groupName, groupSlug: groupSlug } });
   };
 
   useEffect(() => {
@@ -24,22 +32,20 @@ export function Groups() {
   }, []);
 
   return !userData ? (
-    <Loader></Loader>
+    <Loader />
   ) : (
     <>
-      <Container className={classes.greetingBox}>
-        <SimpleGrid
-          className={classes.innerBox}
-          spacing={"md"}
-          verticalSpacing={"xl"}
-          cols={3}
-          breakpoints={[{ maxWidth: 768, cols: 1, spacing: "sm" }]}
+      <Stack m={10} mt={100}>
+        <Flex
+          wrap={"wrap"}
+          align={"center"}
+          justify={"center"}
+          columnGap={100}
+          rowGap={20}
         >
-          <div></div>
+          <Text className={classes.name}>Hello {userData.firstName}!</Text>
 
-          <p className={classes.name}>Hello {userData.data.firstName}!</p>
-
-          {userData.data.isOrganizer && (
+          {userData.isOrganizer && (
             <Button
               onClick={() => navigate("/admin")}
               className={classes.button}
@@ -47,40 +53,39 @@ export function Groups() {
               Organizer
             </Button>
           )}
-        </SimpleGrid>
-        <p className={classes.title}>Your groups</p>
-        <p className={classes.subtitle}>
-          Overview of your groups and active annual general assemblies
-        </p>
-      </Container>
-      <SimpleGrid
-        spacing={"lg"}
-        verticalSpacing={"xl"}
-        cols={3}
-        style={{ justifyItems: "center" }}
-        breakpoints={[
-          { maxWidth: 1030, cols: 2, spacing: "md" },
-          { maxWidth: 768, cols: 2, spacing: "sm" },
-          { maxWidth: 640, cols: 1, spacing: "sm" },
-        ]}
+        </Flex>
+        <Text mt={10} mb={10} size={"xl"}>
+          Participate in assemblies for your groups:
+        </Text>
+      </Stack>
+
+      <Flex
+        justify={"center"}
+        wrap="wrap"
+        rowGap={"2rem"}
+        columnGap={"2rem"}
+        m={10}
       >
-        {userData.data.groups.map((group) => (
-          <Container
-            key={group.groupName}
+        {userData.groups.map((group) => (
+          <Box
+            key={group.groupSlug}
             {...(!group.hasActiveAssembly
               ? {
                   opacity: 0.5,
-                  className: classes.inActiveBox,
+                  className: classes.box,
                 }
-              : { onClick: click, className: classes.activeBox })}
+              : {
+                  onClick: () => click(group.groupName, group.groupSlug),
+                  className: classes.activeBox,
+                })}
           >
             {group.groupName.toUpperCase()}
             <Text style={{ justifySelf: "right" }} fz={"xs"}>
-              {group.role}
+              {group.organizer ? "Organizer" : "Member"}
             </Text>
-          </Container>
+          </Box>
         ))}
-      </SimpleGrid>
+      </Flex>
     </>
   );
 }

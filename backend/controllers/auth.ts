@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getNtnuiToken, getNtnuiProfile } from "ntnui-tools";
 import { User } from "../models/user";
 import { GroupType } from "../types/user";
+import { groupOrganizers } from "../utils/user";
 
 export async function login(req: Request, res: Response) {
   try {
@@ -11,12 +12,35 @@ export async function login(req: Request, res: Response) {
     );
     const userProfile = await getNtnuiProfile(tokens.access);
 
+    let mainAssemblyOrganizer = false;
+
+    // Members of the Main Board can modify the main assembly
+    // Every other user is a member
+    if (
+      userProfile.data.memberships.some(
+        (membership) => membership.slug == "hovedstyret"
+      )
+    ) {
+      mainAssemblyOrganizer = true;
+    }
+
     // Get committees and role in committee
-    const groups: GroupType[] = [];
+    const groups: GroupType[] = [
+      {
+        groupName: "NTNUI",
+        groupSlug: "main-assembly",
+        organizer: mainAssemblyOrganizer,
+      },
+    ];
     userProfile.data.memberships.forEach((membership) => {
+      let organizer = false;
+      if (groupOrganizers().includes(membership.type)) {
+        organizer = true;
+      }
       groups.push({
-        groupName: membership.slug,
-        role: membership.type,
+        groupName: membership.group,
+        groupSlug: membership.slug,
+        organizer: organizer,
       });
     });
 

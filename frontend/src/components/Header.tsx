@@ -2,12 +2,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logoHeader.svg";
 import logoSmall from "../assets/ntnuiLogo.svg";
-import { Header, Container, Group, Text, Space } from "@mantine/core";
+import { Header, Container, Group, Text, Space, Image } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useStyles } from "../styles/headerStyles";
 
 export function HeaderAction() {
-  const matches = useMediaQuery("(min-width: 321px)");
+  const matches = useMediaQuery("(min-width: 400px)");
   const { classes } = useStyles();
   const navigate = useNavigate();
 
@@ -31,9 +31,21 @@ export function HeaderAction() {
         <Container className={classes.inner} fluid>
           <Group>
             {matches ? (
-              <img src={logo} alt="NTNUI logo" width="200px"></img>
+              <Image
+                sx={{ cursor: "pointer" }}
+                src={logo}
+                onClick={() => navigate("/start")}
+                alt="NTNUI logo"
+                width="200px"
+              ></Image>
             ) : (
-              <img src={logoSmall} alt="NTNUI logo" width="100px"></img>
+              <Image
+                sx={{ cursor: "pointer" }}
+                src={logoSmall}
+                onClick={() => navigate("/start")}
+                alt="NTNUI logo"
+                width="100px"
+              ></Image>
             )}
           </Group>
           <Text className={classes.button} onClick={logOut}>
