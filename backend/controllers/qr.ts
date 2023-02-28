@@ -3,6 +3,7 @@ import { getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
+import { notifyOne } from "./assemblyStatus";
 
 export async function getToken(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -70,6 +71,7 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
             { _id: group },
             { $addToSet: { participants: Number(scannedUser._id) } }
           );
+          notifyOne(scannedUser._id, "Godkjent checkin");
           return res.status(200).json({ message: "Check-in successful" });
         }
       }
