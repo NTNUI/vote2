@@ -24,7 +24,9 @@ export function Groups() {
     setUserData(userData);
   };
   const click = (groupName: string, groupSlug: string) => {
-    navigate("/qr", { state: { groupName: groupName, groupSlug: groupSlug } });
+    navigate("/qr", {
+      state: { groupName: groupName, groupSlug: groupSlug },
+    });
   };
 
   useEffect(() => {

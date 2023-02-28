@@ -19,7 +19,7 @@ export function VotationBox(state: { groupSlug: string }) {
     fetch().catch(console.error);
   }, []);
 
-  return !assembly ? (
+  return !assembly?.currentVotation ? (
     <Loader />
   ) : (
     <>
@@ -33,10 +33,10 @@ export function VotationBox(state: { groupSlug: string }) {
           borderBottomRightRadius: 0,
         })}
       >
-        <Text fz={"xl"} fw={900} ta={"left"}>
+        <Text fz={"lg"} fw={700} ta={"left"}>
           {assembly.currentVotation.title}
         </Text>
-        <Text fz={"lg"} mb={25} ml={10} ta={"left"}>
+        <Text fz={"md"} mb={25} ml={10} ta={"left"}>
           {assembly.currentVotation.voteText}
         </Text>
         <Flex
