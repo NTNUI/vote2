@@ -2,7 +2,7 @@ import { Response } from "express";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
-import { Votation, Option } from "../models/vote";
+import { Votation, Option, votationSchema } from "../models/vote";
 import { OptionType } from "../types/vote"; 
 
 
@@ -32,7 +32,7 @@ export async function createVotation(
         )
       ) {
 
-        let tempOptionTitles: OptionType[] = []
+        const tempOptionTitles: OptionType[] = []
         if (optionTitle != undefined) {
           optionTitle.forEach(function(title: string) {
             tempOptionTitles.push(new Option(
@@ -91,7 +91,9 @@ export async function setVotationStatus(
     }
 
     const group = req.body.group;
-    const voteId = req.body.voteId; 
+    const voteOptions = req.body.voteOptions; 
+    const voteText = req.body.voteText; 
+    const voteTitle = req.body.voteTitle; 
     const user = await User.findById(req.ntnuiNo);
     
     
@@ -102,15 +104,29 @@ export async function setVotationStatus(
           )
           ) {
             
-            const assembly = await Assembly.findById(group); 
+            const assembly = await Assembly.findById(group)
             console.log("tester123123123123123")
             //console.log("Tester: ", test); 
-            const votation = assembly?.votes;
+            //const votation = await Assembly.findById(group).update({votes: {_id: voteId}, $inc: {isFinished: true}}); 
             //const vote = votation?.find(({_id}) => _id === voteId )
-            if (votation != undefined) {
+            assembly?.votes.map((vote) => {
+              console.log(vote.title === voteTitle)
 
-              console.log("votation: ", votation[1].title);
-            }
+              if (vote.title === voteTitle) {
+                vote.isFinished = true;
+              }
+            })
+            if (assembly !== null) {
+              const test = await Assembly.findByIdAndUpdate(group, {
+                $set: {votes: assembly.votes}
+              })
+              console.log("votation1", assembly?.votes)
+              console.log("test: ", test)
+          }
+            
+            //console.log("votation2", votation)
+            
+            
              
 
       }
