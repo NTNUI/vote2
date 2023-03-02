@@ -38,7 +38,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
+          cache:
+            untracked: true
+            paths:
+              - node_modules/
       - run: npm run prettier:check
 
   lint:
