@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
+/* @import url("https://fonts.googleapis.com/css?family=Poppins&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;600&display=swap");
 
 #root {
   margin: auto;
@@ -7,5 +8,5 @@
 }
 
 body {
-  background: #1b202c url("./assets/Lines.svg") no-repeat fixed center 40%;
+  background: #1b202c url("./assets/Lines.svg") repeat-x fixed center 40%;
 }

@@ -3,18 +3,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserData } from "../services/organizer";
 import Arrow from "../assets/Arrow.svg";
-import { useMediaQuery } from "@mantine/hooks";
 import { UserDataGroupType } from "../types/user";
 import { OrganizerGroupBox } from "./OrganizerGroupBox";
 
 export function OrganizerList() {
   const [organizerGroups, setOrganizerGroups] = useState<UserDataGroupType[]>();
   let navigate = useNavigate();
-  const matches = useMediaQuery("(min-width: 600px)");
-
-  function handleQRClick() {
-    navigate("/QR");
-  }
 
   function handleBreadcrumbClick() {
     navigate("/start");
@@ -48,13 +42,14 @@ export function OrganizerList() {
           left: 30,
           display: "flex",
           alignItems: "center",
+          cursor: "pointer",
         }}
       >
         <Text fz={"sm"} fw={500} onClick={() => handleBreadcrumbClick()}>
           GROUPS
         </Text>
-        <Image src={Arrow}></Image>
-        <Text fz={"sm"} fw={700}>
+        <Image width={15} m={10} src={Arrow}></Image>
+        <Text fz={"sm"} fw={600}>
           ORGANIZER
         </Text>
       </Box>

@@ -1,4 +1,4 @@
-import { Image } from "@mantine/core";
+import { Container, Flex, Image } from "@mantine/core";
 import { LoginForm } from "../components/LoginForm";
 import logo from "../assets/ntnuiLogo.svg";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,10 @@ export function Login() {
   return (
     <>
       <Image
-        sx={{ position: "absolute", top: 0, left: 0 }}
+        style={{
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
         src={logo}
         alt="NTNUI logo"
         width="200px"

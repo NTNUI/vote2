@@ -1,12 +1,12 @@
 import { Container, Text } from "@mantine/core";
-import { InfoCircle } from "tabler-icons-react";
 
-type props = {
+export function WaitingRoom({
+  status,
+  infoText,
+}: {
   status: string;
   infoText: string;
-};
-
-export function WaitingRoom({ status, infoText }: props) {
+}) {
   return (
     <Container
       sx={() => ({

@@ -2,29 +2,29 @@ import { Box, Button, Flex, Space, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 import { createAssembly } from "../services/assembly";
+import { useStyles } from "../styles/OrganizerGroupBoxStyles";
 import { UserDataGroupType } from "../types/user";
 
-export function OrganizerGroupBox(props: {
+export function OrganizerGroupBox({
+  group,
+  index,
+}: {
   group: UserDataGroupType;
   index: number;
 }) {
   let navigate = useNavigate();
-  const breakMedium = useMediaQuery("(min-width: 601px)");
+  const breakMedium = useMediaQuery("(min-width: 660px)");
   const breakSmall = useMediaQuery("(min-width: 546px)");
   const breakMini = useMediaQuery("(min-width: 390px)");
+  const { classes } = useStyles();
 
-  const startCheckinTestID: string = "checkin-button-" + props.group.groupSlug;
+  const startCheckinTestID: string = "checkin-button-" + group.groupSlug;
   const createAssemblyTestID: string =
-    "create-assembly-button-" + props.group.groupSlug + "-" + props.index;
-  const editAssemblyTestID: string =
-    "edit-assembly-button-" + props.group.groupSlug;
+    "create-assembly-button-" + group.groupSlug + "-" + index;
+  const editAssemblyTestID: string = "edit-assembly-button-" + group.groupSlug;
 
   function handleQRClick() {
     navigate("/QR");
-  }
-
-  function handleBreadcrumbClick() {
-    navigate("/start");
   }
 
   function handleCreateAssemblyClick(group: UserDataGroupType) {
@@ -43,13 +43,13 @@ export function OrganizerGroupBox(props: {
 
   function truncateText(): string {
     if (breakMedium) {
-      return "300px";
+      return "350px";
     } else if (breakSmall) {
-      return "150px";
+      return "200px";
     } else if (breakMini) {
-      return "100px";
+      return "150px";
     } else {
-      return "70px";
+      return "100px";
     }
   }
 
@@ -60,23 +60,23 @@ export function OrganizerGroupBox(props: {
         sx={(theme) => ({
           borderStyle: "solid",
           borderColor: theme.colors.ntnui_yellow[0],
+          backgroundColor: theme.colors.ntnui_background[0],
           borderWidth: "0.01rem",
           textAlign: "center",
           marginLeft: "1rem",
           marginRight: "1rem",
           borderRadius: theme.radius.md,
+          borderBottomRightRadius: 0,
           color: "white",
         })}
       >
         <Flex
           mih={50}
           gap="xl"
-          {...(!breakSmall
-            ? { justify: "center" }
-            : { justify: "space-between" })}
+          justify={"space-between"}
           align="center"
           direction="row"
-          wrap="wrap"
+          wrap="nowrap"
           sx={{ padding: "1vw" }}
         >
           <Box
@@ -87,44 +87,49 @@ export function OrganizerGroupBox(props: {
             }}
           >
             <Text lineClamp={2} {...(breakSmall ? { fz: "lg" } : { fz: "sm" })}>
-              {props.group.groupName.toUpperCase()}
+              {group.groupName}
             </Text>
           </Box>
-          {props.group.hasActiveAssembly ? (
-            <Box>
+          {group.hasActiveAssembly ? (
+            <Flex wrap={"nowrap"}>
               <Button
-                style={{ marginRight: "2vw" }}
+                className={
+                  breakMedium ? classes.buttonStyle : classes.smallButtonStyle
+                }
                 color="green"
-                radius="md"
                 onClick={handleQRClick}
                 data-testid={startCheckinTestID}
               >
                 Start check-in
               </Button>
               <Button
-                style={{ marginRight: "2vw" }}
+                className={
+                  breakMedium ? classes.buttonStyle : classes.smallButtonStyle
+                }
                 color="gray"
-                radius="md"
-                onClick={() => handleEditAssemblyClick(props.group)}
+                onClick={() => handleEditAssemblyClick(group)}
                 data-testid={editAssemblyTestID}
               >
                 Edit
               </Button>
-            </Box>
-          ) : props.group.hasAssembly ? (
+            </Flex>
+          ) : group.hasAssembly ? (
             <Button
-              style={{ marginRight: "2vw" }}
+              className={
+                breakMedium ? classes.buttonStyle : classes.smallButtonStyle
+              }
               color="gray"
-              radius="md"
-              onClick={() => handleEditAssemblyClick(props.group)}
+              onClick={() => handleEditAssemblyClick(group)}
               data-testid={editAssemblyTestID}
             >
               Edit
             </Button>
           ) : (
             <Button
-              style={{ marginRight: "2vw" }}
-              onClick={() => handleCreateAssemblyClick(props.group)}
+              className={
+                breakMedium ? classes.buttonStyle : classes.smallButtonStyle
+              }
+              onClick={() => handleCreateAssemblyClick(group)}
               data-testid={createAssemblyTestID}
             >
               Create assembly
