@@ -1,4 +1,7 @@
+import { ObjectId } from "mongoose";
+
 export type VoteType = {
+  _id: ObjectId; 
   title: string;
   voteText: string;
   voted: number[];

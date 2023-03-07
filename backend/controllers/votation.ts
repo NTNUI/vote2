@@ -1,4 +1,5 @@
 import { Response } from "express";
+import { Types } from "mongoose"; 
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
@@ -14,6 +15,7 @@ export async function createVotation(
     if (!req.ntnuiNo) {
         return res.status(401).json({ message: "Unauthorized" });
       }
+
 
     const group = req.body.group;
     const title = req.body.title; 
@@ -45,7 +47,7 @@ export async function createVotation(
        }
         
         const newVotation = new Votation(
-          {
+          {  
             title: title, 
             isFinished: false,
             options: tempOptionTitles, 
@@ -56,16 +58,19 @@ export async function createVotation(
         const assembly = await Assembly.findById(group);
         if (assembly != null && title != undefined) {
           let tempVotes = assembly.votes;
+          const feedback = await Votation.create(
+            newVotation
+          )
           if (tempVotes.length === 0) {
-            tempVotes = [newVotation];
+            tempVotes = [feedback.id];
           } else {
-            tempVotes.push(newVotation); 
+            tempVotes.push(feedback.id); 
           }
           await Assembly.findByIdAndUpdate(
             group,
             {
             $set: {
-              votes: tempVotes,
+              votes: tempVotes
             },
           })
           return res.status(200).json({ message: "Votation successfully created" });
@@ -91,9 +96,7 @@ export async function setVotationStatus(
     }
 
     const group = req.body.group;
-    const voteOptions = req.body.voteOptions; 
-    const voteText = req.body.voteText; 
-    const voteTitle = req.body.voteTitle; 
+    const voteId = req.body.voteId; 
     const user = await User.findById(req.ntnuiNo);
     
     
@@ -103,39 +106,99 @@ export async function setVotationStatus(
           (membership) => membership.organizer && membership.groupSlug == group
           )
           ) {
-            
+            if (!Types.ObjectId.isValid(voteId)) {
+              return res.status(400).json({message: "No votation with the given ID found "} );
+            }
+            const vote = await Votation.findById(voteId)
             const assembly = await Assembly.findById(group)
-            console.log("tester123123123123123")
-            //console.log("Tester: ", test); 
-            //const votation = await Assembly.findById(group).update({votes: {_id: voteId}, $inc: {isFinished: true}}); 
-            //const vote = votation?.find(({_id}) => _id === voteId )
-            assembly?.votes.map((vote) => {
-              console.log(vote.title === voteTitle)
 
-              if (vote.title === voteTitle) {
-                vote.isFinished = true;
+            if (vote?.isFinished) {
+              return res.status(400).json({message: "This votation cannot be reactivated"} );
+            }
+            
+            if (vote === null) {
+              return res.status(400).json({message: "No votation with the given ID found "} );
+            }
+            if (assembly?.currentVotation) {
+              return res.status(400).json({message: "Another votation is currently ongoing"} );
+            }
+           
+            await Assembly.findByIdAndUpdate(
+              group, 
+              {
+                $set: {
+                  currentVotation: vote
+                },
               }
-            })
-            if (assembly !== null) {
-              const test = await Assembly.findByIdAndUpdate(group, {
-                $set: {votes: assembly.votes}
-              })
-              console.log("votation1", assembly?.votes)
-              console.log("test: ", test)
-          }
-            
-            //console.log("votation2", votation)
-            
-            
-             
-
+            )
+            return res.status(200).json({message: "Votation successfully activated"} )
+            }         
       }
 
     return res
       .status(401)
-      .json({ message: "heiii, You are not authorized to proceed with this request" });
-  }
+      .json({ message: "You are not authorized to proceed with this request" });
 }
+
+export async function removeVotationStatus(
+  req: RequestWithNtnuiNo,
+  res: Response
+) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const group = req.body.group; 
+  const user = await User.findById(req.ntnuiNo);
+  
+  
+  if (user) {
+    if (
+      user.groups.some(
+        (membership) => membership.organizer && membership.groupSlug == group
+        )
+        ) {
+
+          const assembly = await Assembly.findById(group)
+          
+          if (assembly?.currentVotation === null) {
+            return res.status(400).json({message: "There is no current votation ongoing"} );
+          }
+
+          const voteId = assembly?.currentVotation._id; 
+          const vote = await Votation.findById(voteId)
+          
+          if (vote === null) {
+            return res.status(400).json({message: "No votation with the given ID found "} );
+          }
+          
+
+          await Assembly.findByIdAndUpdate(
+            group, 
+            {
+              $set: {
+                currentVotation: null
+              },
+            }
+          )
+          await Votation.findByIdAndUpdate(
+            voteId, 
+            {
+              $set: {
+                isFinished: true
+              },
+            }
+          )
+
+          return res.status(200).json({message: "Votation successfully deactivated"} )
+          }         
+    }
+
+  return res
+    .status(401)
+    .json({ message: "You are not authorized to proceed with this request" });
+}
+
 
 
 
