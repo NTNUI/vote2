@@ -1,4 +1,5 @@
 export type VoteType = {
+  caseNumber: number;
   title: string;
   voteText: string;
   voted: number[];
