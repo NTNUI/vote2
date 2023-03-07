@@ -1,4 +1,4 @@
-import { Types, model, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 import { OptionType, VoteType } from "../types/vote";
 
 export const optionSchema = new Schema<OptionType>({
@@ -14,10 +14,6 @@ export const optionSchema = new Schema<OptionType>({
 
 export const votationSchema = new Schema<VoteType>(
   {
-    _id: {
-      type: Types.ObjectId,
-      required: false,
-    },
     title: {
       type: String,
       required: true,

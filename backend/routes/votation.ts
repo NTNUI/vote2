@@ -1,10 +1,10 @@
 import { Router } from "express";
 import {
   createVotation,
-  setVotationStatus, 
+  setVotationStatus,
   removeVotationStatus,
   deleteVotation,
-  editVotation
+  editVotation,
 } from "../controllers/votation";
 import authorization from "../utils/authorizationMiddleware";
 

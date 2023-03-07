@@ -9,8 +9,6 @@ import assemblyRoutes from "./routes/assembly";
 import qrRoutes from "./routes/qr";
 import votationRoutes from "./routes/votation";
 
-
-
 dotenv.config();
 
 const app: Application = express();
@@ -34,7 +32,6 @@ app.use("/user", userRoutes);
 app.use("/assembly", assemblyRoutes);
 app.use("/qr", qrRoutes);
 app.use("/votation", votationRoutes);
-
 
 try {
   app.listen(port, (): void => {

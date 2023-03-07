@@ -1,13 +1,12 @@
-import { ObjectId } from "mongoose";
+import { Document } from "mongoose";
 
-export type VoteType = {
-  _id: ObjectId; 
+export interface VoteType extends Document {
   title: string;
   voteText: string;
   voted: number[];
   options: OptionType[];
   isFinished: boolean;
-};
+}
 
 export type OptionType = {
   title: string;
