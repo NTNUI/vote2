@@ -17,7 +17,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
   const optionTitle = req.body.optionTitle;
   const user = await User.findById(req.ntnuiNo);
 
-  if (voteDescription === undefined) {
+  if (!voteDescription) {
     voteDescription = "";
   }
 
@@ -28,6 +28,8 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
       )
     ) {
       const tempOptionTitles: OptionType[] = [];
+
+      // !optionTitle???
       if (optionTitle != undefined) {
         optionTitle.forEach(function (title: string) {
           tempOptionTitles.push(
@@ -47,7 +49,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
       });
 
       const assembly = await Assembly.findById(group);
-      if (assembly != null && title != undefined) {
+      if (assembly && title) {
         let tempVotes = assembly.votes;
         const feedback = await Votation.create(newVotation);
         if (tempVotes.length === 0) {
@@ -112,7 +114,7 @@ export async function setVotationStatus(
           .json({ message: "This votation cannot be reactivated" });
       }
 
-      if (vote === null) {
+      if (!vote) {
         return res
           .status(400)
           .json({ message: "No votation with the given ID found " });
@@ -158,16 +160,16 @@ export async function removeVotationStatus(
     ) {
       const assembly = await Assembly.findById(group);
 
-      if (assembly?.currentVotation === null) {
+      if (!assembly || !assembly.currentVotation) {
         return res
           .status(400)
           .json({ message: "There is no current votation ongoing" });
       }
 
-      const voteId = assembly?.currentVotation._id;
+      const voteId = assembly.currentVotation._id;
       const vote = await Votation.findById(voteId);
 
-      if (vote === null) {
+      if (!vote) {
         return res
           .status(400)
           .json({ message: "No votation with the given ID found " });
@@ -218,19 +220,19 @@ export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
       const vote = await Votation.findById(voteId);
       const assembly = await Assembly.findById(group);
 
-      if (vote === null) {
+      if (!vote) {
         return res
           .status(400)
           .json({ message: "No votation with the given ID found " });
       }
 
-      if (assembly === null) {
+      if (!assembly) {
         return res
           .status(400)
           .json({ message: "No assembly with the given ID found " });
       }
 
-      if (assembly.currentVotation !== null) {
+      if (assembly.currentVotation) {
         if (assembly.currentVotation._id.equals(voteId)) {
           return res.status(400).json({
             message: "One cannot delete the currently active votation",
@@ -245,8 +247,7 @@ export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
   }
 
   return res.status(401).json({
-    message:
-      "Testing delete, You are not authorized to proceed with this request",
+    message: "You are not authorized to proceed with this request",
   });
 }
 
@@ -255,7 +256,6 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
     return res.status(401).json({ message: "Unauthorized" });
   }
   return res.status(401).json({
-    message:
-      "Testing edit, You are not authorized to proceed with this request",
+    message: "You are not authorized to proceed with this request",
   });
 }

@@ -18,6 +18,6 @@ votationRoutes.put("/deactivation", authorization, removeVotationStatus);
 
 votationRoutes.delete("/", authorization, deleteVotation);
 
-votationRoutes.post("/", authorization, editVotation);
+votationRoutes.put("/", authorization, editVotation);
 
 export default votationRoutes;
