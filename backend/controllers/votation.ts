@@ -14,7 +14,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
   const group = req.body.group;
   const title = req.body.title;
   let voteDescription = req.body.voteText;
-  const optionTitle = req.body.optionTitle;
+  const optionArray = req.body.optionTitle;
   const user = await User.findById(req.ntnuiNo);
 
   if (!voteDescription) {
@@ -30,8 +30,15 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
       const tempOptionTitles: OptionType[] = [];
 
       // !optionTitle???
-      if (optionTitle != undefined) {
-        optionTitle.forEach(function (title: string) {
+
+      if (optionArray) {
+        if (!Array.isArray(optionArray)) {
+          return res
+            .status(400)
+            .json({ message: "Options is not on correct format" });
+        }
+
+        optionArray.forEach(function (title: string) {
           tempOptionTitles.push(
             new Option({
               title: title,
