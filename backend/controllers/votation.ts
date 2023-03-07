@@ -36,7 +36,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        optionArray.forEach(function (title: string) {
+        optionArray.forEach((title: string) => {
           tempOptionTitles.push(
             new Option({
               title: title,
@@ -54,6 +54,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
       });
 
       const assembly = await Assembly.findById(group);
+
       if (assembly && title) {
         let tempVotes = assembly.votes;
         const feedback = await Votation.create(newVotation);
@@ -267,6 +268,71 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
+
+  const group = req.body.group;
+  const voteId = req.body.voteId;
+  const title = req.body.title;
+  const voteText = req.body.voteText;
+  const optionArray = req.body.optionArray;
+  const user = await User.findById(req.ntnuiNo);
+
+  if (user) {
+    if (
+      user.groups.some(
+        (membership) => membership.organizer && membership.groupSlug == group
+      )
+    ) {
+      if (!Types.ObjectId.isValid(voteId)) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+      const vote = await Votation.findById(voteId);
+      const assembly = await Assembly.findById(group);
+
+      if (!vote) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+
+      if (!assembly) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given ID found " });
+      }
+
+      const tempOptionTitles: OptionType[] = [];
+
+      if (optionArray) {
+        if (!Array.isArray(optionArray)) {
+          return res
+            .status(400)
+            .json({ message: "Options is not on correct format" });
+        }
+
+        optionArray.forEach((title: string) => {
+          tempOptionTitles.push(
+            new Option({
+              title: title,
+              voteCount: 0,
+            })
+          );
+        });
+      }
+
+      await Votation.findByIdAndUpdate(voteId, {
+        $set: {
+          title: !title ? vote.title : title,
+          voteText: !voteText ? vote.voteText : voteText,
+          options: !optionArray ? vote.options : tempOptionTitles,
+        },
+      });
+
+      return res.status(200).json({ message: "Votation successfully updated" });
+    }
+  }
+
   return res.status(401).json({
     message: "You are not authorized to proceed with this request",
   });
