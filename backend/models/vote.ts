@@ -18,6 +18,10 @@ export const votationSchema = new Schema<VoteType>(
       type: String,
       required: true,
     },
+    caseNumber: {
+      type: Number,
+      required: true,
+    },
     voteText: {
       type: String,
       required: false,
