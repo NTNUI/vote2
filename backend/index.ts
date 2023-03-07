@@ -7,6 +7,7 @@ import cookieParser = require("cookie-parser");
 import userRoutes from "./routes/user";
 import assemblyRoutes from "./routes/assembly";
 import qrRoutes from "./routes/qr";
+import votationRoutes from "./routes/votation";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/assembly", assemblyRoutes);
 app.use("/qr", qrRoutes);
+app.use("/votation", votationRoutes);
 
 try {
   app.listen(port, (): void => {

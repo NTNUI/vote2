@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { Types, model, Schema } from "mongoose";
 import { AssemblyType } from "../types/assembly";
 import { votationSchema } from "./vote";
 
@@ -9,7 +9,7 @@ const assemblySchema = new Schema<AssemblyType>(
       required: true,
     },
     votes: {
-      type: [votationSchema],
+      type: [Types.ObjectId],
       required: false,
     },
     isActive: {

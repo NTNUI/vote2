@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
+import { Votation } from "../models/vote";
 import { RequestWithNtnuiNo } from "../utils/request";
 
 export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
@@ -94,6 +95,9 @@ export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
           message: "Can't delete a active assembly, deactivate first.",
         });
       }
+      assembly.votes.forEach(async function (vote) {
+        await Votation.findByIdAndDelete(vote);
+      });
       await Assembly.deleteOne({ _id: assembly._id });
       return res.status(200).json({ message: "Assembly successfully deleted" });
     }
