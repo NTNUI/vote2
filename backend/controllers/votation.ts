@@ -36,7 +36,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        optionArray.forEach(function (title: string) {
+        optionArray.forEach((title: string) => {
           tempOptionTitles.push(
             new Option({
               title: title,
@@ -54,7 +54,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
       });
 
       const assembly = await Assembly.findById(group);
-      console.log("tester assembly: ", assembly);
+
       if (assembly && title) {
         let tempVotes = assembly.votes;
         const feedback = await Votation.create(newVotation);
@@ -311,7 +311,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        optionArray.forEach(function (title: string) {
+        optionArray.forEach((title: string) => {
           tempOptionTitles.push(
             new Option({
               title: title,
