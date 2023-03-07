@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import { OptionType, VoteType } from "../types/vote";
 
-const optionSchema = new Schema<OptionType>({
+export const optionSchema = new Schema<OptionType>({
   title: {
     type: String,
     required: true,
@@ -35,9 +35,10 @@ export const votationSchema = new Schema<VoteType>(
       required: true,
     },
   },
-  { collection: "assembly" }
+  { collection: "votation", _id: true }
 );
 
 const Votation = model<VoteType>("Votation", votationSchema);
+const Option = model<OptionType>("Option", optionSchema);
 
-export { Votation };
+export { Votation, Option };
