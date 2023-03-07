@@ -29,8 +29,6 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
     ) {
       const tempOptionTitles: OptionType[] = [];
 
-      // !optionTitle???
-
       if (optionArray) {
         if (!Array.isArray(optionArray)) {
           return res
