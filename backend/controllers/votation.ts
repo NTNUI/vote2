@@ -110,23 +110,30 @@ export async function setVotationStatus(
       if (!Types.ObjectId.isValid(voteId)) {
         return res
           .status(400)
-          .json({ message: "No votation with the given ID found " });
+          .json({ message: "No votation with the given ID found" });
       }
       const vote = await Votation.findById(voteId);
       const assembly = await Assembly.findById(group);
-
-      if (vote?.isFinished) {
-        return res
-          .status(400)
-          .json({ message: "This votation cannot be reactivated" });
-      }
 
       if (!vote) {
         return res
           .status(400)
           .json({ message: "No votation with the given ID found " });
       }
-      if (assembly?.currentVotation) {
+
+      if (!assembly) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given group found " });
+      }
+
+      if (vote.isFinished) {
+        return res
+          .status(400)
+          .json({ message: "This votation cannot be reactivated" });
+      }
+
+      if (assembly.currentVotation) {
         return res
           .status(400)
           .json({ message: "Another votation is currently ongoing" });
