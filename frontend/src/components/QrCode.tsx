@@ -9,7 +9,6 @@ export function QrCode(state: { groupName: string; groupSlug: string }) {
   let [time, setTime] = useState<number>(Date.now());
   const getCredentials = async () => {
     setAccess((await getQrInfo()).access);
-    console.log(await access);
   };
 
   //Missing refresh token update
