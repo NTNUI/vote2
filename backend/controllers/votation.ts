@@ -5,6 +5,7 @@ import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { Votation, Option } from "../models/vote";
 import { OptionType } from "../types/vote";
+import { notifyOne } from "./assemblyNotifier";
 
 export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -149,6 +150,12 @@ export async function setVotationStatus(
           currentVotation: vote,
         },
       });
+
+      // Notify all active participants to fetch the activated votation.
+      assembly.participants.forEach((member) => {
+        notifyOne(member, JSON.stringify({ status: "update" }));
+      });
+
       return res
         .status(200)
         .json({ message: "Votation successfully activated" });
