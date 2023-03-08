@@ -32,13 +32,14 @@ export async function getVotations(req: RequestWithNtnuiNo, res: Response) {
       const voteIds = assembly.votes;
 
       for (let x = 0; x < voteIds.length; x++) {
+        console.log(voteIds[x]);
         if (!Types.ObjectId.isValid(voteIds[x] as never)) {
-          return;
+          continue;
         }
         const vote = await Votation.findById(voteIds[x]);
 
         if (!vote) {
-          return;
+          continue;
         }
 
         listOfVotations.push(vote);
