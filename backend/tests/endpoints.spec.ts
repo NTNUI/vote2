@@ -119,13 +119,9 @@ describe("API test: check endpoint is behind authorization", () => {
 
 describe("API test: check that assemblies does what is expected, correct behavior", () => {
   loginTest();
-  console.log("test1");
   createAssemblyTest();
-  console.log("test2");
   activateAssemblyTest();
-  console.log("test3");
   deactivateAssemblyTest();
-  console.log("test4");
   deleteAssemblyTest();
 });
 
@@ -277,19 +273,10 @@ describe("API test: check coordination between assemblies and userData", () => {
       .get("/user/userdata")
       .set("Cookie", cookies)
       .then((response) => {
-        console.log(response.body["groups"]);
         expect(response.statusCode).toBe(200);
-        let check = 0;
-        for (const x of response.body["group"]) {
-          if (x.groupSlug != "sprint") {
-            check++;
-          } else {
-            break;
-          }
-        }
-        expect(response.body["groups"][check]["organizer"]).toBe(true);
-        expect(response.body["groups"][check]["hasAssembly"]).toBe(false);
-        expect(response.body["groups"][check]["hasActiveAssembly"]).toBe(false);
+        expect(response.body["groups"][1]["organizer"]).toBe(true);
+        expect(response.body["groups"][1]["hasAssembly"]).toBe(false);
+        expect(response.body["groups"][1]["hasActiveAssembly"]).toBe(false);
         done();
       });
   });
@@ -350,6 +337,126 @@ describe("API test: check coordination between assemblies and userData", () => {
         expect(response.body["groups"][1]["organizer"]).toBe(true);
         expect(response.body["groups"][1]["hasAssembly"]).toBe(false);
         expect(response.body["groups"][1]["hasActiveAssembly"]).toBe(false);
+        done();
+      });
+  });
+});
+
+// check if votation have correct behavior
+
+describe("API test: check if votation have correct behavior", () => {
+  let voteId = "";
+  loginTest();
+  createAssemblyTest();
+
+  test("CREATE/ votation: create a new votation", (done) => {
+    request(app)
+      .post("/votation/create")
+      .set("Cookie", cookies)
+      .send({
+        group: "sprint",
+        caseNumber: "1.1",
+        title: "Første votering",
+        voteText: "Bra?",
+        options: ["Ja", "Nei", "Blank"],
+      })
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+        expect(response.body["message"]).toBe("Votation successfully created");
+        done();
+      });
+  });
+
+  test("POST/ votation: get created votation", (done) => {
+    request(app)
+      .post("/votation/")
+      .set("Cookie", cookies)
+      .send({
+        group: "sprint",
+      })
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+        expect(response.body[0].title).toBe("Første votering");
+        voteId = response.body[0]._id;
+        done();
+      });
+  });
+
+  test("PUT/ votation: edit created votation", (done) => {
+    request(app)
+      .put("/votation/")
+      .set("Cookie", cookies)
+      .send({
+        group: "sprint",
+        voteId: voteId,
+        title: "Andre votering",
+      })
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+        expect(response.body["message"]).toBe("Votation successfully updated");
+        done();
+      });
+  });
+
+  test("put/ votation: activate created votation", (done) => {
+    request(app)
+      .put("/votation/activate")
+      .set("Cookie", cookies)
+      .send({
+        group: "sprint",
+        voteId: voteId,
+      })
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+        expect(response.body["message"]).toBe(
+          "Votation successfully activated"
+        );
+        done();
+      });
+  });
+
+  test("put/ votation: deactivate created votation", (done) => {
+    request(app)
+      .put("/votation/deactivate")
+      .set("Cookie", cookies)
+      .send({
+        group: "sprint",
+      })
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+        expect(response.body["message"]).toBe(
+          "Votation successfully deactivated"
+        );
+        done();
+      });
+  });
+
+  test("POST/ votation: get created votation", (done) => {
+    request(app)
+      .post("/votation/")
+      .set("Cookie", cookies)
+      .send({
+        group: "sprint",
+      })
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+        expect(response.body[0].title).toBe("Andre votering");
+        expect(response.body[0].isFinished).toBe(true);
+        done();
+      });
+  });
+
+  test("DELETE/ votation: delete created and deactivated votation", (done) => {
+    request(app)
+      .delete("/votation/")
+      .set("Cookie", cookies)
+      .send({
+        group: "sprint",
+        voteId: voteId,
+      })
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+        expect(response.body["message"]).toBe("Votation successfully deleted");
         done();
       });
   });

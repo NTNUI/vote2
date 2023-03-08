@@ -11,7 +11,6 @@ export function loginTest() {
         password: "SprintIsTheBest",
       })
       .then((response) => {
-        console.log("LOGGED IN");
         expect(response.statusCode).toBe(200);
         expect(response.body["message"]).toBe("Successful login");
         const cookies = response.headers["set-cookie"];
@@ -27,7 +26,6 @@ export function logoutTest() {
       .get("/auth/logout")
       .end((err, res) => {
         if (err) return done(err);
-        console.log("LOGGED OUT");
         expect(res.statusCode).toBe(200);
         expect(res.body["message"]).toBe("Successfully logged out");
         done();
@@ -61,7 +59,6 @@ export function activateAssemblyTest() {
         isActive: true,
       })
       .then((response) => {
-        console.log("tester: activateAssemblyTest", response.body["message"]);
         expect(response.statusCode).toBe(200);
         expect(response.body["message"]).toBe("Assembly successfully updated");
         done();
@@ -79,7 +76,6 @@ export function deactivateAssemblyTest() {
         isActive: false,
       })
       .then((response) => {
-        console.log("tester: deactivateAssemblyTest", response.body["message"]);
         expect(response.statusCode).toBe(200);
         expect(response.body["message"]).toBe("Assembly successfully updated");
         done();
@@ -96,7 +92,6 @@ export function deleteAssemblyTest() {
         group: "sprint",
       })
       .then((response) => {
-        console.log("tester: deleteAssemblyTest", response.body["message"]);
         expect(response.statusCode).toBe(200);
         expect(response.body["message"]).toBe("Assembly successfully deleted");
         done();
