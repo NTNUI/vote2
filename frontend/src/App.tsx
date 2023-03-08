@@ -2,7 +2,6 @@ import "./App.css";
 import { StartPage } from "./pages/StartPage";
 import { Route, Routes } from "react-router-dom";
 import { ProtectRoutes } from "./utils/ProtectedRouter/protectedRoutes";
-import { Vote } from "./pages/VotePage";
 import { AssemblyLobby } from "./pages/AssemblyPage";
 import { Assembly } from "./pages/GenforsDashboard";
 import { CheckIn } from "./pages/CheckIn";
@@ -47,15 +46,6 @@ function App() {
               <>
                 <HeaderAction />
                 <StartPage />
-              </>
-            }
-          />
-          <Route
-            path="/vote"
-            element={
-              <>
-                <HeaderAction />
-                <Vote />
               </>
             }
           />
