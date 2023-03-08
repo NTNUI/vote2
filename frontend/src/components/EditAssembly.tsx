@@ -1,16 +1,17 @@
 import {
   Accordion,
+  Box,
   Button,
   Container,
+  Image,
   Loader,
-  MultiSelect,
   SimpleGrid,
-  TextInput,
+  Text,
+  Flex,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Arrow from "../assets/Arrow.svg";
-import { useForm } from "@mantine/form";
 import { UserDataGroupType } from "../types/user";
 import {
   activateAssembly,
@@ -18,21 +19,13 @@ import {
   getAssemblyByName,
 } from "../services/assembly";
 import { AssemblyType } from "../types/assembly";
-
-interface VoteDetails {
-  title: string;
-  description: string;
-  options: string[];
-  editable: boolean;
-}
-
-const defaultOptions: string[] = ["Yes", "No", "Blank"];
+import VotationPanel from "./VotationPanel";
+import { VoteType } from "../types/votes";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
-  const [cases, setCases] = useState<VoteDetails[]>([]);
+  const [cases, setCases] = useState<VoteType[]>([]);
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
-  const form = useForm<VoteDetails>();
 
   useEffect(() => {
     const fetch = async () => {
@@ -45,13 +38,61 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   let navigate = useNavigate();
 
   useEffect(() => {
-    const exampleCase: VoteDetails = {
-      title: "Test",
-      description: "Used for testing",
-      options: ["Yes", "No", "NEVER"],
-      editable: false,
+    const exampleCase1: VoteType = {
+      caseNumber: 2.0,
+      title: "Valg av leder",
+      voteText: "Hvem er den neste lederen?",
+      voted: [],
+      options: [
+        { title: "Jakob", voteCount: 0 },
+        { title: "Sara", voteCount: 0 },
+        { title: "Hvem som helst", voteCount: 0 },
+      ],
+      isFinished: false,
     };
-    setCases((cases) => [...cases, exampleCase]);
+    const exampleCase2: VoteType = {
+      caseNumber: 1.2,
+      title: "Nytt valg av leder",
+      voteText: "Hvem er den neste lederen?",
+      voted: [],
+      options: [
+        { title: "Jakob", voteCount: 0 },
+        { title: "Sara", voteCount: 0 },
+        { title: "Hvem som helst", voteCount: 0 },
+      ],
+      isFinished: false,
+    };
+    const exampleCase4: VoteType = {
+      caseNumber: 1.1,
+      title: "Nytt valg av leder",
+      voteText: "Hvem er den neste lederen?",
+      voted: [],
+      options: [
+        { title: "Jakob", voteCount: 0 },
+        { title: "Sara", voteCount: 0 },
+        { title: "Hvem som helst", voteCount: 0 },
+      ],
+      isFinished: false,
+    };
+    const exampleCase3: VoteType = {
+      caseNumber: 1.0,
+      title: "Siste valg av leder",
+      voteText: "Hvem er den neste lederen?",
+      voted: [],
+      options: [
+        { title: "Jakob", voteCount: 0 },
+        { title: "Sara", voteCount: 0 },
+        { title: "Hvem som helst", voteCount: 0 },
+      ],
+      isFinished: false,
+    };
+    setCases([
+      ...cases,
+      exampleCase1,
+      exampleCase2,
+      exampleCase3,
+      exampleCase4,
+    ]);
   }, []);
 
   function handleBreadcrumbGroupClick() {
@@ -65,9 +106,19 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   function addCase() {
     setCases((cases) => [
       ...cases,
-      { title: "", description: "", options: [], editable: true },
+      {
+        caseNumber: 0,
+        title: "",
+        voteText: "",
+        voted: [0],
+        options: [
+          { title: "Yes", voteCount: 0 },
+          { title: "No", voteCount: 0 },
+          { title: "NEVER", voteCount: 0 },
+        ],
+        isFinished: true,
+      },
     ]);
-    console.log(cases);
   }
 
   function endAssembly(groupSlug: string) {
@@ -100,55 +151,40 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     }
   }
 
-  function handleSubmit(values: VoteDetails, index: number) {
-    let newCases: VoteDetails[] = cases;
-    newCases[index] = values;
-    setCases(newCases);
-  }
-
-  function setEditable(item: VoteDetails, index: number, conditon: boolean) {
-    let newCases: VoteDetails[] = cases;
-    item.editable = conditon;
-    newCases[index] = item;
-    setCases(newCases);
-  }
-
   return !assembly ? (
     <Loader />
   ) : (
     <>
-      <SimpleGrid cols={3} style={{ position: "absolute", top: 70, left: 30 }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <p
-            style={{ display: "inline", cursor: "pointer", fontSize: ".7rem" }}
-            onClick={handleBreadcrumbGroupClick}
-          >
-            GROUPS{" "}
-          </p>
-          <img src={Arrow} width={"30px"}></img>
-          <p
-            style={{ display: "inline", cursor: "pointer", fontSize: ".7rem" }}
-            onClick={handleBreadcrumbOrganizerClick}
-          >
-            ORGANIZER
-          </p>
-          <img src={Arrow} width={"30px"}></img>
-          <p
-            style={{
-              display: "inline",
-              fontWeight: "bold",
-              fontSize: ".7rem",
-            }}
-          >
-            CREATE/EDIT
-          </p>
-        </div>
-        <div></div>
-      </SimpleGrid>
+      <Box
+        style={{
+          position: "absolute",
+          top: 70,
+          left: 30,
+          display: "flex",
+          alignItems: "center",
+          cursor: "pointer",
+        }}
+      >
+        <Text fz={"sm"} onClick={() => handleBreadcrumbGroupClick()}>
+          GROUPS
+        </Text>
+        <Image width={15} m={10} src={Arrow}></Image>
+        <Text
+          fz={"sm"}
+          fw={500}
+          onClick={() => handleBreadcrumbOrganizerClick()}
+        >
+          ORGANIZER
+        </Text>
+        <Image width={15} m={10} src={Arrow}></Image>
+        <Text fw={600} fz={"sm"}>
+          CREATE/EDIT
+        </Text>
+      </Box>
 
       <SimpleGrid
         cols={2}
-        breakpoints={[{ maxWidth: 770, cols: 1, spacing: "sm" }]}
+        breakpoints={[{ maxWidth: 800, cols: 1, spacing: "sm" }]}
         w={"80vw"}
         pt={120}
       >
@@ -157,7 +193,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             alignSelf: "center",
           })}
         >
-          <h4>EDIT {assembly._id.toUpperCase()} ASSEMBLY</h4>
+          <Text fz={"xl"} fw={500}>
+            EDIT {group.groupName.toUpperCase()} ASSEMBLY
+          </Text>
           {group.hasActiveAssembly ? (
             <Button
               color={"red"}
@@ -203,92 +241,13 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             maxWidth: 780,
           })}
         >
-          {cases.map((item, index) => (
-            <Accordion.Item
-              key={index}
-              value={String(index)}
-              sx={(theme) => ({
-                borderColor: theme.colors.ntnui_yellow[0],
-                borderBottomLeftRadius: "2px",
-              })}
-            >
-              <Accordion.Control
-                sx={(theme) => ({
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: theme.colors.ntnui_background[0],
-                  },
-                })}
-              >
-                Vote {index + 1}
-              </Accordion.Control>
-              {!item.title || item.editable ? (
-                <Accordion.Panel
-                  sx={(theme) => ({
-                    color: "white",
-                  })}
-                >
-                  <form
-                    onSubmit={form.onSubmit((values) =>
-                      handleSubmit(values, index)
-                    )}
-                  >
-                    <TextInput
-                      withAsterisk
-                      label="Title"
-                      placeholder="title"
-                      {...form.getInputProps("title")}
-                    />
-
-                    <TextInput
-                      withAsterisk
-                      label="Description"
-                      placeholder="description"
-                      {...form.getInputProps("description")}
-                    />
-
-                    <MultiSelect
-                      label="Creatable MultiSelect"
-                      data={defaultOptions}
-                      placeholder="Select items"
-                      searchable
-                      creatable
-                      getCreateLabel={(query) => `+ Create ${query}`}
-                      onCreate={(query) => {
-                        const item = { value: query, label: query };
-                        //setData((current) => [...current, item]);
-                        return item;
-                      }}
-                      {...form.getInputProps("options")}
-                    />
-                    <Button type="submit" m={5}>
-                      Save current vote
-                    </Button>
-                  </form>
-                </Accordion.Panel>
-              ) : (
-                <Accordion.Panel
-                  sx={(theme) => ({
-                    color: "white",
-                  })}
-                >
-                  <p>{item.title}</p>
-                  <p>{item.description}</p>
-                  <p>{item.options}</p>
-                  <Button
-                    onClick={() => {
-                      setEditable(item, index, true);
-                    }}
-                    m={5}
-                  >
-                    Edit current vote
-                  </Button>
-                  <Button m={5}>Activate voting</Button>
-                  <Button m={5}>Delete voting</Button>
-                </Accordion.Panel>
-              )}
-            </Accordion.Item>
-          ))}
+          {cases
+            .sort((a: VoteType, b: VoteType) => {
+              return a.caseNumber - b.caseNumber;
+            })
+            .map((item) => (
+              <VotationPanel votation={item} index={item.caseNumber} />
+            ))}
         </Accordion>
       </SimpleGrid>
     </>

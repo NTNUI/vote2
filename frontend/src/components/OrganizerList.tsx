@@ -1,20 +1,14 @@
-import { Loader, SimpleGrid } from "@mantine/core";
+import { Image, Loader, SimpleGrid, Text, Box } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserData } from "../services/organizer";
 import Arrow from "../assets/Arrow.svg";
-import { useMediaQuery } from "@mantine/hooks";
 import { UserDataGroupType } from "../types/user";
 import { OrganizerGroupBox } from "./OrganizerGroupBox";
 
 export function OrganizerList() {
   const [organizerGroups, setOrganizerGroups] = useState<UserDataGroupType[]>();
   let navigate = useNavigate();
-  const matches = useMediaQuery("(min-width: 600px)");
-
-  function handleQRClick() {
-    navigate("/QR");
-  }
 
   function handleBreadcrumbClick() {
     navigate("/start");
@@ -41,31 +35,37 @@ export function OrganizerList() {
     <Loader />
   ) : (
     <>
-      <SimpleGrid
-        cols={3}
-        breakpoints={[{ maxWidth: 600, cols: 1, spacing: "sm" }]}
-        style={{ marginTop: "10vh" }}
-        {...(!matches && { style: { width: "100vw" } })}
+      <Box
+        style={{
+          position: "absolute",
+          top: 70,
+          left: 30,
+          display: "flex",
+          alignItems: "center",
+          cursor: "pointer",
+        }}
       >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <p
-            style={{ display: "inline", cursor: "pointer" }}
-            onClick={handleBreadcrumbClick}
-          >
-            GROUPS{" "}
-          </p>
-          <img src={Arrow}></img>
-          <p style={{ display: "inline", fontWeight: "bold" }}>ORGANIZER</p>
-        </div>
-        <h2
-          style={{ display: "flex", alignItems: "center" }}
-          data-testid="organizer-list-page-title"
-          {...(!matches && { style: { textAlign: "center" } })}
-        >
-          Manage group assemblies
-        </h2>
-        <div></div>
-      </SimpleGrid>
+        <Text fz={"sm"} fw={500} onClick={() => handleBreadcrumbClick()}>
+          GROUPS
+        </Text>
+        <Image width={15} m={10} src={Arrow}></Image>
+        <Text fz={"sm"} fw={600}>
+          ORGANIZER
+        </Text>
+      </Box>
+      <Text
+        fz={"xl"}
+        fw={500}
+        sx={() => ({
+          justifyContent: "center",
+          display: "flex",
+          justifySelf: "center",
+        })}
+        data-testid="organizer-list-page-title"
+      >
+        Manage group assemblies
+      </Text>
+
       {organizerGroups.map((group, index) => (
         <OrganizerGroupBox key={index} {...{ group, index: index }} />
       ))}

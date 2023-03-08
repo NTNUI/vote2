@@ -10,6 +10,7 @@ import qrRoutes from "./routes/qr";
 import expressWs from "express-ws";
 import WebSocket from "ws";
 import jsonwebtoken from "jsonwebtoken";
+import votationRoutes from "./routes/votation";
 
 dotenv.config();
 
@@ -36,6 +37,8 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/assembly", assemblyRoutes);
 app.use("/qr", qrRoutes);
+app.use("/votation", votationRoutes);
+
 export const connections: WebSocket[] = [];
 app.ws("/status", (ws, req) => {
   const decoded = jsonwebtoken.decode(req.cookies.accessToken);
