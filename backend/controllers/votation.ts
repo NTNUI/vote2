@@ -14,6 +14,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
   const group = req.body.group;
   const title = req.body.title;
   let voteDescription = req.body.voteText;
+  const caseNumber = req.body.caseNumber;
   const optionArray = req.body.optionTitle;
   const user = await User.findById(req.ntnuiNo);
 
@@ -48,6 +49,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
 
       const newVotation = new Votation({
         title: title,
+        caseNumber: caseNumber,
         isFinished: false,
         options: tempOptionTitles,
         voteText: voteDescription,
@@ -55,7 +57,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
 
       const assembly = await Assembly.findById(group);
 
-      if (assembly && title) {
+      if (assembly && title && caseNumber) {
         let tempVotes = assembly.votes;
         const feedback = await Votation.create(newVotation);
         if (tempVotes.length === 0) {
@@ -71,6 +73,10 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
         return res
           .status(200)
           .json({ message: "Votation successfully created" });
+      } else if (!caseNumber) {
+        return res
+          .status(400)
+          .json({ message: "Votation is missing casenumber" });
       } else {
         return res
           .status(400)
