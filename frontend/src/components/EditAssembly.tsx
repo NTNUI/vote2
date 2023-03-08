@@ -7,7 +7,6 @@ import {
   Loader,
   SimpleGrid,
   Text,
-  Flex,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,13 +17,23 @@ import {
   deleteAssembly,
   getAssemblyByName,
 } from "../services/assembly";
+import { createVotation, getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
-  const [cases, setCases] = useState<VoteType[]>([]);
+  const [cases, setCases] = useState<VoteType>({
+    _id: "",
+    caseNumber: 0.1,
+    title: "placeholder",
+    voteText: "",
+    voted: [0],
+    options: [],
+    isFinished: true,
+  });
+  const [votations, setVotations] = useState<VoteType[]>([]);
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
 
   useEffect(() => {
@@ -32,68 +41,16 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
       const assemblyData = await getAssemblyByName(group.groupSlug);
       setAssembly(assemblyData);
     };
+    const getVotation = async () => {
+      const votation = await getVotations(group.groupSlug);
+      setVotations(votation);
+      console.log(votation);
+    };
     fetch().catch(console.error);
+    getVotation().catch(console.error);
   }, []);
 
   let navigate = useNavigate();
-
-  useEffect(() => {
-    const exampleCase1: VoteType = {
-      caseNumber: 2.0,
-      title: "Valg av leder",
-      voteText: "Hvem er den neste lederen?",
-      voted: [],
-      options: [
-        { title: "Jakob", voteCount: 0 },
-        { title: "Sara", voteCount: 0 },
-        { title: "Hvem som helst", voteCount: 0 },
-      ],
-      isFinished: false,
-    };
-    const exampleCase2: VoteType = {
-      caseNumber: 1.2,
-      title: "Nytt valg av leder",
-      voteText: "Hvem er den neste lederen?",
-      voted: [],
-      options: [
-        { title: "Jakob", voteCount: 0 },
-        { title: "Sara", voteCount: 0 },
-        { title: "Hvem som helst", voteCount: 0 },
-      ],
-      isFinished: false,
-    };
-    const exampleCase4: VoteType = {
-      caseNumber: 1.1,
-      title: "Nytt valg av leder",
-      voteText: "Hvem er den neste lederen?",
-      voted: [],
-      options: [
-        { title: "Jakob", voteCount: 0 },
-        { title: "Sara", voteCount: 0 },
-        { title: "Hvem som helst", voteCount: 0 },
-      ],
-      isFinished: false,
-    };
-    const exampleCase3: VoteType = {
-      caseNumber: 1.0,
-      title: "Siste valg av leder",
-      voteText: "Hvem er den neste lederen?",
-      voted: [],
-      options: [
-        { title: "Jakob", voteCount: 0 },
-        { title: "Sara", voteCount: 0 },
-        { title: "Hvem som helst", voteCount: 0 },
-      ],
-      isFinished: false,
-    };
-    setCases([
-      ...cases,
-      exampleCase1,
-      exampleCase2,
-      exampleCase3,
-      exampleCase4,
-    ]);
-  }, []);
 
   function handleBreadcrumbGroupClick() {
     navigate("/start");
@@ -103,22 +60,15 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     navigate("/admin");
   }
 
-  function addCase() {
-    setCases((cases) => [
-      ...cases,
-      {
-        caseNumber: 0,
-        title: "",
-        voteText: "",
-        voted: [0],
-        options: [
-          { title: "Yes", voteCount: 0 },
-          { title: "No", voteCount: 0 },
-          { title: "NEVER", voteCount: 0 },
-        ],
-        isFinished: true,
-      },
-    ]);
+  async function addCase() {
+    const vote = await createVotation(
+      "valgkomiteen",
+      cases.title,
+      cases.caseNumber,
+      cases.voteText,
+      cases.options
+    );
+    setVotations([...votations, vote]);
   }
 
   function endAssembly(groupSlug: string) {
@@ -241,13 +191,22 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             maxWidth: 780,
           })}
         >
-          {cases
-            .sort((a: VoteType, b: VoteType) => {
-              return a.caseNumber - b.caseNumber;
-            })
-            .map((item) => (
-              <VotationPanel votation={item} index={item.caseNumber} />
-            ))}
+          {votations ? (
+            votations
+              .sort((a: VoteType, b: VoteType) => {
+                return a.caseNumber - b.caseNumber;
+              })
+              .map((item: VoteType) => (
+                <VotationPanel
+                  key={item._id}
+                  votation={item}
+                  index={item.caseNumber}
+                  groupSlug={group.groupSlug}
+                />
+              ))
+          ) : (
+            <Loader />
+          )}
         </Accordion>
       </SimpleGrid>
     </>

@@ -6,27 +6,85 @@ import {
   Text,
   Box,
   Flex,
+  NumberInput,
 } from "@mantine/core";
+import {
+  activateVotation,
+  createVotation,
+  deactivateVotation,
+  deleteVotation,
+  editVotation,
+} from "../services/votation";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStyles } from "../styles/EditAssemblyStyles";
 import { VoteType } from "../types/votes";
+import { render } from "react-dom";
 
 function VotationPanel({
   votation,
   index,
+  groupSlug,
 }: {
   votation: VoteType;
   index: number;
+  groupSlug: string;
 }) {
   const [editable, setEditable] = useState(false);
   const form = useForm<VoteType>();
   const { classes } = useStyles();
   const matches = useMediaQuery("(min-width: 400px)");
   const defaultOptions = ["Yes", "No", "Blank"];
+  const [isActive, setIsActive] = useState(false);
 
-  function handleSubmit() {}
+  function handleSubmit(vote: VoteType) {
+    try {
+      editVotation(
+        groupSlug,
+        votation._id,
+        vote.title,
+        vote.voteText,
+        vote.options
+      );
+      setEditable(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function activateVote(votation: VoteType) {
+    try {
+      activateVotation(groupSlug, votation._id);
+      setIsActive(true);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function deactivateVote(votation: VoteType) {
+    try {
+      deactivateVotation(groupSlug, votation._id);
+      setIsActive(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function deleteVote(votation: VoteType) {
+    try {
+      deleteVotation(groupSlug, votation._id);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  useEffect(() => {}, [
+    editable,
+    handleSubmit,
+    activateVote,
+    deactivateVote,
+    deleteVote,
+  ]);
 
   return (
     <Accordion.Item
@@ -49,13 +107,22 @@ function VotationPanel({
           Case {index.toPrecision(2)} - {votation.title}
         </Text>
       </Accordion.Control>
-      {!votation.title || editable ? (
+      {editable ? (
         <Accordion.Panel
           sx={() => ({
             color: "white",
           })}
         >
-          <form onSubmit={form.onSubmit((values) => handleSubmit())}>
+          <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+            <TextInput
+              type="number"
+              withAsterisk
+              pattern="[0-9]*"
+              label="Case number"
+              className={classes.inputStyle}
+              placeholder="Case number"
+              {...form.getInputProps("caseNumber")}
+            />
             <TextInput
               withAsterisk
               label="Title"
@@ -63,15 +130,13 @@ function VotationPanel({
               placeholder="Title"
               {...form.getInputProps("title")}
             />
-
             <TextInput
               withAsterisk
               label="Description"
               className={classes.inputStyle}
               placeholder="Description"
-              {...form.getInputProps("description")}
+              {...form.getInputProps("voteText")}
             />
-
             <MultiSelect
               label="Creatable MultiSelect"
               className={classes.inputStyle}
@@ -115,13 +180,28 @@ function VotationPanel({
             direction={matches ? "row" : "column"}
             justify={matches ? "space-between" : "center"}
           >
-            <Button color={"green"} m={matches ? 10 : 5}>
-              Activate
-            </Button>
+            {isActive ? (
+              <Button
+                color={"green"}
+                m={matches ? 10 : 5}
+                onClick={() => deactivateVote(votation)}
+              >
+                Deactivate
+              </Button>
+            ) : (
+              <Button
+                color={"green"}
+                m={matches ? 10 : 5}
+                onClick={() => activateVote(votation)}
+              >
+                Activate
+              </Button>
+            )}
+
             <Box>
               <Button
                 onClick={() => {
-                  setEditable(!editable);
+                  setEditable(true);
                 }}
                 w={matches ? "auto" : "30%"}
                 m={5}
@@ -133,6 +213,7 @@ function VotationPanel({
                 w={matches ? "auto" : "60%"}
                 color={"red"}
                 m={matches ? 10 : 5}
+                onClick={() => deleteVote(votation)}
               >
                 Delete
               </Button>
