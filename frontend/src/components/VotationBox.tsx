@@ -5,7 +5,10 @@ import { getAssemblyByName } from "../services/assembly";
 import { AssemblyType } from "../types/assembly";
 import { useStyles } from "../styles/VotationStyles";
 
-export function VotationBox(state: { groupSlug: string }) {
+export function VotationBox(state: {
+  groupSlug: string;
+  voteFinished: () => void;
+}) {
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
   const matches = useMediaQuery("(min-width: 501px)");
   const [chosenOption, setChosenOption] = useState<string>();
@@ -69,7 +72,13 @@ export function VotationBox(state: { groupSlug: string }) {
             </Button>
           ))}
         </Flex>
-        <Button m={30} size={"md"} w={150} color={"green"}>
+        <Button
+          m={30}
+          size={"md"}
+          w={150}
+          color={"green"}
+          onClick={() => state.voteFinished()}
+        >
           Confirm
         </Button>
       </Box>
