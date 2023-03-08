@@ -6,6 +6,53 @@ import { RequestWithNtnuiNo } from "../utils/request";
 import { Votation, Option } from "../models/vote";
 import { OptionType } from "../types/vote";
 
+export async function getVotation(req: RequestWithNtnuiNo, res: Response) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const group = req.body.group;
+  const user = await User.findById(req.ntnuiNo);
+
+  if (user) {
+    if (
+      user.groups.some(
+        (membership) => membership.organizer && membership.groupSlug == group
+      )
+    ) {
+      const listOfVotations = [];
+
+      const assembly = await Assembly.findById(group);
+      if (!assembly) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given group found " });
+      }
+
+      const voteIds = assembly.votes;
+
+      for (let x = 0; x < voteIds.length; x++) {
+        if (!Types.ObjectId.isValid(voteIds[x] as never)) {
+          return;
+        }
+        const vote = await Votation.findById(voteIds[x]);
+
+        if (!vote) {
+          return;
+        }
+
+        listOfVotations.push(vote);
+      }
+
+      return res.status(200).json(listOfVotations);
+    }
+  }
+
+  return res
+    .status(401)
+    .json({ message: "You are not authorized to proceed with this request" });
+}
+
 export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
