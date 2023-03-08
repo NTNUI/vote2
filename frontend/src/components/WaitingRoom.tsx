@@ -1,6 +1,6 @@
 import { Container, Text } from "@mantine/core";
 
-export function WaitingRoom(state: { groupName: string }) {
+export function WaitingRoom(state: { groupName: string; message: string }) {
   return (
     <Container
       sx={() => ({
@@ -16,7 +16,7 @@ export function WaitingRoom(state: { groupName: string }) {
         {state.groupName + " assembly"}
       </Text>
       <Text ta={"left"} mt={10} fw={300}>
-        There are currently no vote active, look up!
+        {state.message}
       </Text>
     </Container>
   );

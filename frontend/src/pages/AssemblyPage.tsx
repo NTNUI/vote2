@@ -8,6 +8,7 @@ import { VotationBox } from "../components/VotationBox";
 export function AssemblyLobby() {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const [kickedOut, setKickedOut] = useState<boolean>(false);
   const [checkedIn, setCheckedIn] = useState<boolean>(false);
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
   const { lastMessage } = useWebSocket("ws://localhost:3000/status");
@@ -29,7 +30,7 @@ export function AssemblyLobby() {
         setActiveVotation(true);
       }
       if (decodedMessage.status == "removed") {
-        navigate("start");
+        setKickedOut(true);
       }
     }
   }, [lastMessage]);
@@ -38,7 +39,14 @@ export function AssemblyLobby() {
     setActiveVotation(false);
   };
 
-  return !checkedIn ? (
+  return kickedOut ? (
+    <WaitingRoom
+      groupName={state.groupName}
+      message={
+        "You have logged in on another device, or you are kicked from this assembly."
+      }
+    />
+  ) : !checkedIn ? (
     <QrCode {...state}></QrCode>
   ) : activeVotation ? (
     <VotationBox
@@ -46,6 +54,9 @@ export function AssemblyLobby() {
       voteFinished={() => voteFinished()}
     ></VotationBox>
   ) : (
-    <WaitingRoom groupName={state.groupName} />
+    <WaitingRoom
+      groupName={state.groupName}
+      message={"There are currently no vote active, look up!"}
+    />
   );
 }

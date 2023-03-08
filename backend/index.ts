@@ -11,6 +11,7 @@ import expressWs from "express-ws";
 import WebSocket from "ws";
 import jsonwebtoken from "jsonwebtoken";
 import votationRoutes from "./routes/votation";
+import { notifyOne } from "./controllers/assemblyNotifier";
 
 dotenv.config();
 
@@ -43,6 +44,11 @@ export const connections: WebSocket[] = [];
 app.ws("/status", (ws, req) => {
   const decoded = jsonwebtoken.decode(req.cookies.accessToken);
   if (decoded && typeof decoded !== "string") {
+    // Notify about kicking out old device if user already is connected.
+    if (typeof connections[decoded.ntnui_no] !== "undefined") {
+      notifyOne(decoded.ntnui_no, JSON.stringify({ status: "removed" }));
+    }
+    // Store socket connection on NTNUI ID
     connections[decoded.ntnui_no] = ws;
   }
 });
