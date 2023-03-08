@@ -6,7 +6,7 @@ import { RequestWithNtnuiNo } from "../utils/request";
 import { Votation, Option } from "../models/vote";
 import { OptionType } from "../types/vote";
 
-export async function getVotation(req: RequestWithNtnuiNo, res: Response) {
+export async function getVotations(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -141,7 +141,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
     .json({ message: "You are not authorized to proceed with this request" });
 }
 
-export async function setVotationStatus(
+export async function activateVotationStatus(
   req: RequestWithNtnuiNo,
   res: Response
 ) {
@@ -207,7 +207,7 @@ export async function setVotationStatus(
     .json({ message: "You are not authorized to proceed with this request" });
 }
 
-export async function removeVotationStatus(
+export async function deactivateVotationStatus(
   req: RequestWithNtnuiNo,
   res: Response
 ) {
