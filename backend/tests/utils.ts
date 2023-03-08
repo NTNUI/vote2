@@ -36,7 +36,7 @@ export function logoutTest() {
 export function createAssemblyTest() {
   test("POST/ assembly: create an assembly", (done) => {
     request(app)
-      .post("/assembly/")
+      .post("/assembly/create")
       .set("Cookie", getCookies())
       .send({
         group: "sprint",

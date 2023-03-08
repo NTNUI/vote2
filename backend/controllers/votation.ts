@@ -60,13 +60,13 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
 
   const group = req.body.group;
   const title = req.body.title;
-  let voteDescription = req.body.voteText;
+  let voteText = req.body.voteText;
   const caseNumber = req.body.caseNumber;
-  const optionArray = req.body.optionTitle;
+  const options = req.body.options;
   const user = await User.findById(req.ntnuiNo);
 
-  if (!voteDescription) {
-    voteDescription = "";
+  if (!voteText) {
+    voteText = "";
   }
 
   if (user) {
@@ -77,14 +77,14 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
     ) {
       const tempOptionTitles: OptionType[] = [];
 
-      if (optionArray) {
-        if (!Array.isArray(optionArray)) {
+      if (options) {
+        if (!Array.isArray(options)) {
           return res
             .status(400)
             .json({ message: "Options is not on correct format" });
         }
 
-        optionArray.forEach((title: string) => {
+        options.forEach((title: string) => {
           tempOptionTitles.push(
             new Option({
               title: title,
@@ -99,7 +99,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
         caseNumber: caseNumber,
         isFinished: false,
         options: tempOptionTitles,
-        voteText: voteDescription,
+        voteText: voteText,
       });
 
       const assembly = await Assembly.findById(group);
@@ -326,7 +326,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
   const voteId = req.body.voteId;
   const title = req.body.title;
   const voteText = req.body.voteText;
-  const optionArray = req.body.optionArray;
+  const options = req.body.options;
   const user = await User.findById(req.ntnuiNo);
 
   if (user) {
@@ -357,14 +357,14 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
 
       const tempOptionTitles: OptionType[] = [];
 
-      if (optionArray) {
-        if (!Array.isArray(optionArray)) {
+      if (options) {
+        if (!Array.isArray(options)) {
           return res
             .status(400)
             .json({ message: "Options is not on correct format" });
         }
 
-        optionArray.forEach((title: string) => {
+        options.forEach((title: string) => {
           tempOptionTitles.push(
             new Option({
               title: title,
@@ -378,7 +378,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
         $set: {
           title: !title ? vote.title : title,
           voteText: !voteText ? vote.voteText : voteText,
-          options: !optionArray ? vote.options : tempOptionTitles,
+          options: !options ? vote.options : tempOptionTitles,
         },
       });
 
