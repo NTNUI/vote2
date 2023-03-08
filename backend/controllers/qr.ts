@@ -3,7 +3,7 @@ import { getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
-import { notifyOne } from "./assemblyNotifier";
+import { notifyOne } from "../utils/socketNotifier";
 
 export async function getToken(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {

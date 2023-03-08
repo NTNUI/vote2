@@ -5,7 +5,7 @@ import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { Votation, Option } from "../models/vote";
 import { OptionType } from "../types/vote";
-import { notifyOne } from "./assemblyNotifier";
+import { notifyOne } from "../utils/socketNotifier";
 
 export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {

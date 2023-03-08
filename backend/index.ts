@@ -11,7 +11,7 @@ import expressWs from "express-ws";
 import WebSocket from "ws";
 import jsonwebtoken from "jsonwebtoken";
 import votationRoutes from "./routes/votation";
-import { notifyOne } from "./controllers/assemblyNotifier";
+import { notifyOne } from "./utils/socketNotifier";
 
 dotenv.config();
 
