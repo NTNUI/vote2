@@ -26,14 +26,13 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
   const [cases, setCases] = useState<VoteType>({
     _id: "",
-    caseNumber: 0.1,
     title: "placeholder",
+    caseNumber: 0.1,
     voteText: "",
     voted: [0],
     options: [],
     isFinished: true,
   });
-  const [votations, setVotations] = useState<VoteType[]>([]);
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
 
   useEffect(() => {
@@ -41,13 +40,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
       const assemblyData = await getAssemblyByName(group.groupSlug);
       setAssembly(assemblyData);
     };
-    const getVotation = async () => {
-      const votation = await getVotations(group.groupSlug);
-      setVotations(votation);
-      console.log(votation);
-    };
+
     fetch().catch(console.error);
-    getVotation().catch(console.error);
   }, []);
 
   let navigate = useNavigate();
@@ -61,14 +55,13 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   }
 
   async function addCase() {
-    const vote = await createVotation(
-      "valgkomiteen",
+    await createVotation(
+      group.groupSlug,
       cases.title,
       cases.caseNumber,
       cases.voteText,
       cases.options
     );
-    setVotations([...votations, vote]);
   }
 
   function endAssembly(groupSlug: string) {
@@ -177,37 +170,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             Add case
           </Button>
         </Container>
-
-        <Accordion
-          defaultValue={"vote1"}
-          sx={(theme) => ({
-            height: "fit-content",
-            backgroundColor: theme.colors.ntnui_background[0],
-            border: "solid",
-            borderColor: theme.colors.ntnui_yellow[0],
-            borderRadius: "5px",
-            borderBottomRightRadius: "0px",
-            borderBottomWidth: 0.5,
-            maxWidth: 780,
-          })}
-        >
-          {votations ? (
-            votations
-              .sort((a: VoteType, b: VoteType) => {
-                return a.caseNumber - b.caseNumber;
-              })
-              .map((item: VoteType) => (
-                <VotationPanel
-                  key={item._id}
-                  votation={item}
-                  index={item.caseNumber}
-                  groupSlug={group.groupSlug}
-                />
-              ))
-          ) : (
-            <Loader />
-          )}
-        </Accordion>
+        <VotationPanel groupSlug={group.groupSlug} />
       </SimpleGrid>
     </>
   );

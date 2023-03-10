@@ -12,8 +12,8 @@ export const createVotation = async (
     "/votation/create",
     {
       group: group,
-      caseNumber: caseNumber,
       title: title,
+      caseNumber: caseNumber,
       voteText: voteText,
       options: options,
     },
@@ -23,7 +23,7 @@ export const createVotation = async (
 
 export const activateVotation = async (group: string, voteId: string) => {
   return axios.put(
-    "/votation/activation",
+    "/votation/activate",
     {
       group: group,
       voteId: voteId,
@@ -34,7 +34,7 @@ export const activateVotation = async (group: string, voteId: string) => {
 
 export const deactivateVotation = async (group: string, voteId: string) => {
   return axios.put(
-    "/votation/deactivation",
+    "/votation/deactivate",
     {
       group: group,
       voteId: voteId,
@@ -56,6 +56,7 @@ export const editVotation = async (
   group: string,
   voteId: string,
   title: string,
+  caseNumber: number,
   voteText: string,
   options: OptionType[]
 ): Promise<VoteType> => {
@@ -65,6 +66,7 @@ export const editVotation = async (
       group: group,
       voteId: voteId,
       title: title,
+      caseNumber: caseNumber,
       voteText: voteText,
       options: options,
     },
