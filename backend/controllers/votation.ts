@@ -6,7 +6,7 @@ import { RequestWithNtnuiNo } from "../utils/request";
 import { Votation, Option } from "../models/vote";
 import { OptionType } from "../types/vote";
 
-export async function getVotations(req: RequestWithNtnuiNo, res: Response) {
+export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -45,6 +45,58 @@ export async function getVotations(req: RequestWithNtnuiNo, res: Response) {
       }
 
       return res.status(200).json(listOfVotations);
+    }
+  }
+
+  return res
+    .status(401)
+    .json({ message: "You are not authorized to proceed with this request" });
+}
+
+export async function getOneVotation(req: RequestWithNtnuiNo, res: Response) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const group = req.body.group;
+  const voteId = req.body.voteId;
+  const user = await User.findById(req.ntnuiNo);
+
+  if (user) {
+    if (
+      user.groups.some(
+        (membership) => membership.organizer && membership.groupSlug == group
+      )
+    ) {
+      const assembly = await Assembly.findById(group);
+      if (!assembly) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given group found " });
+      }
+
+      const allVotes = assembly.votes;
+
+      if (!allVotes.includes(voteId)) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+
+      if (!Types.ObjectId.isValid(voteId)) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+      const vote = await Votation.findById(voteId);
+
+      if (!vote) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+
+      return res.status(200).json(vote);
     }
   }
 
