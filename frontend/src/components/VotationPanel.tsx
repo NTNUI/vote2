@@ -6,7 +6,6 @@ import {
   Text,
   Box,
   Flex,
-  Loader,
   Container,
 } from "@mantine/core";
 import {
@@ -22,29 +21,12 @@ import { useEffect, useState } from "react";
 import { useStyles } from "../styles/EditAssemblyStyles";
 import { VoteType } from "../types/votes";
 
-export interface VoteTypeExample {
-  _id: string;
-  title: string;
-  voteText: string;
-  voted: number[];
-  options: OptionType[];
-  isFinished: boolean;
-  caseNumber: number;
-  isEditable: boolean;
-  isActive: boolean;
-}
-
-export type OptionType = {
-  title: string;
-  voteCount: number;
-};
-
 function VotationPanel({ groupSlug }: { groupSlug: string }) {
   const [editable, setEditable] = useState(false);
   const form = useForm<VoteType>();
   const { classes } = useStyles();
   const matches = useMediaQuery("(min-width: 400px)");
-  const defaultOptions = ["Yes", "No", "Blank"];
+  const [options, setOptions] = useState<string[]>(["Yes", "No", "Blank"]);
   const [isActive, setIsActive] = useState(false);
   const [votations, setVotations] = useState<VoteType[]>();
 
@@ -153,7 +135,6 @@ function VotationPanel({ groupSlug }: { groupSlug: string }) {
                     type="number"
                     required
                     withAsterisk
-                    pattern="[0-9.0-9]*"
                     label="Case number"
                     className={classes.inputStyle}
                     placeholder="Case number"
@@ -178,15 +159,17 @@ function VotationPanel({ groupSlug }: { groupSlug: string }) {
                   <MultiSelect
                     label="Creatable MultiSelect"
                     className={classes.inputStyle}
-                    data={defaultOptions}
+                    data={options}
                     placeholder="Select items"
                     searchable
                     required
                     creatable
                     getCreateLabel={(query) => `+ Create ${query}`}
                     onCreate={(query) => {
-                      const item = { value: query, label: query };
-                      return item;
+                      setOptions([...options, query]);
+                      console.log(query);
+                      console.log(options);
+                      return query;
                     }}
                     {...form.getInputProps("options")}
                   />
@@ -225,7 +208,7 @@ function VotationPanel({ groupSlug }: { groupSlug: string }) {
                       m={matches ? 10 : 5}
                       onClick={() => deactivateVote(votation)}
                     >
-                      Finish votation
+                      Finish
                     </Button>
                   ) : (
                     <Button
