@@ -323,6 +323,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
 
   const group = req.body.group;
   const voteId = req.body.voteId;
+  const caseNumber = req.body.caseNumber;
   const title = req.body.title;
   const voteText = req.body.voteText;
   const options = req.body.options;
@@ -378,6 +379,9 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
           title: !title ? vote.title : title,
           voteText: !voteText ? vote.voteText : voteText,
           options: !options ? vote.options : tempOptionTitles,
+          caseNumber: !Number.isFinite(caseNumber)
+            ? vote.caseNumber
+            : caseNumber,
         },
       });
 
