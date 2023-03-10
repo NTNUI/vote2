@@ -103,8 +103,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
       });
 
       const assembly = await Assembly.findById(group);
-
-      if (assembly && title && caseNumber) {
+      if (assembly && title && Number.isFinite(caseNumber)) {
         let tempVotes = assembly.votes;
         const feedback = await Votation.create(newVotation);
         if (tempVotes.length === 0) {
@@ -120,7 +119,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
         return res
           .status(200)
           .json({ message: "Votation successfully created" });
-      } else if (!caseNumber) {
+      } else if (!Number.isFinite(caseNumber)) {
         return res
           .status(400)
           .json({ message: "Votation is missing casenumber" });
