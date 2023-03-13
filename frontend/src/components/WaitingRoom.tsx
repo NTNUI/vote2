@@ -1,4 +1,4 @@
-import { Container, Text } from "@mantine/core";
+import { Badge, Container, Text } from "@mantine/core";
 
 export function WaitingRoom(state: { groupName: string; message: string }) {
   return (
@@ -12,10 +12,10 @@ export function WaitingRoom(state: { groupName: string; message: string }) {
         borderBottomRightRadius: 0,
       })}
     >
-      <Text ta={"left"} fz={"lg"} fw={700}>
-        {state.groupName + " assembly"}
-      </Text>
-      <Text ta={"left"} mt={10} fw={300}>
+      <Badge mb={20} variant="outline">
+        {state.groupName} assembly
+      </Badge>
+      <Text ta={"center"} fz={"lg"} fw={300}>
         {state.message}
       </Text>
     </Container>
