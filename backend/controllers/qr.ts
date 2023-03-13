@@ -71,6 +71,8 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
             { _id: group },
             { $addToSet: { participants: Number(scannedUser._id) } }
           );
+
+          // Notify user when QR is scanned
           notifyOne(
             scannedUser._id,
             JSON.stringify({ status: "verified", group: group })

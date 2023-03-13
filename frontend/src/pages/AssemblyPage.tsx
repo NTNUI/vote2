@@ -4,6 +4,7 @@ import { QrCode } from "../components/QrCode";
 import useWebSocket from "react-use-websocket";
 import { WaitingRoom } from "../components/WaitingRoom";
 import { VotationBox } from "../components/VotationBox";
+import { isUserInAssembly } from "../services/assembly";
 
 export function AssemblyLobby() {
   const { state } = useLocation();
@@ -14,18 +15,24 @@ export function AssemblyLobby() {
   const { lastMessage } = useWebSocket("ws://localhost:3000/status");
 
   useEffect(() => {
-    // TODO: Check if user is already checked in
-    // Missing endpoint
-    // If checked in
-    // setCheckedIn(true);
+    // Redirect to waiting room if already checked in
+    const isChekedIn = async () => {
+      if (await isUserInAssembly(state.groupSlug)) {
+        setCheckedIn(true);
+      }
+    };
+    isChekedIn();
   }, []);
 
   useEffect(() => {
+    // Update state every time the websocket receive a message.
     if (lastMessage) {
       const decodedMessage = JSON.parse(lastMessage.data);
+      // User is is removed from current lobby if logged in on another device.
       if (decodedMessage.status == "removed") {
         setKickedOut(true);
       }
+      // Redirect only if user is checked in on the right group.
       if (decodedMessage.group == state.groupSlug) {
         if (decodedMessage.status == "verified") {
           setCheckedIn(true);

@@ -135,7 +135,36 @@ export async function getAssemblyByName(
       return res.status(200).json(assembly);
     }
   }
-  return res
-    .status(401)
-    .json({ message: "You are not authorized to proceed with this request" });
+  return res.status(401).json({ message: "Not authorized" });
+}
+
+export async function isUserInAssembly(req: RequestWithNtnuiNo, res: Response) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const groupSlug = req.body.groupSlug;
+  const user = await User.findById(req.ntnuiNo);
+
+  if (user) {
+    if (user.groups.some((membership) => membership.groupSlug == groupSlug)) {
+      const assembly = await Assembly.findById(groupSlug);
+
+      if (assembly == null) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given ID found" });
+      }
+
+      if (assembly.participants.includes(Number(req.ntnuiNo))) {
+        return res
+          .status(200)
+          .json({ status: "ok", info: "User is already checked in" });
+      } else {
+        return res
+          .status(401)
+          .json({ status: "not checked-in", info: "User is not checked in" });
+      }
+    }
+  }
+  return res.status(401).json({ message: "Not authorized" });
 }
