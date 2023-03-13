@@ -11,6 +11,7 @@ export function AssemblyLobby() {
   const [kickedOut, setKickedOut] = useState<boolean>(false);
   const [checkedIn, setCheckedIn] = useState<boolean>(false);
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
+  const [voted, setVoted] = useState<boolean>(false);
   const { lastMessage } = useWebSocket("ws://localhost:3000/status");
 
   useEffect(() => {
@@ -27,16 +28,21 @@ export function AssemblyLobby() {
         setCheckedIn(true);
       }
       if (decodedMessage.status == "update") {
+        setCheckedIn(true);
         setActiveVotation(true);
       }
       if (decodedMessage.status == "removed") {
         setKickedOut(true);
       }
+      if (decodedMessage.status == "ended") {
+        setActiveVotation(false);
+        setVoted(false);
+      }
     }
   }, [lastMessage]);
 
-  const voteFinished = () => {
-    setActiveVotation(false);
+  const userHasVoted = () => {
+    setVoted(true);
   };
 
   return kickedOut ? (
@@ -48,11 +54,16 @@ export function AssemblyLobby() {
     />
   ) : !checkedIn ? (
     <QrCode {...state}></QrCode>
+  ) : voted ? (
+    <WaitingRoom
+      groupName={state.groupName}
+      message={"Your vote is submitted!"}
+    />
   ) : activeVotation ? (
     <VotationBox
       groupSlug={state.groupSlug}
-      voteFinished={() => voteFinished()}
-    ></VotationBox>
+      userHasVoted={() => userHasVoted()}
+    />
   ) : (
     <WaitingRoom
       groupName={state.groupName}

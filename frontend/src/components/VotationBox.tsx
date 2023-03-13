@@ -7,7 +7,7 @@ import { useStyles } from "../styles/VotationStyles";
 
 export function VotationBox(state: {
   groupSlug: string;
-  voteFinished: () => void;
+  userHasVoted: () => void;
 }) {
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
   const matches = useMediaQuery("(min-width: 501px)");
@@ -77,7 +77,7 @@ export function VotationBox(state: {
           size={"md"}
           w={150}
           color={"green"}
-          onClick={() => state.voteFinished()}
+          onClick={() => state.userHasVoted()}
         >
           Confirm
         </Button>

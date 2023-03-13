@@ -212,6 +212,11 @@ export async function removeVotationStatus(
         },
       });
 
+      // Notify all active participants to return to lobby.
+      assembly.participants.forEach((member) => {
+        notifyOne(member, JSON.stringify({ status: "ended" }));
+      });
+
       return res
         .status(200)
         .json({ message: "Votation successfully deactivated" });

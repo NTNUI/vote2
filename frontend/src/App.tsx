@@ -50,7 +50,7 @@ function App() {
             }
           />
           <Route
-            path="lobby"
+            path="/lobby"
             element={
               <>
                 <HeaderAction />
