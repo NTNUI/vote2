@@ -1,20 +1,26 @@
 import { Router } from "express";
 import {
   createVotation,
-  setVotationStatus,
-  removeVotationStatus,
+  activateVotationStatus,
+  deactivateVotationStatus,
   deleteVotation,
   editVotation,
+  getAllVotations,
+  getOneVotation,
 } from "../controllers/votation";
 import authorization from "../utils/authorizationMiddleware";
 
 const votationRoutes = Router();
 
+votationRoutes.post("/allvotations", authorization, getAllVotations);
+
+votationRoutes.post("/onevotation", authorization, getOneVotation);
+
 votationRoutes.post("/create", authorization, createVotation);
 
-votationRoutes.put("/activation", authorization, setVotationStatus);
+votationRoutes.put("/activate", authorization, activateVotationStatus);
 
-votationRoutes.put("/deactivation", authorization, removeVotationStatus);
+votationRoutes.put("/deactivate", authorization, deactivateVotationStatus);
 
 votationRoutes.delete("/", authorization, deleteVotation);
 

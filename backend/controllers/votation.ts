@@ -7,6 +7,105 @@ import { Votation, Option } from "../models/vote";
 import { OptionType } from "../types/vote";
 import { notifyOne } from "../utils/socketNotifier";
 
+export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const group = req.body.group;
+  const user = await User.findById(req.ntnuiNo);
+
+  if (user) {
+    if (
+      user.groups.some(
+        (membership) => membership.organizer && membership.groupSlug == group
+      )
+    ) {
+      const listOfVotations = [];
+
+      const assembly = await Assembly.findById(group);
+      if (!assembly) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given group found " });
+      }
+
+      const voteIds = assembly.votes;
+
+      for (let x = 0; x < voteIds.length; x++) {
+        if (!Types.ObjectId.isValid(voteIds[x] as never)) {
+          continue;
+        }
+        const vote = await Votation.findById(voteIds[x]);
+
+        if (!vote) {
+          continue;
+        }
+
+        listOfVotations.push(vote);
+      }
+
+      return res.status(200).json(listOfVotations);
+    }
+  }
+
+  return res
+    .status(401)
+    .json({ message: "You are not authorized to proceed with this request" });
+}
+
+export async function getOneVotation(req: RequestWithNtnuiNo, res: Response) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const group = req.body.group;
+  const voteId = req.body.voteId;
+  const user = await User.findById(req.ntnuiNo);
+
+  if (user) {
+    if (
+      user.groups.some(
+        (membership) => membership.organizer && membership.groupSlug == group
+      )
+    ) {
+      const assembly = await Assembly.findById(group);
+      if (!assembly) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given group found " });
+      }
+
+      const allVotes = assembly.votes;
+
+      if (!allVotes.includes(voteId)) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+
+      if (!Types.ObjectId.isValid(voteId)) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+      const vote = await Votation.findById(voteId);
+
+      if (!vote) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+
+      return res.status(200).json(vote);
+    }
+  }
+
+  return res
+    .status(401)
+    .json({ message: "You are not authorized to proceed with this request" });
+}
+
 export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -14,13 +113,13 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
 
   const group = req.body.group;
   const title = req.body.title;
-  let voteDescription = req.body.voteText;
+  let voteText = req.body.voteText;
   const caseNumber = req.body.caseNumber;
-  const optionArray = req.body.optionTitle;
+  const options = req.body.options;
   const user = await User.findById(req.ntnuiNo);
 
-  if (!voteDescription) {
-    voteDescription = "";
+  if (!voteText) {
+    voteText = "";
   }
 
   if (user) {
@@ -31,14 +130,14 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
     ) {
       const tempOptionTitles: OptionType[] = [];
 
-      if (optionArray) {
-        if (!Array.isArray(optionArray)) {
+      if (options) {
+        if (!Array.isArray(options)) {
           return res
             .status(400)
             .json({ message: "Options is not on correct format" });
         }
 
-        optionArray.forEach((title: string) => {
+        options.forEach((title: string) => {
           tempOptionTitles.push(
             new Option({
               title: title,
@@ -53,12 +152,11 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
         caseNumber: caseNumber,
         isFinished: false,
         options: tempOptionTitles,
-        voteText: voteDescription,
+        voteText: voteText,
       });
 
       const assembly = await Assembly.findById(group);
-
-      if (assembly && title && caseNumber) {
+      if (assembly && title && Number.isFinite(caseNumber)) {
         let tempVotes = assembly.votes;
         const feedback = await Votation.create(newVotation);
         if (tempVotes.length === 0) {
@@ -74,7 +172,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
         return res
           .status(200)
           .json({ message: "Votation successfully created" });
-      } else if (!caseNumber) {
+      } else if (!Number.isFinite(caseNumber)) {
         return res
           .status(400)
           .json({ message: "Votation is missing casenumber" });
@@ -95,7 +193,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
     .json({ message: "You are not authorized to proceed with this request" });
 }
 
-export async function setVotationStatus(
+export async function activateVotationStatus(
   req: RequestWithNtnuiNo,
   res: Response
 ) {
@@ -167,7 +265,7 @@ export async function setVotationStatus(
     .json({ message: "You are not authorized to proceed with this request" });
 }
 
-export async function removeVotationStatus(
+export async function deactivateVotationStatus(
   req: RequestWithNtnuiNo,
   res: Response
 ) {
@@ -289,9 +387,10 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
 
   const group = req.body.group;
   const voteId = req.body.voteId;
+  const caseNumber = req.body.caseNumber;
   const title = req.body.title;
   const voteText = req.body.voteText;
-  const optionArray = req.body.optionArray;
+  const options = req.body.options;
   const user = await User.findById(req.ntnuiNo);
 
   if (user) {
@@ -322,14 +421,14 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
 
       const tempOptionTitles: OptionType[] = [];
 
-      if (optionArray) {
-        if (!Array.isArray(optionArray)) {
+      if (options) {
+        if (!Array.isArray(options)) {
           return res
             .status(400)
             .json({ message: "Options is not on correct format" });
         }
 
-        optionArray.forEach((title: string) => {
+        options.forEach((title: string) => {
           tempOptionTitles.push(
             new Option({
               title: title,
@@ -343,7 +442,10 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
         $set: {
           title: !title ? vote.title : title,
           voteText: !voteText ? vote.voteText : voteText,
-          options: !optionArray ? vote.options : tempOptionTitles,
+          options: !options ? vote.options : tempOptionTitles,
+          caseNumber: !Number.isFinite(caseNumber)
+            ? vote.caseNumber
+            : caseNumber,
         },
       });
 

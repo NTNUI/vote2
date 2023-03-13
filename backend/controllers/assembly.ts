@@ -131,7 +131,6 @@ export async function getAssemblyByName(
           .status(400)
           .json({ message: "No assembly with the given ID found" });
       }
-
       return res.status(200).json(assembly);
     }
   }
