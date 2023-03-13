@@ -2,7 +2,18 @@
 
 ### Make sure the Backend is running
 
-See README in vote2/backend/README
+See README for backend [here](../backend/README.md)
+
+### Create a file containing the environment variables
+
+Containing the necessary URLs  
+Example:  
+Filename: `.env.local`
+
+```
+VITE_BACKEND_URL=http://localhost:3000/
+VITE_SOCKET_URL=ws://localhost:3000/status
+```
 
 ### Then install dependencies and start the app
 
