@@ -24,19 +24,21 @@ export function AssemblyLobby() {
   useEffect(() => {
     if (lastMessage) {
       const decodedMessage = JSON.parse(lastMessage.data);
-      if (decodedMessage.status == "verified") {
-        setCheckedIn(true);
-      }
-      if (decodedMessage.status == "update") {
-        setCheckedIn(true);
-        setActiveVotation(true);
-      }
-      if (decodedMessage.status == "removed") {
-        setKickedOut(true);
-      }
-      if (decodedMessage.status == "ended") {
-        setActiveVotation(false);
-        setVoted(false);
+      if (decodedMessage.group == state.groupSlug) {
+        if (decodedMessage.status == "verified") {
+          setCheckedIn(true);
+        }
+        if (decodedMessage.status == "update") {
+          setCheckedIn(true);
+          setActiveVotation(true);
+        }
+        if (decodedMessage.status == "removed") {
+          setKickedOut(true);
+        }
+        if (decodedMessage.status == "ended") {
+          setActiveVotation(false);
+          setVoted(false);
+        }
       }
     }
   }, [lastMessage]);

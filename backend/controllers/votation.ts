@@ -153,7 +153,7 @@ export async function setVotationStatus(
 
       // Notify all active participants to fetch the activated votation.
       assembly.participants.forEach((member) => {
-        notifyOne(member, JSON.stringify({ status: "update" }));
+        notifyOne(member, JSON.stringify({ status: "update", group: group }));
       });
 
       return res
@@ -214,7 +214,7 @@ export async function removeVotationStatus(
 
       // Notify all active participants to return to lobby.
       assembly.participants.forEach((member) => {
-        notifyOne(member, JSON.stringify({ status: "ended" }));
+        notifyOne(member, JSON.stringify({ status: "ended", group: group }));
       });
 
       return res
