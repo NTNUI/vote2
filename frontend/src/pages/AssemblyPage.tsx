@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { QrCode } from "../components/QrCode";
 import useWebSocket from "react-use-websocket";
 import { WaitingRoom } from "../components/WaitingRoom";
@@ -7,7 +7,6 @@ import { VotationBox } from "../components/VotationBox";
 
 export function AssemblyLobby() {
   const { state } = useLocation();
-  const navigate = useNavigate();
   const [kickedOut, setKickedOut] = useState<boolean>(false);
   const [checkedIn, setCheckedIn] = useState<boolean>(false);
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
@@ -24,6 +23,9 @@ export function AssemblyLobby() {
   useEffect(() => {
     if (lastMessage) {
       const decodedMessage = JSON.parse(lastMessage.data);
+      if (decodedMessage.status == "removed") {
+        setKickedOut(true);
+      }
       if (decodedMessage.group == state.groupSlug) {
         if (decodedMessage.status == "verified") {
           setCheckedIn(true);
@@ -31,9 +33,6 @@ export function AssemblyLobby() {
         if (decodedMessage.status == "update") {
           setCheckedIn(true);
           setActiveVotation(true);
-        }
-        if (decodedMessage.status == "removed") {
-          setKickedOut(true);
         }
         if (decodedMessage.status == "ended") {
           setActiveVotation(false);

@@ -71,7 +71,10 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
             { _id: group },
             { $addToSet: { participants: Number(scannedUser._id) } }
           );
-          notifyOne(scannedUser._id, JSON.stringify({ status: "verified" }));
+          notifyOne(
+            scannedUser._id,
+            JSON.stringify({ status: "verified", group: group })
+          );
           return res.status(200).json({ message: "Check-in successful" });
         }
       }
