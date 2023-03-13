@@ -7,7 +7,7 @@ export const createAssembly = async (group: string) => {
   });
 };
 
-export const isUserInAssembly = async (groupSlug: string): Promise<Boolean> => {
+export const isUserInAssembly = async (groupSlug: string): Promise<boolean> => {
   const res = await axios.post("/assembly/user/includes", {
     groupSlug: groupSlug,
   });
