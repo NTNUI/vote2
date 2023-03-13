@@ -1,12 +1,6 @@
-import { Container, Text } from "@mantine/core";
+import { Badge, Container, Text } from "@mantine/core";
 
-export function WaitingRoom({
-  status,
-  infoText,
-}: {
-  status: string;
-  infoText: string;
-}) {
+export function WaitingRoom(state: { groupName: string; message: string }) {
   return (
     <Container
       sx={() => ({
@@ -18,11 +12,11 @@ export function WaitingRoom({
         borderBottomRightRadius: 0,
       })}
     >
-      <Text ta={"left"} fz={"lg"} fw={700}>
-        {status}
-      </Text>
-      <Text ta={"left"} fw={300}>
-        {infoText}
+      <Badge mb={20} variant="outline">
+        {state.groupName} assembly
+      </Badge>
+      <Text ta={"center"} fz={"lg"} fw={300}>
+        {state.message}
       </Text>
     </Container>
   );

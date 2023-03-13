@@ -24,7 +24,7 @@ export function Groups() {
     setUserData(userData);
   };
   const click = (groupName: string, groupSlug: string) => {
-    navigate("/qr", {
+    navigate("/lobby", {
       state: { groupName: groupName, groupSlug: groupSlug },
     });
   };

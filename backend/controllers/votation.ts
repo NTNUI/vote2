@@ -5,6 +5,7 @@ import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { Votation, Option } from "../models/vote";
 import { OptionType } from "../types/vote";
+import { notifyOne } from "../utils/socketNotifier";
 
 export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -247,6 +248,12 @@ export async function activateVotationStatus(
           currentVotation: vote,
         },
       });
+
+      // Notify all active participants to fetch the activated votation.
+      assembly.participants.forEach((member) => {
+        notifyOne(member, JSON.stringify({ status: "update", group: group }));
+      });
+
       return res
         .status(200)
         .json({ message: "Votation successfully activated" });
@@ -301,6 +308,11 @@ export async function deactivateVotationStatus(
         $set: {
           isFinished: true,
         },
+      });
+
+      // Notify all active participants to return to lobby.
+      assembly.participants.forEach((member) => {
+        notifyOne(member, JSON.stringify({ status: "ended", group: group }));
       });
 
       return res
