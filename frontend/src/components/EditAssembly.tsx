@@ -31,7 +31,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     title: "placeholder",
     caseNumber: 0.1,
     voteText: "",
-    voted: [0],
+    voted: [],
     options: [],
     isFinished: true,
   });
