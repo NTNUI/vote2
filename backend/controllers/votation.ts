@@ -387,7 +387,6 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
 
   const group = req.body.group;
   const voteId = req.body.voteId;
-  const caseNumber = req.body.caseNumber;
   const title = req.body.title;
   const caseNumber = req.body.caseNumber;
   const voteText = req.body.voteText;
@@ -442,7 +441,6 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
       await Votation.findByIdAndUpdate(voteId, {
         $set: {
           title: !title ? vote.title : title,
-          caseNumber: !caseNumber ? vote.caseNumber : caseNumber,
           voteText: !voteText ? vote.voteText : voteText,
           options: !options ? vote.options : tempOptionTitles,
           caseNumber: !Number.isFinite(caseNumber)
