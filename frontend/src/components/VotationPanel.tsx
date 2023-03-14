@@ -117,7 +117,7 @@ function VotationPanel({
               type="number"
               precision={2}
               min={0}
-              step={0.1}
+              step={0.01}
               required
               withAsterisk
               label="Case number"
