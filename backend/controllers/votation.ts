@@ -5,8 +5,9 @@ import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { Votation, Option } from "../models/vote";
 import { OptionType } from "../types/vote";
+import { notifyOne } from "../utils/socketNotifier";
 
-export async function getVotations(req: RequestWithNtnuiNo, res: Response) {
+export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -45,6 +46,58 @@ export async function getVotations(req: RequestWithNtnuiNo, res: Response) {
       }
 
       return res.status(200).json(listOfVotations);
+    }
+  }
+
+  return res
+    .status(401)
+    .json({ message: "You are not authorized to proceed with this request" });
+}
+
+export async function getOneVotation(req: RequestWithNtnuiNo, res: Response) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const group = req.body.group;
+  const voteId = req.body.voteId;
+  const user = await User.findById(req.ntnuiNo);
+
+  if (user) {
+    if (
+      user.groups.some(
+        (membership) => membership.organizer && membership.groupSlug == group
+      )
+    ) {
+      const assembly = await Assembly.findById(group);
+      if (!assembly) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given group found " });
+      }
+
+      const allVotes = assembly.votes;
+
+      if (!allVotes.includes(voteId)) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+
+      if (!Types.ObjectId.isValid(voteId)) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+      const vote = await Votation.findById(voteId);
+
+      if (!vote) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+
+      return res.status(200).json(vote);
     }
   }
 
@@ -103,8 +156,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
       });
 
       const assembly = await Assembly.findById(group);
-
-      if (assembly && title && caseNumber) {
+      if (assembly && title && Number.isFinite(caseNumber)) {
         let tempVotes = assembly.votes;
         const feedback = await Votation.create(newVotation);
         if (tempVotes.length === 0) {
@@ -120,7 +172,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
         return res
           .status(200)
           .json({ message: "Votation successfully created" });
-      } else if (!caseNumber) {
+      } else if (!Number.isFinite(caseNumber)) {
         return res
           .status(400)
           .json({ message: "Votation is missing casenumber" });
@@ -196,6 +248,12 @@ export async function activateVotationStatus(
           currentVotation: vote,
         },
       });
+
+      // Notify all active participants to fetch the activated votation.
+      assembly.participants.forEach((member) => {
+        notifyOne(member, JSON.stringify({ status: "update", group: group }));
+      });
+
       return res
         .status(200)
         .json({ message: "Votation successfully activated" });
@@ -250,6 +308,11 @@ export async function deactivateVotationStatus(
         $set: {
           isFinished: true,
         },
+      });
+
+      // Notify all active participants to return to lobby.
+      assembly.participants.forEach((member) => {
+        notifyOne(member, JSON.stringify({ status: "ended", group: group }));
       });
 
       return res
@@ -324,6 +387,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
 
   const group = req.body.group;
   const voteId = req.body.voteId;
+  const caseNumber = req.body.caseNumber;
   const title = req.body.title;
   const voteText = req.body.voteText;
   const options = req.body.options;
@@ -379,6 +443,9 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
           title: !title ? vote.title : title,
           voteText: !voteText ? vote.voteText : voteText,
           options: !options ? vote.options : tempOptionTitles,
+          caseNumber: !Number.isFinite(caseNumber)
+            ? vote.caseNumber
+            : caseNumber,
         },
       });
 

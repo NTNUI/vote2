@@ -2,8 +2,7 @@ import "./App.css";
 import { StartPage } from "./pages/StartPage";
 import { Route, Routes } from "react-router-dom";
 import { ProtectRoutes } from "./utils/ProtectedRouter/protectedRoutes";
-import { Vote } from "./pages/VotePage";
-import { QR } from "./pages/QRpage";
+import { AssemblyLobby } from "./pages/AssemblyPage";
 import { Assembly } from "./pages/GenforsDashboard";
 import { CheckIn } from "./pages/CheckIn";
 import { AdminDashboard } from "./pages/AdminDashboard";
@@ -14,7 +13,7 @@ import axios from "axios";
 import { HeaderAction } from "./components/Header";
 
 function App() {
-  axios.defaults.baseURL = "http://localhost:3000";
+  axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
   axios.defaults.withCredentials = true;
 
   return (
@@ -51,20 +50,11 @@ function App() {
             }
           />
           <Route
-            path="/vote"
+            path="/lobby"
             element={
               <>
                 <HeaderAction />
-                <Vote />
-              </>
-            }
-          />
-          <Route
-            path="/QR"
-            element={
-              <>
-                <HeaderAction />
-                <QR />
+                <AssemblyLobby />
               </>
             }
           />
