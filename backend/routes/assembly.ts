@@ -3,6 +3,7 @@ import {
   createAssembly,
   deleteAssembly,
   getAssemblyByName,
+  isUserInAssembly,
   setAssemblyStatus,
 } from "../controllers/assembly";
 import authorization from "../utils/authorizationMiddleware";
@@ -16,5 +17,7 @@ assemblyRoutes.put("/activation", authorization, setAssemblyStatus);
 assemblyRoutes.delete("/", authorization, deleteAssembly);
 
 assemblyRoutes.post("/", authorization, getAssemblyByName);
+
+assemblyRoutes.post("/user/includes", authorization, isUserInAssembly);
 
 export default assemblyRoutes;

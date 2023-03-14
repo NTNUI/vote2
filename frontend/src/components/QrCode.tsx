@@ -11,7 +11,7 @@ export function QrCode(state: { groupName: string; groupSlug: string }) {
     setAccess((await getQrInfo()).access);
   };
 
-  //Missing refresh token update
+  // Update timestamp every 10 seconds
   useEffect(() => {
     const interval = setInterval(() => setTime(Date.now()), 10000);
     return () => {
@@ -19,8 +19,13 @@ export function QrCode(state: { groupName: string; groupSlug: string }) {
     };
   }, []);
 
+  // Set token on mount and update every 5 minutes.
   useEffect(() => {
     getCredentials();
+    const interval = setInterval(() => getCredentials(), 300000);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   return !access ? (

@@ -5,13 +5,16 @@ import {
   deactivateVotationStatus,
   deleteVotation,
   editVotation,
-  getVotations,
+  getAllVotations,
+  getOneVotation,
 } from "../controllers/votation";
 import authorization from "../utils/authorizationMiddleware";
 
 const votationRoutes = Router();
 
-votationRoutes.post("/", authorization, getVotations);
+votationRoutes.post("/allvotations", authorization, getAllVotations);
+
+votationRoutes.post("/onevotation", authorization, getOneVotation);
 
 votationRoutes.post("/create", authorization, createVotation);
 
