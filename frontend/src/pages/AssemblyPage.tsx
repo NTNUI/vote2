@@ -12,7 +12,7 @@ export function AssemblyLobby() {
   const [checkedIn, setCheckedIn] = useState<boolean>(false);
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
   const [voted, setVoted] = useState<boolean>(false);
-  const { lastMessage } = useWebSocket("ws://localhost:3000/status");
+  const { lastMessage } = useWebSocket(import.meta.env.VITE_SOCKET_URL);
 
   useEffect(() => {
     // Redirect to waiting room if already checked in
