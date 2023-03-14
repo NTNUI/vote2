@@ -11,6 +11,7 @@ import colors from "./utils/theme";
 import { Login } from "./pages/LoginPage";
 import axios from "axios";
 import { HeaderAction } from "./components/Header";
+import { NotificationsProvider } from "@mantine/notifications";
 
 function App() {
   axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
@@ -37,56 +38,58 @@ function App() {
         },
       }}
     >
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route element={<ProtectRoutes />}>
-          <Route
-            path="/start"
-            element={
-              <>
-                <HeaderAction />
-                <StartPage />
-              </>
-            }
-          />
-          <Route
-            path="/lobby"
-            element={
-              <>
-                <HeaderAction />
-                <AssemblyLobby />
-              </>
-            }
-          />
-          <Route
-            path="/assembly"
-            element={
-              <>
-                <HeaderAction />
-                <Assembly />
-              </>
-            }
-          />
-          <Route
-            path="/CheckIn"
-            element={
-              <>
-                <HeaderAction />
-                <CheckIn />
-              </>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <>
-                <HeaderAction />
-                <AdminDashboard />
-              </>
-            }
-          />
-        </Route>
-      </Routes>
+      <NotificationsProvider>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route element={<ProtectRoutes />}>
+            <Route
+              path="/start"
+              element={
+                <>
+                  <HeaderAction />
+                  <StartPage />
+                </>
+              }
+            />
+            <Route
+              path="/lobby"
+              element={
+                <>
+                  <HeaderAction />
+                  <AssemblyLobby />
+                </>
+              }
+            />
+            <Route
+              path="/assembly"
+              element={
+                <>
+                  <HeaderAction />
+                  <Assembly />
+                </>
+              }
+            />
+            <Route
+              path="/CheckIn"
+              element={
+                <>
+                  <HeaderAction />
+                  <CheckIn />
+                </>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <>
+                  <HeaderAction />
+                  <AdminDashboard />
+                </>
+              }
+            />
+          </Route>
+        </Routes>
+      </NotificationsProvider>
     </MantineProvider>
   );
 }
