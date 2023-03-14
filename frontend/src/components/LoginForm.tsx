@@ -37,6 +37,7 @@ const useStyles = createStyles((theme) => ({
     },
   },
   selectCountryCodeInput: {
+    marginRight: "10px",
     color: "white",
     ".mantine-Select-rightSection": { pointerEvents: "none" },
     input: {
@@ -85,7 +86,7 @@ const useStyles = createStyles((theme) => ({
     width: "100%",
     margin: "1rem 0 0.5rem 0",
     backgroundColor: theme.colors.ntnui_blue[0],
-    border: "2px solid" + theme.colors.ntnui_blue[0],
+    borderRadius: "5px 5px 0px 5px",
     ":hover": {
       border: "2px solid" + theme.colors.ntnui_blue[0],
       color: theme.colors.ntnui_blue[0],
@@ -107,7 +108,6 @@ const useStyles = createStyles((theme) => ({
   form: {
     width: "100%",
     display: "flex",
-    justifyContent: "center",
     flexDirection: "column",
     color: "white",
   },
