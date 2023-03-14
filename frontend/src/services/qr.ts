@@ -20,3 +20,18 @@ export const assemblyCheckin = async (qrScan: QRType): Promise<boolean> => {
     return false;
   }
 };
+export const assemblyCheckout = async (state: {
+  group: string;
+}): Promise<boolean> => {
+  try {
+    const res = await axios.post("/qr/checkout", {
+      group: state.group,
+    });
+    if (res.status == 200) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+};
