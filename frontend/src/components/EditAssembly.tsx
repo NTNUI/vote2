@@ -26,7 +26,7 @@ import { AccordionItem } from "@mantine/core/lib/Accordion/AccordionItem/Accordi
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
   const [votations, setVotations] = useState<VoteType[]>([]);
-  const [cases, setCases] = useState<VoteType>({
+  const [startCase] = useState<VoteType>({
     _id: "",
     title: "placeholder",
     caseNumber: 0.1,
@@ -49,8 +49,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
   useEffect(() => {
     const fetch = async () => {
-      const cases = await getVotations(group.groupSlug);
-      setVotations(cases);
+      const votes = await getVotations(group.groupSlug);
+      setVotations(votes);
     };
 
     fetch().catch(console.error);
@@ -69,10 +69,10 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   async function addCase() {
     await createVotation(
       group.groupSlug,
-      cases.title,
-      cases.caseNumber,
-      cases.voteText,
-      cases.options
+      startCase.title,
+      startCase.caseNumber,
+      startCase.voteText,
+      startCase.options
     );
     setIsChanged(!isChanged);
   }
