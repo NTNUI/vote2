@@ -34,8 +34,8 @@ export function QrCode(state: { groupName: string; groupSlug: string }) {
     <>
       <Text size={"xl"}>Check-in for {state.groupName.toUpperCase()}</Text>
       <QRCodeSVG
-        fgColor="#ffffff"
-        bgColor="#1b202c"
+        bgColor="#ffffff"
+        fgColor="#1b202c"
         imageSettings={{ src: logo, height: 15, width: 40, excavate: false }}
         includeMargin={true}
         size={350}
