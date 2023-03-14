@@ -11,6 +11,7 @@ import colors from "./utils/theme";
 import { Login } from "./pages/LoginPage";
 import axios from "axios";
 import { HeaderAction } from "./components/Header";
+import { NotFound } from "./pages/NotFound";
 
 function App() {
   axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
@@ -39,6 +40,15 @@ function App() {
     >
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route
+          path="*"
+          element={
+            <>
+              <HeaderAction />
+              <NotFound />
+            </>
+          }
+        />
         <Route element={<ProtectRoutes />}>
           <Route
             path="/start"
