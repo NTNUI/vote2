@@ -21,9 +21,11 @@ import { createVotation, getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
+import { AccordionItem } from "@mantine/core/lib/Accordion/AccordionItem/AccordionItem";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
+  const [votations, setVotations] = useState<VoteType[]>([]);
   const [cases, setCases] = useState<VoteType>({
     _id: "",
     title: "placeholder",
@@ -34,6 +36,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     isFinished: true,
   });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
+  const [isChanged, setIsChanged] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -43,6 +46,15 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
     fetch().catch(console.error);
   }, []);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const cases = await getVotations(group.groupSlug);
+      setVotations(cases);
+    };
+
+    fetch().catch(console.error);
+  }, [isChanged]);
 
   let navigate = useNavigate();
 
@@ -62,6 +74,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
       cases.voteText,
       cases.options
     );
+    setIsChanged(!isChanged);
   }
 
   function endAssembly(groupSlug: string) {
@@ -170,7 +183,36 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             Add case
           </Button>
         </Container>
-        <VotationPanel groupSlug={group.groupSlug} />
+        {votations.length < 1 ? (
+          <Text>There are currently no cases</Text>
+        ) : (
+          <Accordion
+            sx={(theme) => ({
+              height: "fit-content",
+              backgroundColor: theme.colors.ntnui_background[0],
+              border: "solid",
+              borderColor: theme.colors.ntnui_yellow[0],
+              borderRadius: "5px",
+              borderBottomRightRadius: "0px",
+              borderBottomWidth: 0.5,
+              maxWidth: 780,
+            })}
+          >
+            {votations
+              .sort((a, b) => a.caseNumber - b.caseNumber)
+              .map((vote: VoteType) => {
+                return (
+                  <VotationPanel
+                    key={vote._id}
+                    votation={vote}
+                    groupSlug={group.groupSlug}
+                    isChanged={isChanged}
+                    setIsChanged={setIsChanged}
+                  />
+                );
+              })}
+          </Accordion>
+        )}
       </SimpleGrid>
     </>
   );
