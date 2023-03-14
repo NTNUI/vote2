@@ -6,6 +6,7 @@ import {
   Text,
   Box,
   Flex,
+  NumberInput,
 } from "@mantine/core";
 import {
   activateVotation,
@@ -112,8 +113,11 @@ function VotationPanel({
               handleSubmit(values, votation._id)
             )}
           >
-            <TextInput
+            <NumberInput
               type="number"
+              precision={2}
+              min={0}
+              step={0.1}
               required
               withAsterisk
               label="Case number"
