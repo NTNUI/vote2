@@ -9,7 +9,7 @@ export interface VoteType extends Document {
   isFinished: boolean;
 }
 
-export type OptionType = {
+export interface OptionType extends Document {
   title: string;
   voteCount: number;
 };

@@ -457,3 +457,112 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
     message: "You are not authorized to proceed with this request",
   });
 }
+
+
+export async function submitVotation(
+  req: RequestWithNtnuiNo,
+  res: Response
+) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const group = req.body.group;
+  const voteId = req.body.voteId;
+  const user = await User.findById(req.ntnuiNo);
+  const optionId = req.body.optionId;
+  
+
+  if (user) {
+    if (
+      user.groups.some(
+        (membership) => membership.groupSlug == group
+      )
+    ) {
+      if (!Types.ObjectId.isValid(voteId)) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found" });
+      }
+      const vote = await Votation.findById(voteId);
+      const assembly = await Assembly.findById(group);
+
+      
+     
+
+      if (!assembly) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given group found " });
+      }
+
+      if (!assembly.currentVotation._id.equals(voteId)) {
+        console.log(assembly.currentVotation._id,"assambly, voteId:", voteId)
+        return res
+          .status(400)
+          .json({ message: "You can not vote on this votation" });
+      }
+      const participants: number[] = assembly.participants;
+     
+      if(participants.indexOf(user._id) === -1){
+        return res
+          .status(400)
+          .json({ message: "This user is not a part of the assembly" });
+      }
+
+      if (!vote) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
+
+      console.log("TESTER options", vote.options.indexOf(optionId)); 
+
+      if (vote.isFinished) {
+        return res
+          .status(400)
+          .json({ message: "This votation cannot be reactivated" });
+      }
+      const voted: number[] = vote.voted;
+
+      if(voted.indexOf(user._id) !== -1){
+        return res
+          .status(400)
+          .json({ message: "This user have already voted" });
+      } else{
+        voted.push(user._id)
+        await Votation.findByIdAndUpdate(voteId, {
+          $set: {
+            voted: voted,
+          },
+        })
+      }
+
+      
+    
+
+      // if (!optionId) {
+      //   return res
+      //     .status(400)
+      //     .json({ message: "No votation with the given ID found " });
+      // }
+
+      
+
+      
+
+      // Notify all active participants to fetch the activated votation.
+      // assembly.participants.forEach((member) => {
+      //   notifyOne(member, JSON.stringify({ status: "update", group: group }));
+      // });
+
+      return res
+        .status(200)
+        .json({ message: "Votation successfully activated" });
+    }
+  }
+
+  return res
+    .status(401)
+    .json({ message: "You are not authorized to proceed with this request, test" });
+}
