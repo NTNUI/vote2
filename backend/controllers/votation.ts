@@ -4,7 +4,7 @@ import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { Votation, Option } from "../models/vote";
-import { OptionType } from "../types/vote";
+import { OptionType, VoteResponseType } from "../types/vote";
 import { notifyOne } from "../utils/socketNotifier";
 
 export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
@@ -21,7 +21,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
         (membership) => membership.organizer && membership.groupSlug == group
       )
     ) {
-      const listOfVotations = [];
+      const listOfVotations:VoteResponseType[] = [];
 
       const assembly = await Assembly.findById(group);
       if (!assembly) {
@@ -42,7 +42,30 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
           continue;
         }
 
-        listOfVotations.push(vote);
+        const optionList: OptionType[] = [];
+      
+        for (let i = 0; i < vote.options.length; i++) {
+          const id = vote.options[i];
+          const option = await Option.findById(id)
+          if(option){
+            const newOption = new Option({
+              title: option.title,
+              voteCount: option.voteCount,
+            })
+            optionList.push(newOption)
+          }
+        }
+  
+        const votationResponse: VoteResponseType = {
+          title: vote.title,
+          caseNumber: vote.caseNumber,
+          voteText: vote.voteText,
+          voted: vote.voted,
+          options: optionList,
+          isFinished: vote.isFinished
+        }
+
+        listOfVotations.push(votationResponse);
       }
 
       return res.status(200).json(listOfVotations);
@@ -89,15 +112,40 @@ export async function getOneVotation(req: RequestWithNtnuiNo, res: Response) {
           .status(400)
           .json({ message: "No votation with the given ID found " });
       }
-      const vote = await Votation.findById(voteId);
 
+      const vote = await Votation.findById(voteId);
       if (!vote) {
         return res
           .status(400)
           .json({ message: "No votation with the given ID found " });
       }
 
-      return res.status(200).json(vote);
+      const optionList: OptionType[] = [];
+      
+      for (let i = 0; i < vote.options.length; i++) {
+        const id = vote.options[i];
+        const option = await Option.findById(id)
+        if(option){
+          const newOption = new Option({
+            title: option.title,
+            voteCount: option.voteCount,
+          })
+          optionList.push(newOption)
+        }
+      }
+
+      const votationResponse: VoteResponseType = {
+        title: vote.title,
+        caseNumber: vote.caseNumber,
+        voteText: vote.voteText,
+        voted: vote.voted,
+        options: optionList,
+        isFinished: vote.isFinished
+      }
+
+      
+
+      return res.status(200).json(votationResponse);
     }
   }
 
@@ -115,7 +163,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
   const title = req.body.title;
   let voteText = req.body.voteText;
   const caseNumber = req.body.caseNumber;
-  const options = req.body.options;
+  const options:[] = req.body.options;
   const user = await User.findById(req.ntnuiNo);
 
   if (!voteText) {
@@ -137,16 +185,16 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        options.forEach((title: string) => {
-          tempOptionTitles.push(
-            new Option({
-              title: title,
-              voteCount: 0,
-            })
-          );
-        });
+        for (let i = 0; i < options.length; i++) {
+          const title = options[i];
+          const newOption = new Option({
+            title: title,
+            voteCount: 0,
+          })
+          const feedback = await Option.create(newOption);
+          tempOptionTitles.push(feedback);
+        }
       }
-
       const newVotation = new Votation({
         title: title,
         caseNumber: caseNumber,
@@ -369,6 +417,11 @@ export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
         }
       }
 
+      for (let i = 0; i < vote.options.length; i++) {
+        const oldOptionId = vote.options[i];
+        await Option.findByIdAndDelete(oldOptionId)
+      }
+
       await Votation.findByIdAndDelete(voteId);
 
       return res.status(200).json({ message: "Votation successfully deleted" });
@@ -390,7 +443,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
   const title = req.body.title;
   const caseNumber = req.body.caseNumber;
   const voteText = req.body.voteText;
-  const options = req.body.options;
+  const options:[] = req.body.options;
   const user = await User.findById(req.ntnuiNo);
 
   if (user) {
@@ -419,6 +472,11 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
           .json({ message: "No assembly with the given ID found " });
       }
 
+      for (let i = 0; i < vote.options.length; i++) {
+        const oldOptionId = vote.options[i];
+        await Option.findByIdAndDelete(oldOptionId)
+      }
+    
       const tempOptionTitles: OptionType[] = [];
 
       if (options) {
@@ -428,16 +486,17 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        options.forEach((title: string) => {
-          tempOptionTitles.push(
-            new Option({
-              title: title,
-              voteCount: 0,
-            })
-          );
-        });
+        for (let i = 0; i < options.length; i++) {
+          const title = options[i];
+          const newOption = new Option({
+            title: title,
+            voteCount: 0,
+          })
+          const feedback = await Option.create(newOption);
+          tempOptionTitles.push(feedback);
+        }
       }
-
+      
       await Votation.findByIdAndUpdate(voteId, {
         $set: {
           title: !title ? vote.title : title,
@@ -496,6 +555,8 @@ export async function submitVotation(
           .json({ message: "No assembly with the given group found " });
       }
 
+      console.log("voteId:", voteId, "currentId", assembly.currentVotation._id )
+
       if (!assembly.currentVotation._id.equals(voteId)) {
         console.log(assembly.currentVotation._id,"assambly, voteId:", voteId)
         return res
@@ -516,7 +577,7 @@ export async function submitVotation(
           .json({ message: "No votation with the given ID found " });
       }
 
-      console.log("TESTER options", vote.options.indexOf(optionId)); 
+      
 
       if (vote.isFinished) {
         return res
@@ -538,14 +599,14 @@ export async function submitVotation(
         })
       }
 
-      
-    
+      console.log("TESTER options", vote.options.indexOf(optionId)); 
 
-      // if (!optionId) {
-      //   return res
-      //     .status(400)
-      //     .json({ message: "No votation with the given ID found " });
-      // }
+      vote.options.indexOf(optionId)
+      if (!optionId) {
+        return res
+          .status(400)
+          .json({ message: "No votation with the given ID found " });
+      }
 
       
 
