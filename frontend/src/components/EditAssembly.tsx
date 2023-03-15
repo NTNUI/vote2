@@ -173,11 +173,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           )}
           {!group.hasActiveAssembly && (
             <>
-              <Button
-                color={"red"}
-                onClick={() => setOpenModal(true)}
-                m={10}
-              >
+              <Button color={"red"} onClick={() => setOpenModal(true)} m={10}>
                 Delete assembly
               </Button>
               <Modal
@@ -193,21 +189,23 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                   color: theme.colors.ntnui_background[0],
                 })}
               >
-                Are you sure you want to delete {group.groupName} assembly? All data will be lost!
-                <Container sx={{
-                  display: "flex", 
-                  flexDirection: "row", 
-                  justifyContent: "space-evenly",
-                }}>
-                  <Button 
-                  onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
-                  color="red"
+                Are you sure you want to delete {group.groupName} assembly? All
+                data will be lost!
+                <Container
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
+                  }}
+                >
+                  <Button
+                    onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
+                    color="red"
                   >
                     Delete assembly
                   </Button>
                   <Button onClick={() => setOpenModal(false)}>Cancel</Button>
                 </Container>
-
               </Modal>
             </>
           )}
