@@ -5,6 +5,7 @@ import {
   Container,
   Image,
   Loader,
+  Modal,
   SimpleGrid,
   Text,
 } from "@mantine/core";
@@ -37,6 +38,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
   const [isChanged, setIsChanged] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -170,13 +172,44 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             </Button>
           )}
           {!group.hasActiveAssembly && (
-            <Button
-              color={"red"}
-              onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
-              m={10}
-            >
-              Delete assembly
-            </Button>
+            <>
+              <Button
+                color={"red"}
+                onClick={() => setOpenModal(true)}
+                m={10}
+              >
+                Delete assembly
+              </Button>
+              <Modal
+                opened={openModal}
+                onClose={() => setOpenModal(false)}
+                title="Delete assembly"
+                size="lg"
+                centered
+                transition="fade"
+                transitionDuration={200}
+                exitTransitionDuration={200}
+                sx={(theme) => ({
+                  color: theme.colors.ntnui_background[0],
+                })}
+              >
+                Are you sure you want to delete {group.groupName} assembly? All data will be lost!
+                <Container sx={{
+                  display: "flex", 
+                  flexDirection: "row", 
+                  justifyContent: "space-evenly",
+                }}>
+                  <Button 
+                  onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
+                  color="red"
+                  >
+                    Delete assembly
+                  </Button>
+                  <Button onClick={() => setOpenModal(false)}>Cancel</Button>
+                </Container>
+
+              </Modal>
+            </>
           )}
 
           <Button onClick={addCase} m={10}>
