@@ -21,7 +21,6 @@ import { createVotation, getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
-import { AccordionItem } from "@mantine/core/lib/Accordion/AccordionItem/AccordionItem";
 import { Results } from "./Results";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
