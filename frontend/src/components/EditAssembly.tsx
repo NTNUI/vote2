@@ -7,7 +7,6 @@ import {
   Loader,
   SimpleGrid,
   Text,
-  Flex,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,82 +17,46 @@ import {
   deleteAssembly,
   getAssemblyByName,
 } from "../services/assembly";
+import { createVotation, getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
+import { AccordionItem } from "@mantine/core/lib/Accordion/AccordionItem/AccordionItem";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
-  const [cases, setCases] = useState<VoteType[]>([]);
+  const [votations, setVotations] = useState<VoteType[]>([]);
+  const [startCase] = useState<VoteType>({
+    _id: "",
+    title: "placeholder",
+    caseNumber: 0.1,
+    voteText: "",
+    voted: [],
+    options: [],
+    isFinished: true,
+  });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
+  const [isChanged, setIsChanged] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
       const assemblyData = await getAssemblyByName(group.groupSlug);
       setAssembly(assemblyData);
     };
+
     fetch().catch(console.error);
   }, []);
 
-  let navigate = useNavigate();
-
   useEffect(() => {
-    const exampleCase1: VoteType = {
-      caseNumber: 2.0,
-      title: "Valg av leder",
-      voteText: "Hvem er den neste lederen?",
-      voted: [],
-      options: [
-        { title: "Jakob", voteCount: 0 },
-        { title: "Sara", voteCount: 0 },
-        { title: "Hvem som helst", voteCount: 0 },
-      ],
-      isFinished: false,
+    const fetch = async () => {
+      const votes = await getVotations(group.groupSlug);
+      setVotations(votes);
     };
-    const exampleCase2: VoteType = {
-      caseNumber: 1.2,
-      title: "Nytt valg av leder",
-      voteText: "Hvem er den neste lederen?",
-      voted: [],
-      options: [
-        { title: "Jakob", voteCount: 0 },
-        { title: "Sara", voteCount: 0 },
-        { title: "Hvem som helst", voteCount: 0 },
-      ],
-      isFinished: false,
-    };
-    const exampleCase4: VoteType = {
-      caseNumber: 1.1,
-      title: "Nytt valg av leder",
-      voteText: "Hvem er den neste lederen?",
-      voted: [],
-      options: [
-        { title: "Jakob", voteCount: 0 },
-        { title: "Sara", voteCount: 0 },
-        { title: "Hvem som helst", voteCount: 0 },
-      ],
-      isFinished: false,
-    };
-    const exampleCase3: VoteType = {
-      caseNumber: 1.0,
-      title: "Siste valg av leder",
-      voteText: "Hvem er den neste lederen?",
-      voted: [],
-      options: [
-        { title: "Jakob", voteCount: 0 },
-        { title: "Sara", voteCount: 0 },
-        { title: "Hvem som helst", voteCount: 0 },
-      ],
-      isFinished: false,
-    };
-    setCases([
-      ...cases,
-      exampleCase1,
-      exampleCase2,
-      exampleCase3,
-      exampleCase4,
-    ]);
-  }, []);
+
+    fetch().catch(console.error);
+  }, [isChanged]);
+
+  let navigate = useNavigate();
 
   function handleBreadcrumbGroupClick() {
     navigate("/start");
@@ -103,22 +66,15 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     navigate("/admin");
   }
 
-  function addCase() {
-    setCases((cases) => [
-      ...cases,
-      {
-        caseNumber: 0,
-        title: "",
-        voteText: "",
-        voted: [0],
-        options: [
-          { title: "Yes", voteCount: 0 },
-          { title: "No", voteCount: 0 },
-          { title: "NEVER", voteCount: 0 },
-        ],
-        isFinished: true,
-      },
-    ]);
+  async function addCase() {
+    await createVotation(
+      group.groupSlug,
+      startCase.title,
+      startCase.caseNumber,
+      startCase.voteText,
+      startCase.options
+    );
+    setIsChanged(!isChanged);
   }
 
   function endAssembly(groupSlug: string) {
@@ -227,28 +183,36 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             Add case
           </Button>
         </Container>
-
-        <Accordion
-          defaultValue={"vote1"}
-          sx={(theme) => ({
-            height: "fit-content",
-            backgroundColor: theme.colors.ntnui_background[0],
-            border: "solid",
-            borderColor: theme.colors.ntnui_yellow[0],
-            borderRadius: "5px",
-            borderBottomRightRadius: "0px",
-            borderBottomWidth: 0.5,
-            maxWidth: 780,
-          })}
-        >
-          {cases
-            .sort((a: VoteType, b: VoteType) => {
-              return a.caseNumber - b.caseNumber;
-            })
-            .map((item) => (
-              <VotationPanel votation={item} index={item.caseNumber} />
-            ))}
-        </Accordion>
+        {votations.length < 1 ? (
+          <Text>There are currently no cases</Text>
+        ) : (
+          <Accordion
+            sx={(theme) => ({
+              height: "fit-content",
+              backgroundColor: theme.colors.ntnui_background[0],
+              border: "solid",
+              borderColor: theme.colors.ntnui_yellow[0],
+              borderRadius: "5px",
+              borderBottomRightRadius: "0px",
+              borderBottomWidth: 0.5,
+              maxWidth: 780,
+            })}
+          >
+            {votations
+              .sort((a, b) => a.caseNumber - b.caseNumber)
+              .map((vote: VoteType) => {
+                return (
+                  <VotationPanel
+                    key={vote._id}
+                    votation={vote}
+                    groupSlug={group.groupSlug}
+                    isChanged={isChanged}
+                    setIsChanged={setIsChanged}
+                  />
+                );
+              })}
+          </Accordion>
+        )}
       </SimpleGrid>
     </>
   );

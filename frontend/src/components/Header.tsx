@@ -48,9 +48,13 @@ export function HeaderAction() {
               ></Image>
             )}
           </Group>
-          <Text className={classes.button} onClick={logOut}>
-            LOG OUT
-          </Text>
+          {localStorage.getItem("isLoggedIn") == "true" ? (
+            <Text className={classes.button} onClick={logOut}>
+              LOG OUT
+            </Text>
+          ) : (
+            <></>
+          )}
         </Container>
       </Header>
     </>
