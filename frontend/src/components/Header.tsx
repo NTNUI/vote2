@@ -1,15 +1,26 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logoHeader.svg";
 import logoSmall from "../assets/ntnuiLogo.svg";
-import { Header, Container, Group, Text, Space, Image } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import {
+  Header,
+  Container,
+  Group,
+  Text,
+  Space,
+  Image,
+  Modal,
+} from "@mantine/core";
+import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 import { useStyles } from "../styles/headerStyles";
+import { QrCode } from "./QrCode";
 
-export function HeaderAction() {
+export function HeaderAction(props: { checkedIn: boolean }) {
+  const [opened, { open, close }] = useDisclosure(false);
   const matches = useMediaQuery("(min-width: 400px)");
   const { classes } = useStyles();
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   const logOut = async () => {
     await axios
@@ -24,10 +35,32 @@ export function HeaderAction() {
         navigate("/");
       });
   };
+  const isMobile = useMediaQuery("(max-width: 375px)");
 
   return (
     <>
-      <Header className={classes.header} sx={{ borderBottom: 0 }} height={60}>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Check-out"
+        centered
+        size="auto"
+        fullScreen={isMobile}
+        zIndex={2}
+      >
+        {props.checkedIn ? (
+          <QrCode groupSlug={state.groupSlug} groupName={state.groupName} />
+        ) : (
+          <Text>Check out successfull. You can now leave the room</Text>
+        )}
+      </Modal>
+
+      <Header
+        zIndex={1}
+        className={classes.header}
+        sx={{ borderBottom: 0 }}
+        height={60}
+      >
         <Container className={classes.inner} fluid>
           <Group>
             {matches ? (
@@ -48,9 +81,15 @@ export function HeaderAction() {
               ></Image>
             )}
           </Group>
-          <Text className={classes.button} onClick={logOut}>
-            LOG OUT
-          </Text>
+          {props.checkedIn ? (
+            <Text className={classes.button} onClick={open}>
+              LEAVE ASSEMBLY
+            </Text>
+          ) : (
+            <Text className={classes.button} onClick={logOut}>
+              LOG OUT
+            </Text>
+          )}
         </Container>
       </Header>
     </>

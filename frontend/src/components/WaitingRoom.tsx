@@ -4,7 +4,6 @@ import CheckoutButton from "./CheckoutButton";
 export function WaitingRoom(state: { groupName: string; message: string }) {
   return (
     <>
-      <CheckoutButton groupName={state.groupName}></CheckoutButton>
       <Container
         sx={() => ({
           border: "1px solid",

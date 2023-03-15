@@ -11,17 +11,7 @@ export function CheckIn() {
 
   const checkInUser = async (data: QRType) => {
     setProcessing(true);
-    if (await assemblyCheckin(data)) {
-      showNotification({
-        title: "Success",
-        message: "User is checked-in",
-      });
-    } else {
-      showNotification({
-        title: "Error",
-        message: "Failed to check in user",
-      });
-    }
+    showNotification(await assemblyCheckin(data));
     setProcessing(false);
   };
 
