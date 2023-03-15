@@ -24,7 +24,7 @@ export function OrganizerGroupBox({
   const editAssemblyTestID: string = "edit-assembly-button-" + group.groupSlug;
 
   function handleQRClick() {
-    navigate("/QR");
+    navigate("/CheckIn");
   }
 
   function handleCreateAssemblyClick(group: UserDataGroupType) {

@@ -387,8 +387,8 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
 
   const group = req.body.group;
   const voteId = req.body.voteId;
-  const caseNumber = req.body.caseNumber;
   const title = req.body.title;
+  const caseNumber = req.body.caseNumber;
   const voteText = req.body.voteText;
   const options = req.body.options;
   const user = await User.findById(req.ntnuiNo);
