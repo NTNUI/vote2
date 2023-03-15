@@ -66,7 +66,6 @@ export function AssemblyLobby(props: {
 
       {kickedOut ? (
         <WaitingRoom
-          groupName={state.groupName}
           message={
             "You have logged in on another device, or you are kicked from this assembly."
           }
@@ -77,20 +76,14 @@ export function AssemblyLobby(props: {
           <QrCode {...state}></QrCode>
         </>
       ) : voted ? (
-        <WaitingRoom
-          groupName={state.groupName}
-          message={"Your vote is submitted!"}
-        />
+        <WaitingRoom message={"Your vote is submitted!"} />
       ) : activeVotation ? (
         <VotationBox
           groupSlug={state.groupSlug}
           userHasVoted={() => userHasVoted()}
         />
       ) : (
-        <WaitingRoom
-          groupName={state.groupName}
-          message={"There are currently no vote active, look up!"}
-        />
+        <WaitingRoom message={"There are currently no vote active, look up!"} />
       )}
     </>
   );

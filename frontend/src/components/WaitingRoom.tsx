@@ -1,7 +1,7 @@
 import { Badge, Container, Text } from "@mantine/core";
 import CheckoutButton from "./CheckoutButton";
 
-export function WaitingRoom(state: { groupName: string; message: string }) {
+export function WaitingRoom(state: { message: string }) {
   return (
     <>
       <Container
@@ -14,9 +14,6 @@ export function WaitingRoom(state: { groupName: string; message: string }) {
           borderBottomRightRadius: 0,
         })}
       >
-        <Badge mb={20} variant="outline">
-          {state.groupName} assembly
-        </Badge>
         <Text ta={"center"} fz={"lg"} fw={300}>
           {state.message}
         </Text>

@@ -48,7 +48,7 @@ export function HeaderAction(props: { checkedIn: boolean }) {
         fullScreen={isMobile}
         zIndex={2}
       >
-        {props.checkedIn ? (
+        {props.checkedIn && state ? (
           <QrCode groupSlug={state.groupSlug} groupName={state.groupName} />
         ) : (
           <Text>Check out successfull. You can now leave the room</Text>
@@ -67,7 +67,7 @@ export function HeaderAction(props: { checkedIn: boolean }) {
               <Image
                 sx={{ cursor: "pointer" }}
                 src={logo}
-                onClick={() => navigate("/start")}
+                onClick={() => !props.checkedIn && navigate("/start")}
                 alt="NTNUI logo"
                 width="200px"
               ></Image>
@@ -75,7 +75,7 @@ export function HeaderAction(props: { checkedIn: boolean }) {
               <Image
                 sx={{ cursor: "pointer" }}
                 src={logoSmall}
-                onClick={() => navigate("/start")}
+                onClick={() => !props.checkedIn && navigate("/start")}
                 alt="NTNUI logo"
                 width="100px"
               ></Image>
