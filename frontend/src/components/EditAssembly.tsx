@@ -8,6 +8,7 @@ import {
   Modal,
   SimpleGrid,
   Text,
+  useMantineTheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +28,7 @@ import { AccordionItem } from "@mantine/core/lib/Accordion/AccordionItem/Accordi
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
   const [votations, setVotations] = useState<VoteType[]>([]);
+  const theme = useMantineTheme();
   const [startCase] = useState<VoteType>({
     _id: "",
     title: "placeholder",
@@ -185,26 +187,44 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                 transition="fade"
                 transitionDuration={200}
                 exitTransitionDuration={200}
-                sx={(theme) => ({
-                  color: theme.colors.ntnui_background[0],
-                })}
+                // Styling is done like this to overwrite Mantine styling, therefore i could not use our color variables
+                // The styling could be moved to a styling file
+                styles={{
+                  modal: {
+                    backgroundColor: "#1b202c",
+                    color: "white",
+                    border: ".5px solid",
+                    borderRadius: 5,
+                    borderBottomRightRadius: 0,
+                    borderColor: "#f8f082",
+                    textAlign: "center",
+                  },
+                  title: {
+                    margin: "0 auto",
+                  },
+                }}
               >
-                Are you sure you want to delete {group.groupName} assembly? All
-                data will be lost!
+                <Text>
+                  Are you sure you want to delete {group.groupName} assembly?
+                  All data will be lost!
+                </Text>
                 <Container
-                  sx={{
+                  sx={(theme) => ({
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "space-evenly",
-                  }}
+                  })}
                 >
                   <Button
                     onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
                     color="red"
+                    mt="md"
                   >
-                    Delete assembly
+                    Delete
                   </Button>
-                  <Button onClick={() => setOpenModal(false)}>Cancel</Button>
+                  <Button mt="md" onClick={() => setOpenModal(false)}>
+                    Cancel
+                  </Button>
                 </Container>
               </Modal>
             </>
