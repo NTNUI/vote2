@@ -24,6 +24,7 @@ import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
 import { AccordionItem } from "@mantine/core/lib/Accordion/AccordionItem/AccordionItem";
+import { Tex } from "tabler-icons-react";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
@@ -181,9 +182,10 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               <Modal
                 opened={openModal}
                 onClose={() => setOpenModal(false)}
-                title="Delete assembly"
+                // title={"Delete assembly"}
                 size="lg"
                 centered
+                withCloseButton={false}
                 transition="fade"
                 transitionDuration={200}
                 exitTransitionDuration={200}
@@ -197,17 +199,19 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     borderRadius: 5,
                     borderBottomRightRadius: 0,
                     borderColor: "#f8f082",
-                    textAlign: "center",
                   },
                   title: {
                     margin: "0 auto",
                   },
                 }}
               >
-                <Text>
-                  Are you sure you want to delete {group.groupName} assembly?
-                  All data will be lost!
+                <Text mb={5} fw={600} ta={"center"}>
+                  Delete {group.groupName} assembly
                 </Text>
+                <Text ta={"center"}>
+                  Are you sure you want to delete this assembly?
+                </Text>
+                <Text ta={"center"}>All data will be lost!</Text>
                 <Container
                   sx={(theme) => ({
                     display: "flex",
