@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "build": "tsc",
+    "start": "node ./build/index.js",
     "dev": "ts-node-dev ./index.ts",
     "db": "docker compose up -d",
     "stop-db": "docker compose down",
