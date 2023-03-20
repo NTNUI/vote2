@@ -4,8 +4,11 @@
   margin: auto;
   font-family: "Poppins";
   text-align: center;
+  color: rgba(255, 255, 255, 0.87);
 }
 
 body {
   background: #1b202c url("./assets/Lines.svg") repeat-x fixed center 40%;
+  display: flex;
+  min-height: 90vh;
 }
