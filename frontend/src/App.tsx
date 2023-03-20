@@ -12,10 +12,12 @@ import { Login } from "./pages/LoginPage";
 import axios from "axios";
 import { HeaderAction } from "./components/Header";
 import { NotificationsProvider } from "@mantine/notifications";
+import { useState } from "react";
 
 function App() {
   axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
   axios.defaults.withCredentials = true;
+  const [checkedIn, setCheckedIn] = useState(false);
 
   return (
     <MantineProvider
@@ -46,7 +48,7 @@ function App() {
               path="/start"
               element={
                 <>
-                  <HeaderAction />
+                  <HeaderAction checkedIn={checkedIn} />
                   <StartPage />
                 </>
               }
@@ -55,8 +57,11 @@ function App() {
               path="/lobby"
               element={
                 <>
-                  <HeaderAction />
-                  <AssemblyLobby />
+                  <HeaderAction checkedIn={checkedIn} />
+                  <AssemblyLobby
+                    checkedIn={checkedIn}
+                    setCheckedIn={(checkin) => setCheckedIn(checkin)}
+                  />
                 </>
               }
             />
@@ -64,7 +69,7 @@ function App() {
               path="/assembly"
               element={
                 <>
-                  <HeaderAction />
+                  <HeaderAction checkedIn={checkedIn} />
                   <Assembly />
                 </>
               }
@@ -73,7 +78,7 @@ function App() {
               path="/CheckIn"
               element={
                 <>
-                  <HeaderAction />
+                  <HeaderAction checkedIn={checkedIn} />
                   <CheckIn />
                 </>
               }
@@ -82,7 +87,7 @@ function App() {
               path="/admin"
               element={
                 <>
-                  <HeaderAction />
+                  <HeaderAction checkedIn={checkedIn} />
                   <AdminDashboard />
                 </>
               }

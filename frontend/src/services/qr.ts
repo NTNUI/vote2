@@ -5,7 +5,9 @@ export const getQrInfo = async (): Promise<{ access: string }> => {
   return (await axios.get("/qr")).data;
 };
 
-export const assemblyCheckin = async (qrScan: QRType): Promise<boolean> => {
+export const assemblyCheckin = async (
+  qrScan: QRType
+): Promise<{ title: string; message: string }> => {
   try {
     const res = await axios.post("/qr/checkin", {
       group: qrScan.group,
@@ -13,10 +15,19 @@ export const assemblyCheckin = async (qrScan: QRType): Promise<boolean> => {
       timestamp: qrScan.timestamp,
     });
     if (res.status == 200) {
-      return true;
+      return {
+        title: "Success",
+        message: res.data.message,
+      };
     }
-    return false;
+    return {
+      title: "Error",
+      message: "Failed to check in user",
+    };
   } catch (error) {
-    return false;
+    return {
+      title: "Error",
+      message: "Failed to check in user",
+    };
   }
 };

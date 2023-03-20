@@ -31,20 +31,17 @@ export function QrCode(state: { groupName: string; groupSlug: string }) {
   return !access ? (
     <Loader></Loader>
   ) : (
-    <>
-      <Text size={"xl"}>Check-in for {state.groupName.toUpperCase()}</Text>
-      <QRCodeSVG
-        bgColor="#ffffff"
-        fgColor="#1b202c"
-        imageSettings={{ src: logo, height: 15, width: 40, excavate: false }}
-        includeMargin={true}
-        size={350}
-        value={JSON.stringify({
-          access: access,
-          timestamp: time,
-          group: state.groupSlug,
-        })}
-      />
-    </>
+    <QRCodeSVG
+      bgColor="#ffffff"
+      fgColor="#1b202c"
+      imageSettings={{ src: logo, height: 15, width: 40, excavate: false }}
+      includeMargin={true}
+      size={350}
+      value={JSON.stringify({
+        access: access,
+        timestamp: time,
+        group: state.groupSlug,
+      })}
+    />
   );
 }
