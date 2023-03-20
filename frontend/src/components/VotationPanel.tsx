@@ -18,7 +18,7 @@ import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
 import { useStyles } from "../styles/EditAssemblyStyles";
-import { VoteType } from "../types/votes";
+import { OptionType, VoteType } from "../types/votes";
 
 function VotationPanel({
   groupSlug,
@@ -32,11 +32,14 @@ function VotationPanel({
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [editable, setEditable] = useState(false);
+  const [isFinishChecked, setIsFinishChecked] = useState<boolean>(false);
+  const [isEndChecked, setIsEndChecked] = useState<boolean>(false);
+
   const form = useForm<VoteType>({
     initialValues: {
       _id: votation._id,
       caseNumber: votation.caseNumber,
-      title: "",
+      title: votation.title,
       isFinished: votation.isFinished,
       options: votation.options,
       voted: votation.voted,
@@ -190,9 +193,17 @@ function VotationPanel({
               <Button
                 color={"red"}
                 m={matches ? 10 : 5}
-                onClick={() => deactivateVote(votation)}
+                onClick={
+                  !isFinishChecked
+                    ? () => setIsFinishChecked(true)
+                    : () => deactivateVote(votation)
+                }
               >
-                Finish
+                {isFinishChecked ? (
+                  <Text>Yes - Finish votation</Text>
+                ) : (
+                  <Text>Finish</Text>
+                )}
               </Button>
             ) : (
               <Button
@@ -221,9 +232,13 @@ function VotationPanel({
                 w={matches ? "auto" : "60%"}
                 color={"red"}
                 m={matches ? 10 : 5}
-                onClick={() => deleteVote(votation)}
+                onClick={
+                  !isEndChecked
+                    ? () => setIsEndChecked(true)
+                    : () => deleteVote(votation)
+                }
               >
-                Delete
+                {isEndChecked ? <Text>Yes - delete</Text> : <Text>Delete</Text>}
               </Button>
             </Box>
           </Flex>
