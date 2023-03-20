@@ -2,7 +2,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logoHeader.svg";
 import logoSmall from "../assets/ntnuiLogo.svg";
-import { Header, Container, Group, Text, Space, Image } from "@mantine/core";
+import { Header, Container, Group, Text, Image } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useStyles } from "../styles/headerStyles";
 
