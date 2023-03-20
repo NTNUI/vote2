@@ -13,6 +13,7 @@ import axios from "axios";
 import { HeaderAction } from "./components/Header";
 import { NotificationsProvider } from "@mantine/notifications";
 import { useState } from "react";
+import { NotFound } from "./pages/NotFound";
 
 function App() {
   axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
@@ -43,6 +44,15 @@ function App() {
       <NotificationsProvider>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route
+            path="*"
+            element={
+              <>
+                <HeaderAction checkedIn={checkedIn} />
+                <NotFound />
+              </>
+            }
+          />
           <Route element={<ProtectRoutes />}>
             <Route
               path="/start"
