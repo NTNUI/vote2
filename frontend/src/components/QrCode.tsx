@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { getQrInfo } from "../services/qr";
 import logo from "../assets/ntnuiColor.svg";
+import { useNavigate } from "react-router-dom";
 
 export function QrCode(state: { groupName: string; groupSlug: string }) {
+  const navigate = useNavigate();
   let [access, setAccess] = useState<string>();
   let [time, setTime] = useState<number>(Date.now());
   const getCredentials = async () => {
@@ -13,6 +15,10 @@ export function QrCode(state: { groupName: string; groupSlug: string }) {
 
   // Update timestamp every 10 seconds
   useEffect(() => {
+    if (!state) {
+      navigate("/start");
+    }
+
     const interval = setInterval(() => setTime(Date.now()), 10000);
     return () => {
       clearInterval(interval);
