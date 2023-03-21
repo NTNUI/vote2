@@ -1,4 +1,3 @@
-import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 
 export const groupOrganizers = () => {
@@ -11,13 +10,6 @@ export const getNameById = async (id: number) => {
 
     return user?.first_name + " " + user?.last_name;
   } catch (error) {
-    return null;
-  }
-};
-
-export const getCurrentActiveVotation = async (group: string) => {
-  const assembly = await Assembly.findById(group);
-  if (!assembly) {
     return null;
   }
 };
