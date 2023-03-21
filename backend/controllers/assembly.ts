@@ -1,4 +1,4 @@
-import e, { Response } from "express";
+import { Response } from "express";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { Votation } from "../models/vote";
@@ -191,7 +191,9 @@ export async function getNumberOfParticipantsInAssembly(
           .status(400)
           .json({ message: "No assembly with the given ID found" });
       }
-      return res.status(200).json({participants: assembly.participants.length});
+      return res
+        .status(200)
+        .json({ participants: assembly.participants.length });
     }
   }
   return res.status(401).json({ message: "Not authorized" });

@@ -20,7 +20,10 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useStyles } from "../styles/EditAssemblyStyles";
 import { VoteType } from "../types/votes";
-import { getAssemblyByName, getNumberOfParticipantsInAssembly } from "../services/assembly";
+import {
+  getAssemblyByName,
+  getNumberOfParticipantsInAssembly,
+} from "../services/assembly";
 import { AssemblyType } from "../types/assembly";
 
 function VotationPanel({
@@ -54,7 +57,9 @@ function VotationPanel({
 
   useEffect(() => {
     const fetch = async () => {
-      const numberOfParticipants = await getNumberOfParticipantsInAssembly(groupSlug);
+      const numberOfParticipants = await getNumberOfParticipantsInAssembly(
+        groupSlug
+      );
       setParticipants(numberOfParticipants.participants);
     };
 
@@ -207,7 +212,10 @@ function VotationPanel({
                 <>
                   <SimpleGrid>
                     <Box>
-                      <Text>There are {participants} eligible participants in this vote.</Text>
+                      <Text>
+                        There are {participants} eligible participants in this
+                        vote.
+                      </Text>
                       <Button
                         color={"red"}
                         m={matches ? 10 : 5}
@@ -230,25 +238,25 @@ function VotationPanel({
               )}
               <SimpleGrid>
                 <Box>
-                <Button
-                  onClick={() => {
-                    setEditable(true);
-                  }}
-                  w={matches ? "auto" : "30%"}
-                  m={5}
-                  color={"gray"}
-                  disabled={votation.isFinished}
-                >
-                  Edit
-                </Button>
-                <Button
-                  w={matches ? "auto" : "60%"}
-                  color={"red"}
-                  m={matches ? 10 : 5}
-                  onClick={() => deleteVote(votation)}
-                >
-                  Delete
-                </Button>
+                  <Button
+                    onClick={() => {
+                      setEditable(true);
+                    }}
+                    w={matches ? "auto" : "30%"}
+                    m={5}
+                    color={"gray"}
+                    disabled={votation.isFinished}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    w={matches ? "auto" : "60%"}
+                    color={"red"}
+                    m={matches ? 10 : 5}
+                    onClick={() => deleteVote(votation)}
+                  >
+                    Delete
+                  </Button>
                 </Box>
               </SimpleGrid>
             </SimpleGrid>

@@ -51,7 +51,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
       /* const users = await getNumberOfUsersInAssembly(group.groupSlug);
       setElectorates(users) */
       setAssembly(assemblyData);
-      setParticipants(assemblyData.participants.length)
+      setParticipants(assemblyData.participants.length);
     };
 
     fetch().catch(console.error);
@@ -78,7 +78,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
   async function refreshParticipants() {
     try {
-      const newParticipants = await getNumberOfParticipantsInAssembly(group.groupSlug);
+      const newParticipants = await getNumberOfParticipantsInAssembly(
+        group.groupSlug
+      );
       setParticipants(newParticipants.participants);
     } catch (error) {
       console.log(error);
@@ -172,7 +174,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             EDIT {group.groupName.toUpperCase()} ASSEMBLY
           </Text>
           <Text>
-            Currently {participants} participants are checked in. 
+            Currently {participants} participants are checked in.
             <IconRefresh onClick={refreshParticipants}></IconRefresh>
           </Text>
           {group.hasActiveAssembly ? (
