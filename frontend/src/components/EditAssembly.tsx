@@ -37,19 +37,22 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     voted: [],
     options: [],
     isFinished: true,
+    isActive: false,
   });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
   const [isChanged, setIsChanged] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [statusChanges, setStatusChanges] = useState(assembly?.isActive);
 
   useEffect(() => {
     const fetch = async () => {
       const assemblyData = await getAssemblyByName(group.groupSlug);
       setAssembly(assemblyData);
+      console.log(assemblyData.isActive);
     };
 
     fetch().catch(console.error);
-  }, []);
+  }, [statusChanges]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -85,6 +88,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     try {
       activateAssembly(groupSlug, false).then(() => {
         setGroup({ ...group, hasActiveAssembly: false });
+        setStatusChanges(false);
       });
     } catch (error) {
       console.log(error);
@@ -105,6 +109,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     try {
       activateAssembly(groupSlug, true).then(() => {
         setGroup({ ...group, hasActiveAssembly: true });
+        setStatusChanges(true);
       });
     } catch (error) {
       console.log(error);
@@ -156,7 +161,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           <Text fz={"xl"} fw={500}>
             EDIT {group.groupName.toUpperCase()} ASSEMBLY
           </Text>
-          {group.hasActiveAssembly ? (
+          {assembly.isActive ? (
             <Button
               color={"red"}
               onClick={() => endAssembly(group.groupSlug)}
@@ -173,7 +178,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               Start Assembly
             </Button>
           )}
-          {!group.hasActiveAssembly && (
+          {!assembly.isActive && (
             <>
               <Button color={"red"} onClick={() => setOpenModal(true)} m={10}>
                 Delete assembly

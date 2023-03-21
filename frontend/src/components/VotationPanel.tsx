@@ -44,6 +44,7 @@ function VotationPanel({
       options: votation.options,
       voted: votation.voted,
       voteText: votation.voteText,
+      isActive: votation.isActive,
     },
   });
   const { classes } = useStyles();
@@ -65,6 +66,8 @@ function VotationPanel({
   }
 
   async function activateVote(votation: VoteType) {
+    console.log(votation.isActive);
+
     if (!votation.isFinished) {
       await activateVotation(groupSlug, votation._id).catch(console.error);
       setIsActive(true);
@@ -75,7 +78,6 @@ function VotationPanel({
   async function deactivateVote(votation: VoteType) {
     votation.isFinished = true;
     await deactivateVotation(groupSlug, votation._id).catch(console.error);
-    setIsActive(false);
     setIsChanged(!isChanged);
   }
 
@@ -192,7 +194,7 @@ function VotationPanel({
             direction={matches ? "row" : "column"}
             justify={matches ? "space-between" : "center"}
           >
-            {isActive ? (
+            {votation.isActive ? (
               <Button
                 color={"red"}
                 m={matches ? 10 : 5}
