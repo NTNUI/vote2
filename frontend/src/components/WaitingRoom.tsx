@@ -1,5 +1,4 @@
-import { Badge, Container, Text } from "@mantine/core";
-import CheckoutButton from "./CheckoutButton";
+import { Container, Text } from "@mantine/core";
 
 export function WaitingRoom(state: { message: string }) {
   return (
