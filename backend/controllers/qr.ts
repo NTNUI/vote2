@@ -1,7 +1,9 @@
 import { Response } from "express";
 import { getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { Assembly } from "../models/assembly";
+import { Log } from "../models/log";
 import { User } from "../models/user";
+import { logActionTypes } from "../types/log";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { notifyOne } from "../utils/socketNotifier";
 
@@ -79,6 +81,14 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
               scannedUser._id,
               JSON.stringify({ status: "checkout", group: group })
             );
+
+            // Create log of user leaving
+            await Log.create({
+              assemblyID: group,
+              action: logActionTypes.checkout,
+              user: scannedUser,
+            });
+
             return res.status(200).json({ message: "Check-out successful" });
           } else {
             await Assembly.findByIdAndUpdate(
@@ -91,6 +101,15 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
               scannedUser._id,
               JSON.stringify({ status: "verified", group: group })
             );
+
+            // Create log of entry
+            const log = await Log.create({
+              assemblyID: group,
+              action: logActionTypes.checkin,
+              user: scannedUser,
+            });
+            console.log(log);
+
             return res.status(200).json({ message: "Check-in successful" });
           }
         }
