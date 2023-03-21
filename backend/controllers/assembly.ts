@@ -186,7 +186,7 @@ export async function getNumberOfParticipantsInAssembly(
       )
     ) {
       const assembly = await Assembly.findById(groupSlug);
-      if (assembly == null) {
+      if (!assembly) {
         return res
           .status(400)
           .json({ message: "No assembly with the given ID found" });
@@ -196,5 +196,5 @@ export async function getNumberOfParticipantsInAssembly(
         .json({ participants: assembly.participants.length });
     }
   }
-  return res.status(401).json({ message: "Not authorized" });
+  return res.status(401).json({ message: "Unauthorized" });
 }
