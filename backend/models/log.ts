@@ -18,7 +18,7 @@ const logSchema = new Schema<logType>(
       required: true,
     },
   },
-  { collection: "logs" }
+  { collection: "logs", timestamps: { createdAt: true, updatedAt: false } }
 );
 
 const Log = model<logType>("Log", logSchema);

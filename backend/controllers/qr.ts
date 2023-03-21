@@ -108,7 +108,6 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
               action: logActionTypes.checkin,
               user: scannedUser,
             });
-            console.log(log);
 
             return res.status(200).json({ message: "Check-in successful" });
           }
