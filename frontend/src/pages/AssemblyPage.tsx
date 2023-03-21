@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { QrCode } from "../components/QrCode";
 import useWebSocket from "react-use-websocket";
 import { WaitingRoom } from "../components/WaitingRoom";
 import { VotationBox } from "../components/VotationBox";
 import { isUserInAssembly } from "../services/assembly";
-import { Text } from "@mantine/core";
 import { checkedInState } from "../utils/Context";
+import { Box, Image, Text } from "@mantine/core";
+import Arrow from "../assets/Arrow.svg";
 
 export function AssemblyLobby() {
   const { state } = useLocation();
@@ -16,6 +17,7 @@ export function AssemblyLobby() {
   const { lastMessage } = useWebSocket(import.meta.env.VITE_SOCKET_URL);
   const { checkedIn, setCheckedIn, group, setGroup } =
     useContext(checkedInState);
+  let navigate = useNavigate();
 
   useEffect(() => {
     // Redirect to waiting room if already checked in
@@ -62,10 +64,33 @@ export function AssemblyLobby() {
   const userHasVoted = () => {
     setVoted(true);
   };
+  function handleBreadcrumbGroupClick() {
+    navigate("/start");
+  }
 
   return (
     <>
-      <Text>{state.groupName} assembly</Text>
+      {!checkedIn && (
+        <Box
+          style={{
+            position: "absolute",
+            top: 70,
+            left: 30,
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Text fz={"sm"} fw={500} onClick={() => handleBreadcrumbGroupClick()}>
+            GROUPS
+          </Text>
+          <Image width={15} m={10} src={Arrow}></Image>
+          <Text fz={"sm"} fw={600}>
+            QR-CODE
+          </Text>
+        </Box>
+      )}
+      <Text mt={30}>{state.groupName} assembly</Text>
 
       {kickedOut ? (
         <WaitingRoom

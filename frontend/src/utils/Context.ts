@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React from "react";
 
 export type checkedInType = {
   checkedIn: boolean;
@@ -9,6 +9,6 @@ export type checkedInType = {
 export const checkedInState = React.createContext<checkedInType>({
   checkedIn: false,
   group: "",
-  setCheckedIn: () => {},
-  setGroup: () => {},
+  setCheckedIn: () => ({}),
+  setGroup: () => ({}),
 });
