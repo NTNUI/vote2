@@ -61,18 +61,18 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
         ) {
           const assembly = await Assembly.findById(group);
 
-          // Check if there is an ongoing votation. User may not check-in or out during this time.
-          if (assembly?.currentVotation) {
-            return res.status(400).json({
-              message:
-                "There is an ongoing votation. You may not enter or leave during this",
-            });
-          }
-
           if (assembly == null || !assembly.isActive) {
             return res.status(400).json({
               message:
                 "There is currently no active assembly on the given group",
+            });
+          }
+
+          // Check if there is an ongoing votation. User may not check-in or out during this time.
+          if (assembly.currentVotation) {
+            return res.status(400).json({
+              message:
+                "There is an ongoing votation. You may not enter or leave during this",
             });
           }
 
