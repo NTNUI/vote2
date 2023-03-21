@@ -25,6 +25,12 @@ export const assemblyCheckin = async (
       message: "Failed to check in user",
     };
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return {
+        title: "Error",
+        message: error.response?.data.message,
+      };
+    }
     return {
       title: "Error",
       message: "Failed to check in user",
