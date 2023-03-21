@@ -65,7 +65,7 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
           if (assembly?.currentVotation) {
             return res.status(400).json({
               message:
-                "There is an ongoing votation. You may not enter during this",
+                "There is an ongoing votation. You may not enter or leave during this",
             });
           }
 

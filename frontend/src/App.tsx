@@ -11,9 +11,9 @@ import colors from "./utils/theme";
 import { Login } from "./pages/LoginPage";
 import axios from "axios";
 import { HeaderAction } from "./components/Header";
-import { NotFound } from "./pages/NotFound";
 import { NotificationsProvider } from "@mantine/notifications";
 import { useState } from "react";
+import { NotFound } from "./pages/NotFound";
 
 function App() {
   axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;

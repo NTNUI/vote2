@@ -2,8 +2,16 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logoHeader.svg";
 import logoSmall from "../assets/ntnuiLogo.svg";
-import { Header, Container, Group, Text, Image, Modal } from "@mantine/core";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import {
+  Header,
+  Container,
+  Group,
+  Text,
+  Space,
+  Image,
+  Modal,
+} from "@mantine/core";
+import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 import { useStyles } from "../styles/headerStyles";
 import { QrCode } from "./QrCode";
 
@@ -73,12 +81,14 @@ export function HeaderAction(props: { checkedIn: boolean }) {
               ></Image>
             )}
           </Group>
-          {localStorage.getItem("isLoggedIn") == "true" ? (
+          {props.checkedIn ? (
+            <Text className={classes.button} onClick={open}>
+              LEAVE ASSEMBLY
+            </Text>
+          ) : (
             <Text className={classes.button} onClick={logOut}>
               LOG OUT
             </Text>
-          ) : (
-            <></>
           )}
         </Container>
       </Header>
