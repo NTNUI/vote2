@@ -67,65 +67,32 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
                 "There is currently no active assembly on the given group",
             });
           }
-          await Assembly.findByIdAndUpdate(
-            { _id: group },
-            { $addToSet: { participants: Number(scannedUser._id) } }
-          );
 
-          // Notify user when QR is scanned
-          notifyOne(
-            scannedUser._id,
-            JSON.stringify({ status: "verified", group: group })
-          );
-          return res.status(200).json({ message: "Check-in successful" });
-        }
-      }
-    } catch (e) {
-      return res.status(401).json({ message: "Invalid token in body" });
-    }
-  }
-  return res.status(401).json({ message: "Unauthorized" });
-}
+          // Check if scanned user is already checked-in, then check-out.
+          if (assembly.participants.includes(scannedUser._id)) {
+            await Assembly.findByIdAndUpdate(
+              { _id: group },
+              { $pull: { participants: Number(scannedUser._id) } }
+            );
+            // Notify user when QR is scanned
+            notifyOne(
+              scannedUser._id,
+              JSON.stringify({ status: "checkout", group: group })
+            );
+            return res.status(200).json({ message: "Check-out successful" });
+          } else {
+            await Assembly.findByIdAndUpdate(
+              { _id: group },
+              { $addToSet: { participants: Number(scannedUser._id) } }
+            );
 
-export async function assemblyCheckout(req: RequestWithNtnuiNo, res: Response) {
-  if (!req.ntnuiNo) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-  const group = req.body.group;
-  const token = req.body.token;
-  const user = await User.findById(req.ntnuiNo);
-
-  if (
-    user &&
-    user.groups.some(
-      (membership) => membership.organizer && membership.groupSlug == group
-    )
-  ) {
-    try {
-      const scannedUser = await User.findById(
-        (
-          await getNtnuiProfile(token)
-        ).data.ntnui_no
-      );
-
-      // If user is logged inn, the correct token is provided
-      if (scannedUser) {
-        if (
-          scannedUser.groups.some((membership) => membership.groupSlug == group)
-        ) {
-          const assembly = await Assembly.findById(group);
-
-          if (assembly == null || !assembly.isActive) {
-            return res.status(400).json({
-              message:
-                "There is currently no active assembly on the given group",
-            });
+            // Notify user when QR is scanned
+            notifyOne(
+              scannedUser._id,
+              JSON.stringify({ status: "verified", group: group })
+            );
+            return res.status(200).json({ message: "Check-in successful" });
           }
-          await Assembly.findByIdAndUpdate(
-            { _id: group },
-            { $pull: { participants: Number(scannedUser._id) } }
-          );
-          return res.status(200).json({ message: "Check-out successful" });
         }
       }
     } catch (e) {

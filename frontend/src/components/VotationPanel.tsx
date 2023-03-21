@@ -102,7 +102,10 @@ function VotationPanel({
         })}
       >
         <Text>
-          Case {votation.caseNumber} - {votation.title}
+          Case{" "}
+          {matches
+            ? votation.caseNumber + " - " + votation.title
+            : votation.caseNumber}
         </Text>
       </Accordion.Control>
       {editable ? (

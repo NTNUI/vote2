@@ -3,7 +3,6 @@ import { createStyles } from "@mantine/core";
 export const useStyles = createStyles(() => ({
   header: {
     position: "absolute",
-    width: "100vw",
     background: "none",
   },
 
