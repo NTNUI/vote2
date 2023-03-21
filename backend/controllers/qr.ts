@@ -103,7 +103,7 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
             );
 
             // Create log of entry
-            const log = await Log.create({
+            await Log.create({
               assemblyID: group,
               action: logActionTypes.checkin,
               user: scannedUser,
