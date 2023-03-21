@@ -15,7 +15,7 @@ import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 import { useStyles } from "../styles/headerStyles";
 import { QrCode } from "./QrCode";
 import { useContext } from "react";
-import { checkedInState } from "../utils/Context";
+import { checkedInState, checkedInType } from "../utils/Context";
 
 export function HeaderAction() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -23,8 +23,9 @@ export function HeaderAction() {
   const { classes } = useStyles();
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { checkedIn, setCheckedIn, group, setGroup } =
-    useContext(checkedInState);
+  const { checkedIn, setCheckedIn, group, setGroup } = useContext(
+    checkedInState
+  ) as checkedInType;
 
   const logOut = async () => {
     await axios

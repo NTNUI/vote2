@@ -5,7 +5,7 @@ import useWebSocket from "react-use-websocket";
 import { WaitingRoom } from "../components/WaitingRoom";
 import { VotationBox } from "../components/VotationBox";
 import { isUserInAssembly } from "../services/assembly";
-import { checkedInState } from "../utils/Context";
+import { checkedInState, checkedInType } from "../utils/Context";
 import { Box, Image, Text } from "@mantine/core";
 import Arrow from "../assets/Arrow.svg";
 
@@ -15,8 +15,9 @@ export function AssemblyLobby() {
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
   const [voted, setVoted] = useState<boolean>(false);
   const { lastMessage } = useWebSocket(import.meta.env.VITE_SOCKET_URL);
-  const { checkedIn, setCheckedIn, group, setGroup } =
-    useContext(checkedInState);
+  const { checkedIn, setCheckedIn, group, setGroup } = useContext(
+    checkedInState
+  ) as checkedInType;
   let navigate = useNavigate();
 
   useEffect(() => {

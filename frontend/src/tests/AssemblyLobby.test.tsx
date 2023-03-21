@@ -22,12 +22,7 @@ describe("Login test", () => {
     });
     render(
       <BrowserRouter>
-        <AssemblyLobby
-          setCheckedIn={function (checkin: boolean): void {
-            throw new Error("Function not implemented.");
-          }}
-          checkedIn={false}
-        />
+        <AssemblyLobby />
       </BrowserRouter>
     );
   });
