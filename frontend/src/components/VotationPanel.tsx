@@ -7,6 +7,7 @@ import {
   Box,
   Flex,
   NumberInput,
+  SimpleGrid,
 } from "@mantine/core";
 import {
   activateVotation,
@@ -16,9 +17,11 @@ import {
 } from "../services/votation";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStyles } from "../styles/EditAssemblyStyles";
 import { VoteType } from "../types/votes";
+import { getAssemblyByName, getNumberOfParticipantsInAssembly } from "../services/assembly";
+import { AssemblyType } from "../types/assembly";
 
 function VotationPanel({
   groupSlug,
@@ -47,6 +50,16 @@ function VotationPanel({
   const matches = useMediaQuery("(min-width: 400px)");
   const [options, setOptions] = useState<string[]>(["Yes", "No", "Blank"]);
   const [isActive, setIsActive] = useState(false);
+  const [participants, setParticipants] = useState<number>();
+
+  useEffect(() => {
+    const fetch = async () => {
+      const numberOfParticipants = await getNumberOfParticipantsInAssembly(groupSlug);
+      setParticipants(numberOfParticipants.participants);
+    };
+
+    fetch().catch(console.error);
+  }, [isActive]);
 
   async function handleSubmit(vote: VoteType, votationId: string) {
     await editVotation(
@@ -189,46 +202,56 @@ function VotationPanel({
             direction={matches ? "row" : "column"}
             justify={matches ? "space-between" : "center"}
           >
-            {isActive ? (
-              <Button
-                color={"red"}
-                m={matches ? 10 : 5}
-                onClick={() => deactivateVote(votation)}
-              >
-                Finish
-              </Button>
-            ) : (
-              <Button
-                color={"green"}
-                disabled={votation.isFinished}
-                m={matches ? 10 : 5}
-                onClick={() => activateVote(votation)}
-              >
-                Activate
-              </Button>
-            )}
-
-            <Box>
-              <Button
-                onClick={() => {
-                  setEditable(true);
-                }}
-                w={matches ? "auto" : "30%"}
-                m={5}
-                color={"gray"}
-                disabled={votation.isFinished}
-              >
-                Edit
-              </Button>
-              <Button
-                w={matches ? "auto" : "60%"}
-                color={"red"}
-                m={matches ? 10 : 5}
-                onClick={() => deleteVote(votation)}
-              >
-                Delete
-              </Button>
-            </Box>
+            <SimpleGrid cols={2}>
+              {isActive ? (
+                <>
+                  <SimpleGrid>
+                    <Box>
+                      <Text>There are {participants} eligible participants in this vote.</Text>
+                      <Button
+                        color={"red"}
+                        m={matches ? 10 : 5}
+                        onClick={() => deactivateVote(votation)}
+                      >
+                        Finish
+                      </Button>
+                    </Box>
+                  </SimpleGrid>
+                </>
+              ) : (
+                <Button
+                  color={"green"}
+                  disabled={votation.isFinished}
+                  m={matches ? 10 : 5}
+                  onClick={() => activateVote(votation)}
+                >
+                  Activate
+                </Button>
+              )}
+              <SimpleGrid>
+                <Box>
+                <Button
+                  onClick={() => {
+                    setEditable(true);
+                  }}
+                  w={matches ? "auto" : "30%"}
+                  m={5}
+                  color={"gray"}
+                  disabled={votation.isFinished}
+                >
+                  Edit
+                </Button>
+                <Button
+                  w={matches ? "auto" : "60%"}
+                  color={"red"}
+                  m={matches ? 10 : 5}
+                  onClick={() => deleteVote(votation)}
+                >
+                  Delete
+                </Button>
+                </Box>
+              </SimpleGrid>
+            </SimpleGrid>
           </Flex>
         </Accordion.Panel>
       )}

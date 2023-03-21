@@ -3,6 +3,7 @@ import {
   createAssembly,
   deleteAssembly,
   getAssemblyByName,
+  getNumberOfParticipantsInAssembly,
   isUserInAssembly,
   setAssemblyStatus,
 } from "../controllers/assembly";
@@ -19,5 +20,7 @@ assemblyRoutes.delete("/", authorization, deleteAssembly);
 assemblyRoutes.post("/", authorization, getAssemblyByName);
 
 assemblyRoutes.post("/user/includes", authorization, isUserInAssembly);
+
+assemblyRoutes.post("/participants", authorization, getNumberOfParticipantsInAssembly)
 
 export default assemblyRoutes;
