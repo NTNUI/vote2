@@ -29,12 +29,12 @@
   },
   "homepage": "https://github.com/ntnui/vote2#readme",
   "devDependencies": {
-    "typescript": "^4.9.4",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
     "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-react": "^7.32.2",
-    "prettier": "^2.8.3"
+    "prettier": "^2.8.3",
+    "typescript": "^4.9.4"
   }
 }
