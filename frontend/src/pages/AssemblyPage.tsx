@@ -1,31 +1,34 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { QrCode } from "../components/QrCode";
 import useWebSocket from "react-use-websocket";
 import { WaitingRoom } from "../components/WaitingRoom";
 import { VotationBox } from "../components/VotationBox";
 import { isUserInAssembly } from "../services/assembly";
-import { SimpleGrid, Text } from "@mantine/core";
-import CheckoutButton from "../components/CheckoutButton";
+import { Text } from "@mantine/core";
+import { checkedInState } from "../utils/Context";
 
-export function AssemblyLobby(props: {
-  setCheckedIn: (checkin: boolean) => void;
-  checkedIn: boolean;
-}) {
+export function AssemblyLobby() {
   const { state } = useLocation();
   const [kickedOut, setKickedOut] = useState<boolean>(false);
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
   const [voted, setVoted] = useState<boolean>(false);
   const { lastMessage } = useWebSocket(import.meta.env.VITE_SOCKET_URL);
+  const { checkedIn, setCheckedIn, group, setGroup } =
+    useContext(checkedInState);
 
   useEffect(() => {
     // Redirect to waiting room if already checked in
-    const isChekedIn = async () => {
+    const isCheckedIn = async () => {
       if (await isUserInAssembly(state.groupSlug)) {
-        props.setCheckedIn(true);
+        setCheckedIn(true);
+        setGroup(state.groupSlug);
+      } else {
+        setCheckedIn(false);
+        setGroup("");
       }
     };
-    isChekedIn();
+    isCheckedIn();
   }, []);
 
   useEffect(() => {
@@ -39,10 +42,10 @@ export function AssemblyLobby(props: {
       // Redirect only if user is checked in on the right group.
       if (decodedMessage.group == state.groupSlug) {
         if (decodedMessage.status == "verified") {
-          props.setCheckedIn(true);
+          setCheckedIn(true);
         }
         if (decodedMessage.status == "update") {
-          props.setCheckedIn(true);
+          setCheckedIn(true);
           setActiveVotation(true);
         }
         if (decodedMessage.status == "ended") {
@@ -50,7 +53,7 @@ export function AssemblyLobby(props: {
           setVoted(false);
         }
         if (decodedMessage.status == "checkout") {
-          props.setCheckedIn(false);
+          setCheckedIn(false);
         }
       }
     }
@@ -70,20 +73,20 @@ export function AssemblyLobby(props: {
             "You have logged in on another device, or you are kicked from this assembly."
           }
         />
-      ) : !props.checkedIn ? (
-        <>
-          <Text size={"xl"}>Check-in for {state.groupName.toUpperCase()}</Text>
-          <QrCode {...state}></QrCode>
-        </>
-      ) : voted ? (
+      ) : checkedIn && group == state.groupSlug && voted ? (
         <WaitingRoom message={"Your vote is submitted!"} />
-      ) : activeVotation ? (
+      ) : checkedIn && group == state.groupSlug && activeVotation ? (
         <VotationBox
           groupSlug={state.groupSlug}
           userHasVoted={() => userHasVoted()}
         />
+      ) : checkedIn && group == state.groupSlug && !activeVotation ? (
+        <WaitingRoom message={"There are currently no active vote, look up!"} />
       ) : (
-        <WaitingRoom message={"There are currently no vote active, look up!"} />
+        <>
+          <Text size={"xl"}>Check-in for {state.groupName.toUpperCase()}</Text>
+          <QrCode {...state}></QrCode>
+        </>
       )}
     </>
   );
