@@ -4,7 +4,12 @@ import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { Votation, Option } from "../models/vote";
-import { OptionType, VoteResponseType } from "../types/vote";
+import {
+  LimitedOptionType,
+  LimitedVoteResponseType,
+  OptionType,
+  VoteResponseType,
+} from "../types/vote";
 import { notifyOne } from "../utils/socketNotifier";
 
 export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
@@ -85,21 +90,19 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
     .json({ message: "You are not authorized to proceed with this request" });
 }
 
-export async function getOneVotation(req: RequestWithNtnuiNo, res: Response) {
+export async function getCurrentVotation(
+  req: RequestWithNtnuiNo,
+  res: Response
+) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   const group = req.body.group;
-  const voteId = req.body.voteId;
   const user = await User.findById(req.ntnuiNo);
 
   if (user) {
-    if (
-      user.groups.some(
-        (membership) => membership.organizer && membership.groupSlug == group
-      )
-    ) {
+    if (user.groups.some((membership) => membership.groupSlug == group)) {
       const assembly = await Assembly.findById(group);
       if (!assembly) {
         return res
@@ -107,55 +110,45 @@ export async function getOneVotation(req: RequestWithNtnuiNo, res: Response) {
           .json({ message: "No assembly with the given group found " });
       }
 
-      const allVotes = assembly.votes;
+      if (!assembly.currentVotation) {
+        return res
+          .status(400)
+          .json({ message: "This assembly has no current active votation" });
+      }
 
-      if (!allVotes.includes(voteId)) {
+      if (!Types.ObjectId.isValid(assembly.currentVotation._id)) {
         return res
           .status(400)
           .json({ message: "No votation with the given ID found " });
       }
 
-      if (!Types.ObjectId.isValid(voteId)) {
-        return res
-          .status(400)
-          .json({ message: "No votation with the given ID found " });
-      }
-
-      const vote = await Votation.findById(voteId);
+      const vote = await Votation.findById(assembly.currentVotation._id);
       if (!vote) {
         return res
           .status(400)
           .json({ message: "No votation with the given ID found " });
       }
 
-      const optionList: OptionType[] = [];
+      const optionList: LimitedOptionType[] = [];
 
       for (let i = 0; i < vote.options.length; i++) {
         const id = vote.options[i];
         const option = await Option.findById(id);
         if (option) {
-          const newOption = new Option({
+          const newOption: LimitedOptionType = {
+            _id: id,
             title: option.title,
-            voteCount: option.voteCount,
-          });
+          };
           optionList.push(newOption);
         }
       }
 
-      let isActive = false;
-      if (assembly.currentVotation) {
-        isActive = assembly.currentVotation._id.equals(vote._id);
-      }
-
-      const votationResponse: VoteResponseType = {
-        _id: voteId,
+      const votationResponse: LimitedVoteResponseType = {
+        _id: assembly.currentVotation._id,
         title: vote.title,
         caseNumber: vote.caseNumber,
         voteText: vote.voteText,
-        voted: vote.voted,
         options: optionList,
-        isActive: isActive,
-        isFinished: vote.isFinished,
       };
       return res.status(200).json(votationResponse);
     }

@@ -24,3 +24,16 @@ export type VoteResponseType = {
   isActive: boolean;
   isFinished: boolean;
 };
+
+export type LimitedOptionType = {
+  _id: ObjectId;
+  title: string;
+};
+
+export type LimitedVoteResponseType = {
+  _id: ObjectId;
+  title: string;
+  caseNumber: number;
+  voteText: string;
+  options: LimitedOptionType[];
+};
