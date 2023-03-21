@@ -4,24 +4,16 @@ import { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { assemblyCheckin } from "../services/qr";
 import { QRType } from "../types/checkin";
+import { useMediaQuery } from "@mantine/hooks";
 
 export function CheckIn() {
   const [result, setResult] = useState<string>();
   const [processing, setProcessing] = useState<boolean>(false);
+  const matches = useMediaQuery("(max-width: 450px)");
 
   const checkInUser = async (data: QRType) => {
     setProcessing(true);
-    if (await assemblyCheckin(data)) {
-      showNotification({
-        title: "Success",
-        message: "User is checked-in",
-      });
-    } else {
-      showNotification({
-        title: "Error",
-        message: "Failed to check in user",
-      });
-    }
+    showNotification(await assemblyCheckin(data));
     setProcessing(false);
   };
 
@@ -47,7 +39,7 @@ export function CheckIn() {
           <>
             <QrScanner
               constraints={{ facingMode: "environment" }}
-              containerStyle={{ width: 800 }}
+              containerStyle={matches ? { width: "80vw" } : { width: "50vw" }}
               onDecode={(result) => setResult(result)}
               onError={(error) => console.log(error?.message)}
             />
