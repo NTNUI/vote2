@@ -174,8 +174,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           </Text>
           <Text>
             <Flex align={"center"} justify={"center"}>
-            Currently {participants} participants are checked in
-            <IconRefresh onClick={refreshParticipants}></IconRefresh>
+              Currently {participants} participants are checked in
+              <IconRefresh onClick={refreshParticipants}></IconRefresh>
             </Flex>
           </Text>
           {group.hasActiveAssembly ? (
