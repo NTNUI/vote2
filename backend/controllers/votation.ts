@@ -49,21 +49,30 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
           const option = await Option.findById(id)
           if(option){
             const newOption = new Option({
+              _id: id,
               title: option.title,
               voteCount: option.voteCount,
             })
             optionList.push(newOption)
           }
         }
-  
+        
+        let isActive = false; 
+        if (assembly.currentVotation) {
+          isActive = assembly.currentVotation._id.equals(vote._id); 
+     
+        }
+       
         const votationResponse: VoteResponseType = {
+          _id: vote._id, 
           title: vote.title,
           caseNumber: vote.caseNumber,
           voteText: vote.voteText,
           voted: vote.voted,
           options: optionList,
+          isActive: isActive, 
           isFinished: vote.isFinished
-        }
+        }; 
 
         listOfVotations.push(votationResponse);
       }
@@ -134,17 +143,22 @@ export async function getOneVotation(req: RequestWithNtnuiNo, res: Response) {
         }
       }
 
+      let isActive = false; 
+        if (assembly.currentVotation) {
+          isActive = assembly.currentVotation._id.equals(vote._id); 
+     
+        }
+
       const votationResponse: VoteResponseType = {
+        _id: voteId,
         title: vote.title,
         caseNumber: vote.caseNumber,
         voteText: vote.voteText,
         voted: vote.voted,
         options: optionList,
+        isActive: isActive,
         isFinished: vote.isFinished
       }
-
-      
-
       return res.status(200).json(votationResponse);
     }
   }
@@ -195,6 +209,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
           tempOptionTitles.push(feedback);
         }
       }
+
       const newVotation = new Votation({
         title: title,
         caseNumber: caseNumber,
@@ -206,20 +221,17 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
       const assembly = await Assembly.findById(group);
       if (assembly && title && Number.isFinite(caseNumber)) {
         let tempVotes = assembly.votes;
-        const feedback = await Votation.create(newVotation);
-        if (tempVotes.length === 0) {
-          tempVotes = [feedback.id];
-        } else {
-          tempVotes.push(feedback.id);
-        }
-        await Assembly.findByIdAndUpdate(group, {
-          $set: {
-            votes: tempVotes,
+        const votationFeedback = await Votation.create(newVotation);
+        const assemblyFeedback = await Assembly.findByIdAndUpdate(group, {
+          $push: {
+            votes: votationFeedback,
           },
         });
-        return res
-          .status(200)
-          .json({ message: "Votation successfully created" });
+        if (assemblyFeedback) {
+          return res
+            .status(200)
+            .json({ message: "Votation successfully created" });
+        }
       } else if (!Number.isFinite(caseNumber)) {
         return res
           .status(400)
@@ -277,6 +289,12 @@ export async function activateVotationStatus(
         return res
           .status(400)
           .json({ message: "No assembly with the given group found " });
+      }
+
+      if (!assembly.isActive) {
+        return res
+          .status(400)
+          .json({ message: "No active assembly with the given group found " });
       }
 
       if (vote.isFinished) {
@@ -424,6 +442,12 @@ export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
 
       await Votation.findByIdAndDelete(voteId);
 
+      const test = await Assembly.findByIdAndUpdate(group, {
+        $pull: {
+          votes: voteId, 
+        },
+      })
+
       return res.status(200).json({ message: "Votation successfully deleted" });
     }
   }
@@ -470,6 +494,14 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
         return res
           .status(400)
           .json({ message: "No assembly with the given ID found " });
+      }
+
+      if (assembly.currentVotation) {
+        if (assembly.currentVotation._id.equals(voteId)) {
+          return res.status(400).json({
+            message: "One cannot edit the currently active votation",
+          });
+        }
       }
 
       for (let i = 0; i < vote.options.length; i++) {
@@ -543,11 +575,16 @@ export async function submitVotation(
           .status(400)
           .json({ message: "No votation with the given ID found" });
       }
+
+      if (!Types.ObjectId.isValid(optionId)) {
+        return res
+          .status(400)
+          .json({ message: "No option with the given ID found" });
+      }
+
       const vote = await Votation.findById(voteId);
       const assembly = await Assembly.findById(group);
-
-      
-     
+      let option = await Option.findById(optionId); 
 
       if (!assembly) {
         return res
@@ -555,20 +592,10 @@ export async function submitVotation(
           .json({ message: "No assembly with the given group found " });
       }
 
-      console.log("voteId:", voteId, "currentId", assembly.currentVotation._id )
-
-      if (!assembly.currentVotation._id.equals(voteId)) {
-        console.log(assembly.currentVotation._id,"assambly, voteId:", voteId)
+      if (!assembly.currentVotation) {
         return res
           .status(400)
-          .json({ message: "You can not vote on this votation" });
-      }
-      const participants: number[] = assembly.participants;
-     
-      if(participants.indexOf(user._id) === -1){
-        return res
-          .status(400)
-          .json({ message: "This user is not a part of the assembly" });
+          .json({ message: "No currently active votation" });
       }
 
       if (!vote) {
@@ -577,13 +604,32 @@ export async function submitVotation(
           .json({ message: "No votation with the given ID found " });
       }
 
-      
-
       if (vote.isFinished) {
         return res
           .status(400)
-          .json({ message: "This votation cannot be reactivated" });
+          .json({ message: "This votation is already finished" });
       }
+
+      if (!assembly.currentVotation._id.equals(voteId)) {
+        return res
+          .status(400)
+          .json({ message: "You can not vote on this votation" });
+      }
+
+      if (!option) {
+        return res
+          .status(400)
+          .json({ message: "No option with the given ID found " });
+      }
+
+      const participants: number[] = assembly.participants;
+     
+      if(participants.indexOf(user._id) === -1){
+        return res
+          .status(400)
+          .json({ message: "This user is not a part of the assembly" });
+      }
+
       const voted: number[] = vote.voted;
 
       if(voted.indexOf(user._id) !== -1){
@@ -591,35 +637,22 @@ export async function submitVotation(
           .status(400)
           .json({ message: "This user have already voted" });
       } else{
-        voted.push(user._id)
-        await Votation.findByIdAndUpdate(voteId, {
-          $set: {
-            voted: voted,
+        const checkUpdateVotation = await Votation.findByIdAndUpdate(voteId, {
+          $push: {
+            voted: user._id,
           },
+        })
+
+        const checkUpdateOption = await Option.findByIdAndUpdate(optionId, {
+          $set: {
+            voteCount: option.voteCount + 1
+          }
         })
       }
 
-      console.log("TESTER options", vote.options.indexOf(optionId)); 
-
-      vote.options.indexOf(optionId)
-      if (!optionId) {
-        return res
-          .status(400)
-          .json({ message: "No votation with the given ID found " });
-      }
-
-      
-
-      
-
-      // Notify all active participants to fetch the activated votation.
-      // assembly.participants.forEach((member) => {
-      //   notifyOne(member, JSON.stringify({ status: "update", group: group }));
-      // });
-
       return res
         .status(200)
-        .json({ message: "Votation successfully activated" });
+        .json({ message: "Successfully submited vote" });
     }
   }
 
