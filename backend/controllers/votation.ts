@@ -632,6 +632,6 @@ export async function submitVotation(req: RequestWithNtnuiNo, res: Response) {
   }
 
   return res.status(401).json({
-    message: "You are not authorized to proceed with this request, test",
+    message: "Not authorized",
   });
 }
