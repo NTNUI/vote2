@@ -96,7 +96,7 @@ export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
         });
       }
 
-      assembly.votes.forEach(async function (vote) {
+      assembly.votes.forEach(async (vote) => {
         const votation = await Votation.findById(vote);
 
         if (votation) {
