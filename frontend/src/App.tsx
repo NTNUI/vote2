@@ -11,6 +11,7 @@ import colors from "./utils/theme";
 import { Login } from "./pages/LoginPage";
 import axios from "axios";
 import { HeaderAction } from "./components/Header";
+import { NotFound } from "./pages/NotFound";
 import { NotificationsProvider } from "@mantine/notifications";
 import { useState } from "react";
 
@@ -43,6 +44,15 @@ function App() {
       <NotificationsProvider>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route
+            path="*"
+            element={
+              <>
+                <HeaderAction checkedIn={checkedIn} />
+                <NotFound />
+              </>
+            }
+          />
           <Route element={<ProtectRoutes />}>
             <Route
               path="/start"
