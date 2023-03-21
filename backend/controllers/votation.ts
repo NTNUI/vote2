@@ -85,9 +85,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
     }
   }
 
-  return res
-    .status(401)
-    .json({ message: "You are not authorized to proceed with this request" });
+  return res.status(401).json({ message: "Unauthorized" });
 }
 
 export async function getCurrentVotation(
@@ -150,9 +148,7 @@ export async function getCurrentVotation(
     }
   }
 
-  return res
-    .status(401)
-    .json({ message: "You are not authorized to proceed with this request" });
+  return res.status(401).json({ message: "Unauthorized" });
 }
 
 export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
@@ -234,9 +230,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
     }
   }
 
-  return res
-    .status(401)
-    .json({ message: "You are not authorized to proceed with this request" });
+  return res.status(401).json({ message: "Unauthorized" });
 }
 
 export async function activateVotationStatus(
@@ -312,9 +306,7 @@ export async function activateVotationStatus(
     }
   }
 
-  return res
-    .status(401)
-    .json({ message: "You are not authorized to proceed with this request" });
+  return res.status(401).json({ message: "Unauthorized" });
 }
 
 export async function deactivateVotationStatus(
@@ -373,9 +365,7 @@ export async function deactivateVotationStatus(
     }
   }
 
-  return res
-    .status(401)
-    .json({ message: "You are not authorized to proceed with this request" });
+  return res.status(401).json({ message: "Unauthorized" });
 }
 
 export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
@@ -439,7 +429,7 @@ export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
   }
 
   return res.status(401).json({
-    message: "You are not authorized to proceed with this request",
+    message: "Unauthorized",
   });
 }
 
@@ -531,7 +521,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
   }
 
   return res.status(401).json({
-    message: "You are not authorized to proceed with this request",
+    message: "Unauthorized",
   });
 }
 
@@ -632,6 +622,6 @@ export async function submitVotation(req: RequestWithNtnuiNo, res: Response) {
   }
 
   return res.status(401).json({
-    message: "Not authorized",
+    message: "Unauthorized",
   });
 }
