@@ -4,25 +4,33 @@ import { useEffect, useState } from "react";
 import { getAssemblyByName } from "../services/assembly";
 import { AssemblyType } from "../types/assembly";
 import { useStyles } from "../styles/VotationStyles";
+import { LimitedOptionType, LimitedVoteType } from "../types/votes";
+import { getCurrentVotationByGroup, submitVotation } from "../services/votation";
 
 export function VotationBox(state: {
   groupSlug: string;
   userHasVoted: () => void;
 }) {
-  const [assembly, setAssembly] = useState<AssemblyType | undefined>();
+  const [currentVotation, setCurrentVotation] = useState<LimitedVoteType | undefined>();
   const matches = useMediaQuery("(min-width: 501px)");
   const [chosenOption, setChosenOption] = useState<string>();
   const { classes } = useStyles();
 
   useEffect(() => {
     const fetch = async () => {
-      const assemblyData = await getAssemblyByName(state.groupSlug);
-      setAssembly(assemblyData);
+      const currentVotationData = await getCurrentVotationByGroup(state.groupSlug);
+      setCurrentVotation(currentVotationData);
+      
     };
     fetch().catch(console.error);
   }, []);
 
-  return !assembly?.currentVotation ? (
+  function submitVote(group: string, voteId: string, optionId: string) {
+    state.userHasVoted()
+    submitVotation(group, voteId, optionId)
+  }
+
+  return !currentVotation ? (
     <Loader />
   ) : (
     <>
@@ -37,10 +45,10 @@ export function VotationBox(state: {
         })}
       >
         <Text fz={"lg"} fw={700} ta={"left"}>
-          {assembly.currentVotation.title}
+          {currentVotation.title}
         </Text>
         <Text fz={"md"} mb={25} ml={10} ta={"left"}>
-          {assembly.currentVotation.voteText}
+          {currentVotation.voteText}
         </Text>
         <Flex
           mih={50}
@@ -50,7 +58,7 @@ export function VotationBox(state: {
           direction="column"
           wrap="nowrap"
         >
-          {assembly.currentVotation.options.map((option) => (
+          {currentVotation.options.map((option) => (
             <Button
               variant="outline"
               className={classes.optionButton}
@@ -66,7 +74,7 @@ export function VotationBox(state: {
               size="lg"
               w={matches ? 400 : 300}
               key={option.title}
-              onClick={() => setChosenOption(option.title)}
+              onClick={() => setChosenOption(option._id)}
             >
               {option.title}
             </Button>
@@ -77,7 +85,7 @@ export function VotationBox(state: {
           size={"md"}
           w={150}
           color={"green"}
-          onClick={() => state.userHasVoted()}
+          onClick={() => submitVote(groupSlug, currentVotation._id, chosenOption)}
         >
           Confirm
         </Button>
