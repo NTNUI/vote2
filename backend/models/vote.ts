@@ -1,17 +1,18 @@
 import { model, Schema, Types } from "mongoose";
 import { OptionType, VoteType } from "../types/vote";
 
-export const optionSchema = new Schema<OptionType>({
-  title: {
-    type: String,
-    required: true,
+export const optionSchema = new Schema<OptionType>(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    voteCount: {
+      type: Number,
+      required: true,
+    },
   },
-  voteCount: {
-    type: Number,
-    required: true,
-  },
-},
-{ collection: "options", _id: true }
+  { collection: "options", _id: true }
 );
 
 export const votationSchema = new Schema<VoteType>(

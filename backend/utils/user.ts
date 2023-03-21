@@ -16,10 +16,8 @@ export const getNameById = async (id: number) => {
 };
 
 export const getCurrentActiveVotation = async (group: string) => {
-
   const assembly = await Assembly.findById(group);
   if (!assembly) {
-    return null 
+    return null;
   }
-}
- 
+};

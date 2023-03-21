@@ -12,16 +12,15 @@ export interface VoteType extends Document {
 export interface OptionType extends Document {
   title: string;
   voteCount: number;
-};
-
+}
 
 export type VoteResponseType = {
-  _id: ObjectId; 
+  _id: ObjectId;
   title: string;
   caseNumber: number;
   voteText: string;
   voted: number[];
   options: OptionType[];
-  isActive: boolean; 
+  isActive: boolean;
   isFinished: boolean;
-}
+};

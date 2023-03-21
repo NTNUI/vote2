@@ -20,6 +20,4 @@ assemblyRoutes.post("/", authorization, getAssemblyByName);
 
 assemblyRoutes.post("/user/includes", authorization, isUserInAssembly);
 
-
-
 export default assemblyRoutes;

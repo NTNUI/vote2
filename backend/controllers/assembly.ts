@@ -97,16 +97,15 @@ export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
       }
 
       assembly.votes.forEach(async function (vote) {
-        const votation = await Votation.findById(vote)
-        
-        
+        const votation = await Votation.findById(vote);
+
         if (votation) {
           for (let i = 0; i < votation.options.length; i++) {
             const oldOptionId = votation.options[i];
-            
-            await Option.findByIdAndDelete(oldOptionId)
+
+            await Option.findByIdAndDelete(oldOptionId);
           }
-        } 
+        }
         await Votation.findByIdAndDelete(vote);
       });
       await Assembly.deleteOne({ _id: assembly._id });
