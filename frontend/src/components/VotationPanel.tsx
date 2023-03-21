@@ -60,7 +60,7 @@ function VotationPanel({
       const numberOfParticipants = await getNumberOfParticipantsInAssembly(
         groupSlug
       );
-      setParticipants(numberOfParticipants.participants);
+      setParticipants(numberOfParticipants);
     };
 
     fetch().catch(console.error);

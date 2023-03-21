@@ -44,10 +44,10 @@ export const getAssemblyByName = async (
 
 export const getNumberOfParticipantsInAssembly = async (
   groupSlug: string
-): Promise<{ participants: number }> => {
+): Promise<number> => {
   return (
     await axios.post("/assembly/participants", {
       groupSlug: groupSlug,
     })
-  ).data;
+  ).data.participants;
 };

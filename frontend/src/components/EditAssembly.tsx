@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   Image,
   Loader,
   Modal,
@@ -48,8 +49,6 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   useEffect(() => {
     const fetch = async () => {
       const assemblyData = await getAssemblyByName(group.groupSlug);
-      /* const users = await getNumberOfUsersInAssembly(group.groupSlug);
-      setElectorates(users) */
       setAssembly(assemblyData);
       setParticipants(assemblyData.participants.length);
     };
@@ -81,7 +80,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
       const newParticipants = await getNumberOfParticipantsInAssembly(
         group.groupSlug
       );
-      setParticipants(newParticipants.participants);
+      setParticipants(newParticipants);
     } catch (error) {
       console.log(error);
     }
@@ -174,8 +173,10 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             EDIT {group.groupName.toUpperCase()} ASSEMBLY
           </Text>
           <Text>
-            Currently {participants} participants are checked in.
+            <Flex align={"center"} justify={"center"}>
+            Currently {participants} participants are checked in
             <IconRefresh onClick={refreshParticipants}></IconRefresh>
+            </Flex>
           </Text>
           {group.hasActiveAssembly ? (
             <Button
