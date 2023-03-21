@@ -111,9 +111,7 @@ export async function getCurrentVotation(
       }
 
       if (!assembly.currentVotation) {
-        return res
-          .status(400)
-          .json({ message: "This assembly has no current active votation" });
+        return res.status(200).json(null);
       }
 
       if (!Types.ObjectId.isValid(assembly.currentVotation._id)) {
@@ -124,9 +122,7 @@ export async function getCurrentVotation(
 
       const vote = await Votation.findById(assembly.currentVotation._id);
       if (!vote) {
-        return res
-          .status(400)
-          .json({ message: "No votation with the given ID found " });
+        return res.status(400).json({ message: "No votation found" });
       }
 
       const optionList: LimitedOptionType[] = [];
