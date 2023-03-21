@@ -23,8 +23,7 @@ import { createVotation, getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
-import { AccordionItem } from "@mantine/core/lib/Accordion/AccordionItem/AccordionItem";
-import { Tex } from "tabler-icons-react";
+import { Results } from "./Results";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
@@ -252,11 +251,15 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               borderBottomWidth: 0.5,
               maxWidth: 780,
             })}
+            multiple
+            disableChevronRotation
           >
             {votations
               .sort((a, b) => a.caseNumber - b.caseNumber)
               .map((vote: VoteType) => {
-                return (
+                return vote.isFinished ? (
+                  <Results key={vote._id} votation={vote} />
+                ) : (
                   <VotationPanel
                     key={vote._id}
                     votation={vote}
