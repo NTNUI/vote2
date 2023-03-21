@@ -35,13 +35,13 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
           .json({ message: "No assembly with the given group found " });
       }
 
-      const voteIds = assembly.votes;
+      const voteIDs = assembly.votes;
 
-      for (let x = 0; x < voteIds.length; x++) {
-        if (!Types.ObjectId.isValid(voteIds[x] as never)) {
+      for (const voteID of voteIDs) {
+        if (!Types.ObjectId.isValid(String(voteID))) {
           continue;
         }
-        const vote = await Votation.findById(voteIds[x]);
+        const vote = await Votation.findById(voteID);
 
         if (!vote) {
           continue;
@@ -49,8 +49,8 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
 
         const optionList: OptionType[] = [];
 
-        for (let i = 0; i < vote.options.length; i++) {
-          const id = vote.options[i];
+        for (const optionID of vote.options) {
+          const id = optionID;
           const option = await Option.findById(id);
           if (option) {
             const newOption = new Option({
@@ -127,8 +127,8 @@ export async function getCurrentVotation(
 
       const optionList: LimitedOptionType[] = [];
 
-      for (let i = 0; i < vote.options.length; i++) {
-        const id = vote.options[i];
+      for (const optionID of vote.options) {
+        const id = optionID;
         const option = await Option.findById(id);
         if (option) {
           const newOption: LimitedOptionType = {
@@ -186,8 +186,8 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        for (let i = 0; i < options.length; i++) {
-          const title = options[i];
+        for (const optionID of options) {
+          const title = optionID;
           const newOption = new Option({
             title: title,
             voteCount: 0,
@@ -421,8 +421,8 @@ export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
         }
       }
 
-      for (let i = 0; i < vote.options.length; i++) {
-        const oldOptionId = vote.options[i];
+      for (const optionID of vote.options) {
+        const oldOptionId = optionID;
         await Option.findByIdAndDelete(oldOptionId);
       }
 
@@ -490,8 +490,8 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
         }
       }
 
-      for (let i = 0; i < vote.options.length; i++) {
-        const oldOptionId = vote.options[i];
+      for (const optionID of vote.options) {
+        const oldOptionId = optionID;
         await Option.findByIdAndDelete(oldOptionId);
       }
 
