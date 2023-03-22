@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   Image,
   Loader,
   Modal,
@@ -18,12 +19,14 @@ import {
   activateAssembly,
   deleteAssembly,
   getAssemblyByName,
+  getNumberOfParticipantsInAssembly,
 } from "../services/assembly";
 import { createVotation, getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
 import { Results } from "./Results";
+import { IconRefresh } from "@tabler/icons-react";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
@@ -40,6 +43,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     isActive: false,
   });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
+  const [participants, setParticipants] = useState<number>();
   const [isChanged, setIsChanged] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [statusChanges, setStatusChanges] = useState(assembly?.isActive);
@@ -48,7 +52,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     const fetch = async () => {
       const assemblyData = await getAssemblyByName(group.groupSlug);
       setAssembly(assemblyData);
-      console.log(assemblyData.isActive);
+      setParticipants(assemblyData.participants.length);
     };
 
     fetch().catch(console.error);
@@ -71,6 +75,17 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
   function handleBreadcrumbOrganizerClick() {
     navigate("/admin");
+  }
+
+  async function refreshParticipants() {
+    try {
+      const newParticipants = await getNumberOfParticipantsInAssembly(
+        group.groupSlug
+      );
+      setParticipants(newParticipants);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function addCase() {

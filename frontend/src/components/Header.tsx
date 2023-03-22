@@ -14,13 +14,18 @@ import {
 import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 import { useStyles } from "../styles/headerStyles";
 import { QrCode } from "./QrCode";
+import { useContext } from "react";
+import { checkedInState, checkedInType } from "../utils/Context";
 
-export function HeaderAction(props: { checkedIn: boolean }) {
+export function HeaderAction() {
   const [opened, { open, close }] = useDisclosure(false);
   const matches = useMediaQuery("(min-width: 400px)");
   const { classes } = useStyles();
   const navigate = useNavigate();
   const { state } = useLocation();
+  const { checkedIn, setCheckedIn, group, setGroup } = useContext(
+    checkedInState
+  ) as checkedInType;
 
   const logOut = async () => {
     await axios
@@ -48,7 +53,7 @@ export function HeaderAction(props: { checkedIn: boolean }) {
         fullScreen={isMobile}
         zIndex={2}
       >
-        {props.checkedIn && state ? (
+        {checkedIn && group == state.groupSlug ? (
           <QrCode groupSlug={state.groupSlug} groupName={state.groupName} />
         ) : (
           <Text>Check out successfull. You can now leave the room</Text>
@@ -65,23 +70,23 @@ export function HeaderAction(props: { checkedIn: boolean }) {
           <Group>
             {matches ? (
               <Image
-                sx={{ cursor: "pointer" }}
+                sx={{ cursor: !checkedIn ? "pointer" : "default" }}
                 src={logo}
-                onClick={() => !props.checkedIn && navigate("/start")}
+                onClick={() => !checkedIn && navigate("/start")}
                 alt="NTNUI logo"
                 width="200px"
               ></Image>
             ) : (
               <Image
-                sx={{ cursor: "pointer" }}
+                sx={{ cursor: !checkedIn ? "pointer" : "default" }}
                 src={logoSmall}
-                onClick={() => !props.checkedIn && navigate("/start")}
+                onClick={() => !checkedIn && navigate("/start")}
                 alt="NTNUI logo"
                 width="100px"
               ></Image>
             )}
           </Group>
-          {props.checkedIn ? (
+          {checkedIn && group == state.groupSlug ? (
             <Text className={classes.button} onClick={open}>
               LEAVE ASSEMBLY
             </Text>

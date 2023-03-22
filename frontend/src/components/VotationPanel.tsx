@@ -7,6 +7,7 @@ import {
   Box,
   Flex,
   NumberInput,
+  SimpleGrid,
 } from "@mantine/core";
 import {
   activateVotation,
@@ -16,9 +17,19 @@ import {
 } from "../services/votation";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStyles } from "../styles/EditAssemblyStyles";
+<<<<<<< HEAD
 import { OptionType, VoteType } from "../types/votes";
+import { getNumberOfParticipantsInAssembly } from "../services/assembly";
+=======
+import { VoteType } from "../types/votes";
+import {
+  getAssemblyByName,
+  getNumberOfParticipantsInAssembly,
+} from "../services/assembly";
+import { AssemblyType } from "../types/assembly";
+>>>>>>> main
 
 function VotationPanel({
   groupSlug,
@@ -51,6 +62,18 @@ function VotationPanel({
   const matches = useMediaQuery("(min-width: 400px)");
   const [options, setOptions] = useState<string[]>(["Yes", "No", "Blank"]);
   const [isActive, setIsActive] = useState(false);
+  const [participants, setParticipants] = useState<number>();
+
+  useEffect(() => {
+    const fetch = async () => {
+      const numberOfParticipants = await getNumberOfParticipantsInAssembly(
+        groupSlug
+      );
+      setParticipants(numberOfParticipants);
+    };
+
+    fetch().catch(console.error);
+  }, [isActive]);
 
   async function handleSubmit(vote: VoteType, votationId: string) {
     await editVotation(
