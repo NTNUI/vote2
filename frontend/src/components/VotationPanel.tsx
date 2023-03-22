@@ -21,17 +21,20 @@ import { useEffect, useState } from "react";
 import { useStyles } from "../styles/EditAssemblyStyles";
 import { VoteType } from "../types/votes";
 import { getNumberOfParticipantsInAssembly } from "../services/assembly";
+import { showNotification } from "@mantine/notifications";
 
 function VotationPanel({
   groupSlug,
   votation,
   isChanged,
   setIsChanged,
+  assemblyStatus,
 }: {
   groupSlug: string;
   votation: VoteType;
   isChanged: boolean;
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
+  assemblyStatus: boolean;
 }) {
   const [editable, setEditable] = useState(false);
   const [isFinishChecked, setIsFinishChecked] = useState<boolean>(false);
@@ -51,6 +54,7 @@ function VotationPanel({
   });
   const { classes } = useStyles();
   const matches = useMediaQuery("(min-width: 400px)");
+  const participantMatch = useMediaQuery("(min-width: 500px)");
   const [options, setOptions] = useState<string[]>(["Yes", "No", "Blank"]);
   const [isActive, setIsActive] = useState(false);
   const [participants, setParticipants] = useState<number>();
@@ -80,12 +84,13 @@ function VotationPanel({
   }
 
   async function activateVote(votation: VoteType) {
-    console.log(votation.isActive);
-
     if (!votation.isFinished) {
       await activateVotation(groupSlug, votation._id).catch(console.error);
       setIsActive(true);
       setIsChanged(!isChanged);
+      if (!assemblyStatus) {
+        showNotification({ title: "Error", message: "Start assembly first" });
+      }
     }
   }
 
@@ -190,20 +195,33 @@ function VotationPanel({
             color: "white",
           }}
         >
-          <Box pl={10} pb={10} ta={"left"}>
-            <Text fw={"700"}>Title:</Text>
-            <Text>{votation.title}</Text>
-            <Text fw={"700"}>Description:</Text>
-            <Text>{votation.voteText}</Text>
-            <Text fw={"700"}>Options:</Text>
-            <Text>
-              {votation.options.map((option, index) =>
-                index != votation.options.length - 1
-                  ? option.title + ", "
-                  : option.title + ""
-              )}
+          <Flex
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "column",
+            }}
+          >
+            <Box pl={10} pb={10} ta={"left"}>
+              <Text fw={"700"}>Title:</Text>
+              <Text>{votation.title}</Text>
+              <Text fw={"700"}>Description:</Text>
+              <Text>{votation.voteText}</Text>
+              <Text fw={"700"}>Options:</Text>
+              <Text>
+                {votation.options.map((option, index) =>
+                  index != votation.options.length - 1
+                    ? option.title + ", "
+                    : option.title + ""
+                )}
+              </Text>
+            </Box>
+            <Text
+              fz={"sm"}
+              style={{ minWidth: "fit-content", marginRight: "4px" }}
+            >
+              {participants} eligible participants
             </Text>
-          </Box>
+          </Flex>
           <Flex
             direction={matches ? "row" : "column"}
             justify={matches ? "space-between" : "center"}
@@ -243,7 +261,7 @@ function VotationPanel({
                 w={matches ? "auto" : "30%"}
                 m={5}
                 color={"gray"}
-                disabled={votation.isFinished}
+                disabled={votation.isFinished || votation.isActive}
               >
                 Edit
               </Button>

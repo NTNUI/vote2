@@ -176,6 +176,14 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           <Text fz={"xl"} fw={500}>
             EDIT {group.groupName.toUpperCase()} ASSEMBLY
           </Text>
+          <Text style={{}}>
+            Currently {participants} participants
+            <IconRefresh
+              style={{ marginLeft: "4px", position: "relative", top: "5px" }}
+              cursor={"pointer"}
+              onClick={refreshParticipants}
+            ></IconRefresh>
+          </Text>
           {assembly.isActive ? (
             <Button
               color={"red"}
@@ -272,7 +280,6 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               maxWidth: 780,
             })}
             multiple
-            disableChevronRotation
           >
             {votations
               .sort((a, b) => a.caseNumber - b.caseNumber)
@@ -286,6 +293,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     groupSlug={group.groupSlug}
                     isChanged={isChanged}
                     setIsChanged={setIsChanged}
+                    assemblyStatus={assembly.isActive}
                   />
                 );
               })}
