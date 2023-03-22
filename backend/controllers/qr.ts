@@ -68,6 +68,14 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
             });
           }
 
+          // Check if there is an ongoing votation. User may not check-in or out during this time.
+          if (assembly.currentVotation) {
+            return res.status(400).json({
+              message:
+                "There is an ongoing votation. You may not enter or leave during this",
+            });
+          }
+
           // Check if scanned user is already checked-in, then check-out.
           if (assembly.participants.includes(scannedUser._id)) {
             await Assembly.findByIdAndUpdate(

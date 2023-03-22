@@ -14,98 +14,100 @@ import { HeaderAction } from "./components/Header";
 import { NotificationsProvider } from "@mantine/notifications";
 import { useState } from "react";
 import { NotFound } from "./pages/NotFound";
+import { checkedInState } from "./utils/Context";
 
 function App() {
   axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
   axios.defaults.withCredentials = true;
   const [checkedIn, setCheckedIn] = useState(false);
+  const [group, setGroup] = useState("");
+  const value = { checkedIn, setCheckedIn, group, setGroup };
 
   return (
-    <MantineProvider
-      theme={{
-        fontFamily: "Poppins, sans-serif",
-        colors: colors,
-        fontSizes: {
-          xs: 10,
-          sm: 12,
-          md: 14,
-          lg: 20,
-          xl: 24,
-        },
-        breakpoints: {
-          xs: 500,
-          sm: 800,
-          md: 1000,
-          lg: 1200,
-          xl: 1400,
-        },
-      }}
-    >
-      <NotificationsProvider>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route
-            path="*"
-            element={
-              <>
-                <HeaderAction checkedIn={checkedIn} />
-                <NotFound />
-              </>
-            }
-          />
-          <Route element={<ProtectRoutes />}>
+    <checkedInState.Provider value={value}>
+      <MantineProvider
+        theme={{
+          fontFamily: "Poppins, sans-serif",
+          colors: colors,
+          fontSizes: {
+            xs: 10,
+            sm: 12,
+            md: 14,
+            lg: 20,
+            xl: 24,
+          },
+          breakpoints: {
+            xs: 500,
+            sm: 800,
+            md: 1000,
+            lg: 1200,
+            xl: 1400,
+          },
+        }}
+      >
+        <NotificationsProvider>
+          <Routes>
+            <Route path="/" element={<Login />} />
             <Route
-              path="/start"
+              path="*"
               element={
                 <>
-                  <HeaderAction checkedIn={checkedIn} />
-                  <StartPage />
+                  <HeaderAction />
+                  <NotFound />
                 </>
               }
             />
-            <Route
-              path="/lobby"
-              element={
-                <>
-                  <HeaderAction checkedIn={checkedIn} />
-                  <AssemblyLobby
-                    checkedIn={checkedIn}
-                    setCheckedIn={(checkin) => setCheckedIn(checkin)}
-                  />
-                </>
-              }
-            />
-            <Route
-              path="/assembly"
-              element={
-                <>
-                  <HeaderAction checkedIn={checkedIn} />
-                  <Assembly />
-                </>
-              }
-            />
-            <Route
-              path="/CheckIn"
-              element={
-                <>
-                  <HeaderAction checkedIn={checkedIn} />
-                  <CheckIn />
-                </>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <>
-                  <HeaderAction checkedIn={checkedIn} />
-                  <AdminDashboard />
-                </>
-              }
-            />
-          </Route>
-        </Routes>
-      </NotificationsProvider>
-    </MantineProvider>
+            <Route element={<ProtectRoutes />}>
+              <Route
+                path="/start"
+                element={
+                  <>
+                    <HeaderAction />
+                    <StartPage />
+                  </>
+                }
+              />
+              <Route
+                path="/lobby"
+                element={
+                  <>
+                    <HeaderAction />
+                    <AssemblyLobby />
+                  </>
+                }
+              />
+              <Route
+                path="/assembly"
+                element={
+                  <>
+                    <HeaderAction />
+                    <Assembly />
+                  </>
+                }
+              />
+              <Route
+                path="/CheckIn"
+                element={
+                  <>
+                    <HeaderAction />
+                    <CheckIn />
+                  </>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <>
+                    <HeaderAction />
+                    <AdminDashboard />
+                  </>
+                }
+              />
+            </Route>
+          </Routes>
+        </NotificationsProvider>
+      </MantineProvider>
+    </checkedInState.Provider>
   );
 }
 
