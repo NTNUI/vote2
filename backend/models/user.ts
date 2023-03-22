@@ -19,7 +19,7 @@ export const groupSchema = new Schema<GroupType>(
   { _id: false }
 );
 
-const userSchema = new Schema<UserType>(
+export const userSchema = new Schema<UserType>(
   {
     _id: {
       type: Number,

@@ -1,7 +1,9 @@
 import { Response } from "express";
 import { getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { Assembly } from "../models/assembly";
+import { Log } from "../models/log";
 import { User } from "../models/user";
+import { logActionTypes } from "../types/log";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { notifyOne } from "../utils/socketNotifier";
 
@@ -68,6 +70,14 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
             });
           }
 
+          // Check if there is an ongoing votation. User may not check-in or out during this time.
+          if (assembly.currentVotation) {
+            return res.status(400).json({
+              message:
+                "There is an ongoing votation. You may not enter or leave during this",
+            });
+          }
+
           // Check if scanned user is already checked-in, then check-out.
           if (assembly.participants.includes(scannedUser._id)) {
             await Assembly.findByIdAndUpdate(
@@ -79,6 +89,14 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
               scannedUser._id,
               JSON.stringify({ status: "checkout", group: group })
             );
+
+            // Create log of user leaving
+            await Log.create({
+              assemblyID: group,
+              action: logActionTypes.checkout,
+              user: scannedUser,
+            });
+
             return res.status(200).json({ message: "Check-out successful" });
           } else {
             await Assembly.findByIdAndUpdate(
@@ -91,6 +109,14 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
               scannedUser._id,
               JSON.stringify({ status: "verified", group: group })
             );
+
+            // Create log of entry
+            await Log.create({
+              assemblyID: group,
+              action: logActionTypes.checkin,
+              user: scannedUser,
+            });
+
             return res.status(200).json({ message: "Check-in successful" });
           }
         }

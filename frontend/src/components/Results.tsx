@@ -9,11 +9,16 @@ import {
 import { useMediaQuery } from "@mantine/hooks";
 import { VoteType } from "../types/votes";
 import { IconChartBar } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function Results({ votation }: { votation: VoteType }) {
   const matches = useMediaQuery("(min-width: 400px)");
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setIsOpen(!isOpen);
+  }, []);
+
   return (
     <>
       <Accordion.Item
@@ -27,21 +32,6 @@ export function Results({ votation }: { votation: VoteType }) {
       >
         <Accordion.Control
           onClick={() => setIsOpen(!isOpen)}
-          chevron={
-            <Text
-              fw={"400"}
-              style={{
-                marginRight: "100px",
-                width: "fit-content",
-                whiteSpace: "nowrap",
-              }}
-            >
-              <Flex>
-                <IconChartBar size={20} style={{ marginRight: "5px" }} />
-                {isOpen ? "Hide" : "Show"} results
-              </Flex>
-            </Text>
-          }
           sx={(theme) => ({
             color: "white",
             "&:hover": {
@@ -49,12 +39,22 @@ export function Results({ votation }: { votation: VoteType }) {
             },
           })}
         >
-          <Text>
-            Case{" "}
-            {matches
-              ? votation.caseNumber + " - " + votation.title
-              : votation.caseNumber}
-          </Text>
+          <Container
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: 0,
+            }}
+          >
+            <Text>
+              {" "}
+              Case{" "}
+              {matches
+                ? votation.caseNumber + " - " + votation.title
+                : votation.caseNumber}
+            </Text>
+            <Text>Results</Text>
+          </Container>
         </Accordion.Control>
         <Accordion.Panel>
           <Text color={"white"}>{votation.title}</Text>

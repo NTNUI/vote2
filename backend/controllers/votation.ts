@@ -112,6 +112,14 @@ export async function getCurrentVotation(
         return res.status(200).json(null);
       }
 
+      const participants: number[] = assembly.participants;
+
+      if (!participants.includes(user._id)) {
+        return res
+          .status(400)
+          .json({ message: "This user is not a part of the assembly" });
+      }
+
       if (!Types.ObjectId.isValid(assembly.currentVotation._id)) {
         return res
           .status(400)
@@ -121,6 +129,12 @@ export async function getCurrentVotation(
       const vote = await Votation.findById(assembly.currentVotation._id);
       if (!vote) {
         return res.status(400).json({ message: "No votation found" });
+      }
+
+      const voted: number[] = vote.voted;
+
+      if (voted.includes(user._id)) {
+        return res.status(200).json(null);
       }
 
       const optionList: LimitedOptionType[] = [];
@@ -525,7 +539,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
   });
 }
 
-export async function submitVotation(req: RequestWithNtnuiNo, res: Response) {
+export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -591,7 +605,7 @@ export async function submitVotation(req: RequestWithNtnuiNo, res: Response) {
 
       const participants: number[] = assembly.participants;
 
-      if (participants.indexOf(user._id) === -1) {
+      if (!participants.includes(user._id)) {
         return res
           .status(400)
           .json({ message: "This user is not a part of the assembly" });

@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   Image,
   Loader,
   Modal,
@@ -18,12 +19,14 @@ import {
   activateAssembly,
   deleteAssembly,
   getAssemblyByName,
+  getNumberOfParticipantsInAssembly,
 } from "../services/assembly";
 import { createVotation, getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
 import { Results } from "./Results";
+import { IconRefresh } from "@tabler/icons-react";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
@@ -37,19 +40,24 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     voted: [],
     options: [],
     isFinished: true,
+    isActive: false,
   });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
+  const [participants, setParticipants] = useState<number>();
   const [isChanged, setIsChanged] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [statusChanges, setStatusChanges] = useState(assembly?.isActive);
+  const [loadParticipans, setParticipantsLoading] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
       const assemblyData = await getAssemblyByName(group.groupSlug);
       setAssembly(assemblyData);
+      setParticipants(assemblyData.participants.length);
     };
 
     fetch().catch(console.error);
-  }, []);
+  }, [statusChanges]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -70,6 +78,12 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     navigate("/admin");
   }
 
+  async function refreshParticipants() {
+    setParticipantsLoading(true);
+    setParticipants(await getNumberOfParticipantsInAssembly(group.groupSlug));
+    setParticipantsLoading(false);
+  }
+
   async function addCase() {
     await createVotation(
       group.groupSlug,
@@ -85,6 +99,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     try {
       activateAssembly(groupSlug, false).then(() => {
         setGroup({ ...group, hasActiveAssembly: false });
+        setStatusChanges(false);
       });
     } catch (error) {
       console.log(error);
@@ -105,6 +120,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     try {
       activateAssembly(groupSlug, true).then(() => {
         setGroup({ ...group, hasActiveAssembly: true });
+        setStatusChanges(true);
       });
     } catch (error) {
       console.log(error);
@@ -156,7 +172,27 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           <Text fz={"xl"} fw={500}>
             EDIT {group.groupName.toUpperCase()} ASSEMBLY
           </Text>
-          {group.hasActiveAssembly ? (
+          <Text>
+            <Flex align={"center"} justify={"center"}>
+              Currently {participants} participants
+              <Box
+                style={{
+                  marginLeft: "4px",
+                  cursor: "pointer",
+                  position: "relative",
+                  top: "3px",
+                }}
+                onClick={() => refreshParticipants()}
+              >
+                {!loadParticipans ? (
+                  <IconRefresh height={20} width={20} />
+                ) : (
+                  <Loader height={20} width={20} />
+                )}
+              </Box>
+            </Flex>
+          </Text>
+          {assembly.isActive ? (
             <Button
               color={"red"}
               onClick={() => endAssembly(group.groupSlug)}
@@ -173,7 +209,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               Start Assembly
             </Button>
           )}
-          {!group.hasActiveAssembly && (
+          {!assembly.isActive && (
             <>
               <Button color={"red"} onClick={() => setOpenModal(true)} m={10}>
                 Delete assembly
@@ -252,7 +288,6 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               maxWidth: 780,
             })}
             multiple
-            disableChevronRotation
           >
             {votations
               .sort((a, b) => a.caseNumber - b.caseNumber)
@@ -266,6 +301,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     groupSlug={group.groupSlug}
                     isChanged={isChanged}
                     setIsChanged={setIsChanged}
+                    assemblyStatus={assembly.isActive}
                   />
                 );
               })}

@@ -7,7 +7,7 @@ import {
   editVotation,
   getAllVotations,
   getCurrentVotation,
-  submitVotation,
+  submitVote,
 } from "../controllers/votation";
 import authorization from "../utils/authorizationMiddleware";
 
@@ -27,6 +27,6 @@ votationRoutes.delete("/", authorization, deleteVotation);
 
 votationRoutes.put("/", authorization, editVotation);
 
-votationRoutes.put("/submit", authorization, submitVotation);
+votationRoutes.put("/submit", authorization, submitVote);
 
 export default votationRoutes;

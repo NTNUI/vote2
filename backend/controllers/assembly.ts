@@ -177,3 +177,34 @@ export async function isUserInAssembly(req: RequestWithNtnuiNo, res: Response) {
   }
   return res.status(401).json({ message: "Not authorized" });
 }
+
+export async function getNumberOfParticipantsInAssembly(
+  req: RequestWithNtnuiNo,
+  res: Response
+) {
+  if (!req.ntnuiNo) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const groupSlug = req.body.groupSlug;
+  const user = await User.findById(req.ntnuiNo);
+
+  if (user) {
+    if (
+      user.groups.some(
+        (membership) =>
+          membership.organizer && membership.groupSlug == groupSlug
+      )
+    ) {
+      const assembly = await Assembly.findById(groupSlug);
+      if (!assembly) {
+        return res
+          .status(400)
+          .json({ message: "No assembly with the given ID found" });
+      }
+      return res
+        .status(200)
+        .json({ participants: assembly.participants.length });
+    }
+  }
+  return res.status(401).json({ message: "Unauthorized" });
+}
