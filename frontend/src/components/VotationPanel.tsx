@@ -19,17 +19,8 @@ import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useStyles } from "../styles/EditAssemblyStyles";
-<<<<<<< HEAD
-import { OptionType, VoteType } from "../types/votes";
-import { getNumberOfParticipantsInAssembly } from "../services/assembly";
-=======
 import { VoteType } from "../types/votes";
-import {
-  getAssemblyByName,
-  getNumberOfParticipantsInAssembly,
-} from "../services/assembly";
-import { AssemblyType } from "../types/assembly";
->>>>>>> main
+import { getNumberOfParticipantsInAssembly } from "../services/assembly";
 
 function VotationPanel({
   groupSlug,
