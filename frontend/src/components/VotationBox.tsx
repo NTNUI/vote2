@@ -20,14 +20,15 @@ export function VotationBox(state: {
     const fetch = async () => {
       const currentVotationData = await getCurrentVotationByGroup(state.groupSlug);
       setCurrentVotation(currentVotationData);
-      
     };
     fetch().catch(console.error);
   }, []);
 
-  function submitVote(group: string, voteId: string, optionId: string) {
+  function submitVote(voteId: string) {
     state.userHasVoted()
-    submitVotation(group, voteId, optionId)
+    if (chosenOption) {
+      submitVotation(state.groupSlug, voteId, chosenOption)
+    }
   }
 
   return !currentVotation ? (
@@ -85,7 +86,8 @@ export function VotationBox(state: {
           size={"md"}
           w={150}
           color={"green"}
-          onClick={() => submitVote(groupSlug, currentVotation._id, chosenOption)}
+          disabled={!chosenOption}
+          onClick={() => submitVote(currentVotation._id)}
         >
           Confirm
         </Button>
