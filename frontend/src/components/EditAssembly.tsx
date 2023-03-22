@@ -45,6 +45,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   const [participants, setParticipants] = useState<number>();
   const [isChanged, setIsChanged] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [loadParticipans, setParticipantsLoading] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -76,14 +77,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   }
 
   async function refreshParticipants() {
-    try {
-      const newParticipants = await getNumberOfParticipantsInAssembly(
-        group.groupSlug
-      );
-      setParticipants(newParticipants);
-    } catch (error) {
-      console.log(error);
-    }
+    setParticipantsLoading(true);
+    setParticipants(await getNumberOfParticipantsInAssembly(group.groupSlug));
+    setParticipantsLoading(false);
   }
 
   async function addCase() {
@@ -174,8 +170,14 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           </Text>
           <Text>
             <Flex align={"center"} justify={"center"}>
-              Currently {participants} participants are checked in
-              <IconRefresh onClick={refreshParticipants}></IconRefresh>
+              Currently {participants} participants
+              <Box onClick={() => refreshParticipants()}>
+                {!loadParticipans ? (
+                  <IconRefresh height={20} width={20} />
+                ) : (
+                  <Loader height={20} width={20} />
+                )}
+              </Box>
             </Flex>
           </Text>
           {group.hasActiveAssembly ? (
