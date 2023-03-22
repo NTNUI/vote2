@@ -112,6 +112,14 @@ export async function getCurrentVotation(
         return res.status(200).json(null);
       }
 
+      const participants: number[] = assembly.participants;
+
+      if (participants.indexOf(user._id) === -1) {
+        return res
+          .status(400)
+          .json({ message: "This user is not a part of the assembly" });
+      }
+
       if (!Types.ObjectId.isValid(assembly.currentVotation._id)) {
         return res
           .status(400)
@@ -121,6 +129,14 @@ export async function getCurrentVotation(
       const vote = await Votation.findById(assembly.currentVotation._id);
       if (!vote) {
         return res.status(400).json({ message: "No votation found" });
+      }
+
+      const voted: number[] = vote.voted;
+
+      if (voted.indexOf(user._id) !== -1) {
+        return res
+          .status(200)
+          .json(null);
       }
 
       const optionList: LimitedOptionType[] = [];

@@ -64,7 +64,7 @@ export function VotationBox(state: {
               variant="outline"
               className={classes.optionButton}
               sx={
-                chosenOption == option.title
+                chosenOption == option._id
                   ? (theme) => ({
                       backgroundColor: "white",
                       color: theme.colors.ntnui_background[0],
