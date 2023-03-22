@@ -40,11 +40,13 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     voted: [],
     options: [],
     isFinished: true,
+    isActive: false,
   });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
   const [participants, setParticipants] = useState<number>();
   const [isChanged, setIsChanged] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [statusChanges, setStatusChanges] = useState(assembly?.isActive);
   const [loadParticipans, setParticipantsLoading] = useState(false);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     };
 
     fetch().catch(console.error);
-  }, []);
+  }, [statusChanges]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -97,6 +99,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     try {
       activateAssembly(groupSlug, false).then(() => {
         setGroup({ ...group, hasActiveAssembly: false });
+        setStatusChanges(false);
       });
     } catch (error) {
       console.log(error);
@@ -117,6 +120,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     try {
       activateAssembly(groupSlug, true).then(() => {
         setGroup({ ...group, hasActiveAssembly: true });
+        setStatusChanges(true);
       });
     } catch (error) {
       console.log(error);
@@ -171,7 +175,15 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           <Text>
             <Flex align={"center"} justify={"center"}>
               Currently {participants} participants
-              <Box onClick={() => refreshParticipants()}>
+              <Box
+                style={{
+                  marginLeft: "4px",
+                  cursor: "pointer",
+                  position: "relative",
+                  top: "3px",
+                }}
+                onClick={() => refreshParticipants()}
+              >
                 {!loadParticipans ? (
                   <IconRefresh height={20} width={20} />
                 ) : (
@@ -180,7 +192,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               </Box>
             </Flex>
           </Text>
-          {group.hasActiveAssembly ? (
+          {assembly.isActive ? (
             <Button
               color={"red"}
               onClick={() => endAssembly(group.groupSlug)}
@@ -197,7 +209,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               Start Assembly
             </Button>
           )}
-          {!group.hasActiveAssembly && (
+          {!assembly.isActive && (
             <>
               <Button color={"red"} onClick={() => setOpenModal(true)} m={10}>
                 Delete assembly
@@ -276,7 +288,6 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               maxWidth: 780,
             })}
             multiple
-            disableChevronRotation
           >
             {votations
               .sort((a, b) => a.caseNumber - b.caseNumber)
@@ -290,6 +301,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     groupSlug={group.groupSlug}
                     isChanged={isChanged}
                     setIsChanged={setIsChanged}
+                    assemblyStatus={assembly.isActive}
                   />
                 );
               })}

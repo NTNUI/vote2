@@ -20,37 +20,41 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useStyles } from "../styles/EditAssemblyStyles";
 import { VoteType } from "../types/votes";
-import {
-  getAssemblyByName,
-  getNumberOfParticipantsInAssembly,
-} from "../services/assembly";
-import { AssemblyType } from "../types/assembly";
+import { getNumberOfParticipantsInAssembly } from "../services/assembly";
+import { showNotification } from "@mantine/notifications";
 
 function VotationPanel({
   groupSlug,
   votation,
   isChanged,
   setIsChanged,
+  assemblyStatus,
 }: {
   groupSlug: string;
   votation: VoteType;
   isChanged: boolean;
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
+  assemblyStatus: boolean;
 }) {
   const [editable, setEditable] = useState(false);
+  const [isFinishChecked, setIsFinishChecked] = useState<boolean>(false);
+  const [isEndChecked, setIsEndChecked] = useState<boolean>(false);
+
   const form = useForm<VoteType>({
     initialValues: {
       _id: votation._id,
       caseNumber: votation.caseNumber,
-      title: "",
+      title: votation.title,
       isFinished: votation.isFinished,
       options: votation.options,
       voted: votation.voted,
       voteText: votation.voteText,
+      isActive: votation.isActive,
     },
   });
   const { classes } = useStyles();
   const matches = useMediaQuery("(min-width: 400px)");
+  const participantMatch = useMediaQuery("(min-width: 500px)");
   const [options, setOptions] = useState<string[]>(["Yes", "No", "Blank"]);
   const [isActive, setIsActive] = useState(false);
   const [participants, setParticipants] = useState<number>();
@@ -84,13 +88,15 @@ function VotationPanel({
       await activateVotation(groupSlug, votation._id).catch(console.error);
       setIsActive(true);
       setIsChanged(!isChanged);
+      if (!assemblyStatus) {
+        showNotification({ title: "Error", message: "Start assembly first" });
+      }
     }
   }
 
   async function deactivateVote(votation: VoteType) {
     votation.isFinished = true;
     await deactivateVotation(groupSlug, votation._id).catch(console.error);
-    setIsActive(false);
     setIsChanged(!isChanged);
   }
 
@@ -189,77 +195,89 @@ function VotationPanel({
             color: "white",
           }}
         >
-          <Box pl={10} pb={10} ta={"left"}>
-            <Text fw={"700"}>Title:</Text>
-            <Text>{votation.title}</Text>
-            <Text fw={"700"}>Description:</Text>
-            <Text>{votation.voteText}</Text>
-            <Text fw={"700"}>Options:</Text>
-            <Text>
-              {votation.options.map((option, index) =>
-                index != votation.options.length - 1
-                  ? option.title + ", "
-                  : option.title + ""
-              )}
+          <Flex
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "column",
+            }}
+          >
+            <Box pl={10} pb={10} ta={"left"}>
+              <Text fw={"700"}>Title:</Text>
+              <Text>{votation.title}</Text>
+              <Text fw={"700"}>Description:</Text>
+              <Text>{votation.voteText}</Text>
+              <Text fw={"700"}>Options:</Text>
+              <Text>
+                {votation.options.map((option, index) =>
+                  index != votation.options.length - 1
+                    ? option.title + ", "
+                    : option.title + ""
+                )}
+              </Text>
+            </Box>
+            <Text
+              fz={"sm"}
+              style={{ minWidth: "fit-content", marginRight: "4px" }}
+            >
+              {participants} eligible participants
             </Text>
-          </Box>
+          </Flex>
           <Flex
             direction={matches ? "row" : "column"}
             justify={matches ? "space-between" : "center"}
           >
-            <SimpleGrid cols={2}>
-              {isActive ? (
-                <>
-                  <SimpleGrid>
-                    <Box>
-                      <Text>
-                        There are {participants} eligible participants in this
-                        vote.
-                      </Text>
-                      <Button
-                        color={"red"}
-                        m={matches ? 10 : 5}
-                        onClick={() => deactivateVote(votation)}
-                      >
-                        Finish
-                      </Button>
-                    </Box>
-                  </SimpleGrid>
-                </>
-              ) : (
-                <Button
-                  color={"green"}
-                  disabled={votation.isFinished}
-                  m={matches ? 10 : 5}
-                  onClick={() => activateVote(votation)}
-                >
-                  Activate
-                </Button>
-              )}
-              <SimpleGrid>
-                <Box>
-                  <Button
-                    onClick={() => {
-                      setEditable(true);
-                    }}
-                    w={matches ? "auto" : "30%"}
-                    m={5}
-                    color={"gray"}
-                    disabled={votation.isFinished}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    w={matches ? "auto" : "60%"}
-                    color={"red"}
-                    m={matches ? 10 : 5}
-                    onClick={() => deleteVote(votation)}
-                  >
-                    Delete
-                  </Button>
-                </Box>
-              </SimpleGrid>
-            </SimpleGrid>
+            {votation.isActive ? (
+              <Button
+                color={"red"}
+                m={matches ? 10 : 5}
+                onClick={
+                  !isFinishChecked
+                    ? () => setIsFinishChecked(true)
+                    : () => deactivateVote(votation)
+                }
+              >
+                {isFinishChecked ? (
+                  <Text>Yes - Finish votation</Text>
+                ) : (
+                  <Text>Finish</Text>
+                )}
+              </Button>
+            ) : (
+              <Button
+                color={"green"}
+                disabled={votation.isFinished}
+                m={matches ? 10 : 5}
+                onClick={() => activateVote(votation)}
+              >
+                Activate
+              </Button>
+            )}
+
+            <Box>
+              <Button
+                onClick={() => {
+                  setEditable(true);
+                }}
+                w={matches ? "auto" : "30%"}
+                m={5}
+                color={"gray"}
+                disabled={votation.isFinished || votation.isActive}
+              >
+                Edit
+              </Button>
+              <Button
+                w={matches ? "auto" : "60%"}
+                color={"red"}
+                m={matches ? 10 : 5}
+                onClick={
+                  !isEndChecked
+                    ? () => setIsEndChecked(true)
+                    : () => deleteVote(votation)
+                }
+              >
+                {isEndChecked ? <Text>Yes - delete</Text> : <Text>Delete</Text>}
+              </Button>
+            </Box>
           </Flex>
         </Accordion.Panel>
       )}
