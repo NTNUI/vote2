@@ -80,7 +80,6 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     setParticipantsLoading(true);
     setParticipants(await getNumberOfParticipantsInAssembly(group.groupSlug));
     setParticipantsLoading(false);
-    console.log(loadParticipans);
   }
 
   async function addCase() {
