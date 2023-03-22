@@ -8,6 +8,7 @@ import { isUserInAssembly } from "../services/assembly";
 import { checkedInState, checkedInType } from "../utils/Context";
 import { Box, Image, Text } from "@mantine/core";
 import Arrow from "../assets/Arrow.svg";
+import { getCurrentVotationByGroup } from "../services/votation";
 
 export function AssemblyLobby() {
   const { state } = useLocation();
@@ -26,6 +27,13 @@ export function AssemblyLobby() {
       if (await isUserInAssembly(state.groupSlug)) {
         setCheckedIn(true);
         setGroup(state.groupSlug);
+        if ((await getCurrentVotationByGroup(state.groupSlug)) !== null) {
+          setActiveVotation(true);
+          setVoted(false);
+        } else {
+          setActiveVotation(false);
+          setVoted(false);
+        }
       } else {
         setCheckedIn(false);
         setGroup("");
