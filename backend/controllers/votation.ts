@@ -114,7 +114,7 @@ export async function getCurrentVotation(
 
       const participants: number[] = assembly.participants;
 
-      if (participants.indexOf(user._id) === -1) {
+      if (!participants.includes(user._id)) {
         return res
           .status(400)
           .json({ message: "This user is not a part of the assembly" });
@@ -133,7 +133,7 @@ export async function getCurrentVotation(
 
       const voted: number[] = vote.voted;
 
-      if (voted.indexOf(user._id) !== -1) {
+      if (voted.includes(user._id)) {
         return res.status(200).json(null);
       }
 
@@ -539,7 +539,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
   });
 }
 
-export async function submitVotation(req: RequestWithNtnuiNo, res: Response) {
+export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -605,7 +605,7 @@ export async function submitVotation(req: RequestWithNtnuiNo, res: Response) {
 
       const participants: number[] = assembly.participants;
 
-      if (participants.indexOf(user._id) === -1) {
+      if (!participants.includes(user._id)) {
         return res
           .status(400)
           .json({ message: "This user is not a part of the assembly" });

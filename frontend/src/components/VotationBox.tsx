@@ -5,10 +5,7 @@ import { getAssemblyByName } from "../services/assembly";
 import { AssemblyType } from "../types/assembly";
 import { useStyles } from "../styles/VotationStyles";
 import { LimitedOptionType, LimitedVoteType } from "../types/votes";
-import {
-  getCurrentVotationByGroup,
-  submitVotation,
-} from "../services/votation";
+import { getCurrentVotationByGroup, submitVote } from "../services/votation";
 
 export function VotationBox(state: {
   groupSlug: string;
@@ -31,11 +28,11 @@ export function VotationBox(state: {
     fetch().catch(console.error);
   }, []);
 
-  function submitVote(voteId: string) {
-    state.userHasVoted();
+  function submit(voteId: string) {
     if (chosenOption) {
-      submitVotation(state.groupSlug, voteId, chosenOption);
+      submitVote(state.groupSlug, voteId, chosenOption);
     }
+    state.userHasVoted();
   }
 
   return !currentVotation ? (
@@ -94,7 +91,7 @@ export function VotationBox(state: {
           w={150}
           color={"green"}
           disabled={!chosenOption}
-          onClick={() => submitVote(currentVotation._id)}
+          onClick={() => submit(currentVotation._id)}
         >
           Confirm
         </Button>

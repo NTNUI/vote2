@@ -98,7 +98,7 @@ export const getCurrentVotationByGroup = async (
   ).data;
 };
 
-export const submitVotation = async (
+export const submitVote = async (
   groupSlug: string,
   voteId: string,
   optionId: string
