@@ -97,7 +97,13 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
               user: scannedUser,
             });
 
-            return res.status(200).json({ message: "Check-out successful" });
+            return res.status(200).json({
+              message:
+                "Check-out successful for " +
+                scannedUser.first_name +
+                " " +
+                scannedUser.last_name,
+            });
           } else {
             await Assembly.findByIdAndUpdate(
               { _id: group },
@@ -117,7 +123,13 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
               user: scannedUser,
             });
 
-            return res.status(200).json({ message: "Check-in successful" });
+            return res.status(200).json({
+              message:
+                "Check-in successful for " +
+                scannedUser.first_name +
+                " " +
+                scannedUser.last_name,
+            });
           }
         }
       }
