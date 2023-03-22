@@ -99,15 +99,15 @@ export const getCurrentVotationByGroup = async (
 };
 
 export const submitVotation = async (
-  groupSlug: string, 
-  voteId: string, 
+  groupSlug: string,
+  voteId: string,
   optionId: string
 ) => {
   return (
     await axios.put("/votation/submit", {
       group: groupSlug,
-      voteId: voteId, 
-      optionId: optionId
+      voteId: voteId,
+      optionId: optionId,
     })
   ).data;
 };

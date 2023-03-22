@@ -5,29 +5,36 @@ import { getAssemblyByName } from "../services/assembly";
 import { AssemblyType } from "../types/assembly";
 import { useStyles } from "../styles/VotationStyles";
 import { LimitedOptionType, LimitedVoteType } from "../types/votes";
-import { getCurrentVotationByGroup, submitVotation } from "../services/votation";
+import {
+  getCurrentVotationByGroup,
+  submitVotation,
+} from "../services/votation";
 
 export function VotationBox(state: {
   groupSlug: string;
   userHasVoted: () => void;
 }) {
-  const [currentVotation, setCurrentVotation] = useState<LimitedVoteType | undefined>();
+  const [currentVotation, setCurrentVotation] = useState<
+    LimitedVoteType | undefined
+  >();
   const matches = useMediaQuery("(min-width: 501px)");
   const [chosenOption, setChosenOption] = useState<string>();
   const { classes } = useStyles();
 
   useEffect(() => {
     const fetch = async () => {
-      const currentVotationData = await getCurrentVotationByGroup(state.groupSlug);
+      const currentVotationData = await getCurrentVotationByGroup(
+        state.groupSlug
+      );
       setCurrentVotation(currentVotationData);
     };
     fetch().catch(console.error);
   }, []);
 
   function submitVote(voteId: string) {
-    state.userHasVoted()
+    state.userHasVoted();
     if (chosenOption) {
-      submitVotation(state.groupSlug, voteId, chosenOption)
+      submitVotation(state.groupSlug, voteId, chosenOption);
     }
   }
 

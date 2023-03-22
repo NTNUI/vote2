@@ -134,9 +134,7 @@ export async function getCurrentVotation(
       const voted: number[] = vote.voted;
 
       if (voted.indexOf(user._id) !== -1) {
-        return res
-          .status(200)
-          .json(null);
+        return res.status(200).json(null);
       }
 
       const optionList: LimitedOptionType[] = [];

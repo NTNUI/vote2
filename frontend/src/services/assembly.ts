@@ -1,6 +1,5 @@
 import axios from "axios";
 import { AssemblyType } from "../types/assembly";
-import { LimitedOptionType, LimitedVoteType } from "../types/votes";
 
 export const createAssembly = async (group: string) => {
   return axios.post("/assembly/create", {

@@ -27,13 +27,13 @@ export function AssemblyLobby() {
       if (await isUserInAssembly(state.groupSlug)) {
         setCheckedIn(true);
         setGroup(state.groupSlug);
-        const res = await getCurrentVotationByGroup(state.groupSlug)
+        const res = await getCurrentVotationByGroup(state.groupSlug);
         if (res !== null) {
           setActiveVotation(true);
           setVoted(false);
         } else {
-          setActiveVotation(false); 
-          setVoted(false); 
+          setActiveVotation(false);
+          setVoted(false);
         }
       } else {
         setCheckedIn(false);

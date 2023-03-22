@@ -14,14 +14,14 @@ export type OptionType = {
 };
 
 export type LimitedVoteType = {
-  _id: string; 
-  title: string; 
-  caseNumber: number; 
-  voteText: string; 
-  options: LimitedOptionType[]; 
-}
+  _id: string;
+  title: string;
+  caseNumber: number;
+  voteText: string;
+  options: LimitedOptionType[];
+};
 
 export type LimitedOptionType = {
-  _id: string; 
-  title: string; 
-}
+  _id: string;
+  title: string;
+};
