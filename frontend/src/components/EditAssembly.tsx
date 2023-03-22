@@ -47,6 +47,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   const [isChanged, setIsChanged] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [statusChanges, setStatusChanges] = useState(assembly?.isActive);
+  const [loadParticipans, setParticipantsLoading] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -78,14 +79,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   }
 
   async function refreshParticipants() {
-    try {
-      const newParticipants = await getNumberOfParticipantsInAssembly(
-        group.groupSlug
-      );
-      setParticipants(newParticipants);
-    } catch (error) {
-      console.log(error);
-    }
+    setParticipantsLoading(true);
+    setParticipants(await getNumberOfParticipantsInAssembly(group.groupSlug));
+    setParticipantsLoading(false);
   }
 
   async function addCase() {
@@ -176,13 +172,25 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           <Text fz={"xl"} fw={500}>
             EDIT {group.groupName.toUpperCase()} ASSEMBLY
           </Text>
-          <Text style={{}}>
-            Currently {participants} participants
-            <IconRefresh
-              style={{ marginLeft: "4px", position: "relative", top: "5px" }}
-              cursor={"pointer"}
-              onClick={refreshParticipants}
-            ></IconRefresh>
+          <Text>
+            <Flex align={"center"} justify={"center"}>
+              Currently {participants} participants
+              <Box
+                style={{
+                  marginLeft: "4px",
+                  cursor: "pointer",
+                  position: "relative",
+                  top: "3px",
+                }}
+                onClick={() => refreshParticipants()}
+              >
+                {!loadParticipans ? (
+                  <IconRefresh height={20} width={20} />
+                ) : (
+                  <Loader height={20} width={20} />
+                )}
+              </Box>
+            </Flex>
           </Text>
           {assembly.isActive ? (
             <Button
