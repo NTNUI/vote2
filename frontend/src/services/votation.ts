@@ -58,7 +58,7 @@ export const editVotation = async (
   title: string,
   caseNumber: number,
   voteText: string,
-  options: OptionType[]
+  options: string[]
 ): Promise<VoteType> => {
   return axios.put(
     "/votation/",

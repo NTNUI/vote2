@@ -7,7 +7,6 @@ import {
   Box,
   Flex,
   NumberInput,
-  SimpleGrid,
 } from "@mantine/core";
 import {
   activateVotation,
@@ -22,6 +21,13 @@ import { useStyles } from "../styles/EditAssemblyStyles";
 import { VoteType } from "../types/votes";
 import { getNumberOfParticipantsInAssembly } from "../services/assembly";
 import { showNotification } from "@mantine/notifications";
+
+export interface CaseType {
+  caseNumber: number;
+  title: string;
+  voteText: string;
+  options: string[];
+}
 
 function VotationPanel({
   groupSlug,
@@ -40,22 +46,25 @@ function VotationPanel({
   const [isFinishChecked, setIsFinishChecked] = useState<boolean>(false);
   const [isEndChecked, setIsEndChecked] = useState<boolean>(false);
 
-  const form = useForm<VoteType>({
+  const form = useForm<CaseType>({
     initialValues: {
-      _id: votation._id,
       caseNumber: votation.caseNumber,
       title: votation.title,
-      isFinished: votation.isFinished,
-      options: votation.options,
-      voted: votation.voted,
+      options: votation.options.map((title) => {
+        return title.title;
+      }),
       voteText: votation.voteText,
-      isActive: votation.isActive,
     },
   });
   const { classes } = useStyles();
   const matches = useMediaQuery("(min-width: 400px)");
   const participantMatch = useMediaQuery("(min-width: 500px)");
-  const [options, setOptions] = useState<string[]>(["Yes", "No", "Blank"]);
+  const [defaultOptions] = useState<string[]>(["yes", "no", "blank"]);
+  const [options, setOptions] = useState<string[]>(
+    votation.options.map((title) => {
+      return title.title;
+    })
+  );
   const [isActive, setIsActive] = useState(false);
   const [participants, setParticipants] = useState<number>();
 
@@ -70,14 +79,16 @@ function VotationPanel({
     fetch().catch(console.error);
   }, [isActive]);
 
-  async function handleSubmit(vote: VoteType, votationId: string) {
+  async function handleSubmit(vote: CaseType, votationId: string) {
     await editVotation(
       groupSlug,
       votationId,
       vote.title,
       vote.caseNumber,
       vote.voteText,
-      vote.options
+      vote.options.map((title) => {
+        return title;
+      })
     ).catch(console.error);
     setEditable(false);
     setIsChanged(!isChanged);
@@ -136,8 +147,10 @@ function VotationPanel({
           })}
         >
           <form
-            onSubmit={form.onSubmit((values) =>
-              handleSubmit(values, votation._id)
+            onSubmit={form.onSubmit(
+              (values) =>
+                form.getInputProps("options").value.length > 0 &&
+                handleSubmit(values, votation._id)
             )}
           >
             <NumberInput
@@ -171,13 +184,14 @@ function VotationPanel({
             <MultiSelect
               label="Creatable MultiSelect"
               className={classes.inputStyle}
-              data={options}
+              data={options.length < 1 ? defaultOptions : options}
               placeholder="Select items"
               searchable
               required
               creatable
               getCreateLabel={(query) => `+ Create ${query}`}
               onCreate={(query) => {
+                console.log(options);
                 setOptions([...options, query]);
                 return query;
               }}

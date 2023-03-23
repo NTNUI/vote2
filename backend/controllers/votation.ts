@@ -495,15 +495,19 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
         }
 
         for (let i = 0; i < options.length; i++) {
-          const title = options[i];
+          const title: string = options[i];
+
           const newOption = new Option({
-            title: title,
+            title: title + " ",
             voteCount: 0,
           });
           const feedback = await Option.create(newOption);
           tempOptionTitles.push(feedback);
         }
       }
+      console.log(options.length + " hei hei " + options);
+      console.log(tempOptionTitles + " temp");
+      console.log(vote.options + " vote");
 
       await Votation.findByIdAndUpdate(voteId, {
         $set: {
