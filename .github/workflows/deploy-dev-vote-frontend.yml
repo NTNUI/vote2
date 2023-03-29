@@ -8,6 +8,9 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - dev
+    paths-ignore:
+      - "**"
+      - "!frontend/**"
   workflow_dispatch:
 
 jobs:
