@@ -505,9 +505,6 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
           tempOptionTitles.push(feedback);
         }
       }
-      console.log(options.length + " hei hei " + options);
-      console.log(tempOptionTitles + " temp");
-      console.log(vote.options + " vote");
 
       await Votation.findByIdAndUpdate(voteId, {
         $set: {

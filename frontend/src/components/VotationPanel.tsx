@@ -50,8 +50,8 @@ function VotationPanel({
     initialValues: {
       caseNumber: votation.caseNumber,
       title: votation.title,
-      options: votation.options.map((title) => {
-        return title.title;
+      options: votation.options.map((option) => {
+        return option.title;
       }),
       voteText: votation.voteText,
     },
@@ -61,8 +61,8 @@ function VotationPanel({
   const participantMatch = useMediaQuery("(min-width: 500px)");
   const [defaultOptions] = useState<string[]>(["yes", "no", "blank"]);
   const [options, setOptions] = useState<string[]>(
-    votation.options.map((title) => {
-      return title.title;
+    votation.options.map((option) => {
+      return option.title;
     })
   );
   const [isActive, setIsActive] = useState(false);
@@ -86,8 +86,8 @@ function VotationPanel({
       vote.title,
       vote.caseNumber,
       vote.voteText,
-      vote.options.map((title) => {
-        return title;
+      vote.options.map((option) => {
+        return option;
       })
     ).catch(console.error);
     setEditable(false);
@@ -191,7 +191,6 @@ function VotationPanel({
               creatable
               getCreateLabel={(query) => `+ Create ${query}`}
               onCreate={(query) => {
-                console.log(options);
                 setOptions([...options, query]);
                 return query;
               }}
