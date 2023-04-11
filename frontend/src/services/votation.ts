@@ -24,7 +24,7 @@ export const createVotation = async (
 export const activateVotation = async (
   group: string,
   voteId: string,
-  numberParticipants: number
+  numberParticipants: number | undefined
 ) => {
   return axios.put(
     "/votation/activate/",
