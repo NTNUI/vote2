@@ -184,7 +184,7 @@ function VotationPanel({
             <MultiSelect
               label="Creatable MultiSelect"
               className={classes.inputStyle}
-              data={options.length < 1 ? defaultOptions : options}
+              data={options.concat(defaultOptions)}
               placeholder="Select items"
               searchable
               required
