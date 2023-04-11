@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logoHeader.svg";
 import logoSmall from "../assets/ntnuiLogo.svg";
 import {
@@ -22,7 +22,6 @@ export function HeaderAction() {
   const matches = useMediaQuery("(min-width: 400px)");
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { state } = useLocation();
   const { checkedIn, setCheckedIn, group, setGroup } = useContext(
     checkedInState
   ) as checkedInType;
@@ -41,7 +40,6 @@ export function HeaderAction() {
       });
   };
   const isMobile = useMediaQuery("(max-width: 375px)");
-
   return (
     <>
       <Modal
@@ -53,8 +51,8 @@ export function HeaderAction() {
         fullScreen={isMobile}
         zIndex={2}
       >
-        {checkedIn && group == state.groupSlug ? (
-          <QrCode groupSlug={state.groupSlug} groupName={state.groupName} />
+        {checkedIn && group ? (
+          <QrCode />
         ) : (
           <Text>Check out successfull. You can now leave the room</Text>
         )}
@@ -86,7 +84,7 @@ export function HeaderAction() {
               ></Image>
             )}
           </Group>
-          {checkedIn && group == state.groupSlug ? (
+          {checkedIn && group ? (
             <Text className={classes.button} onClick={open}>
               LEAVE ASSEMBLY
             </Text>

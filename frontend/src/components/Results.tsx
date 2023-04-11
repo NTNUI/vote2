@@ -1,14 +1,6 @@
-import {
-  Accordion,
-  Container,
-  Card,
-  Flex,
-  Progress,
-  Text,
-} from "@mantine/core";
+import { Accordion, Container, Card, Progress, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { VoteType } from "../types/votes";
-import { IconChartBar } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 export function Results({ votation }: { votation: VoteType }) {

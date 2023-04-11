@@ -21,7 +21,15 @@ function App() {
   axios.defaults.withCredentials = true;
   const [checkedIn, setCheckedIn] = useState(false);
   const [group, setGroup] = useState("");
-  const value = { checkedIn, setCheckedIn, group, setGroup };
+  const [groupName, setGroupName] = useState("");
+  const value = {
+    checkedIn,
+    setCheckedIn,
+    group,
+    setGroup,
+    groupName,
+    setGroupName,
+  };
 
   return (
     <checkedInState.Provider value={value}>

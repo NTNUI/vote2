@@ -7,7 +7,6 @@ import {
   Box,
   Flex,
   NumberInput,
-  SimpleGrid,
 } from "@mantine/core";
 import {
   activateVotation,
