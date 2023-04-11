@@ -632,8 +632,8 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
         });
 
         await Option.findByIdAndUpdate(optionId, {
-          $set: {
-            voteCount: option.voteCount + 1,
+          $inc: {
+            voteCount: 1,
           },
         });
       }
