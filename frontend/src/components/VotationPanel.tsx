@@ -57,7 +57,7 @@ function VotationPanel({
   const participantMatch = useMediaQuery("(min-width: 500px)");
   const [options, setOptions] = useState<string[]>(["Yes", "No", "Blank"]);
   const [isActive, setIsActive] = useState(false);
-  const [participants, setParticipants] = useState<number>();
+  const [participants, setParticipants] = useState<number>(0);
 
   useEffect(() => {
     const fetch = async () => {
