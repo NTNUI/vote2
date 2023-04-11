@@ -1,4 +1,5 @@
 export interface VoteType {
+  numberParticipants: number;
   _id: string;
   title: string;
   voteText: string;
