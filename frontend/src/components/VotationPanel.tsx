@@ -85,7 +85,9 @@ function VotationPanel({
 
   async function activateVote(votation: VoteType) {
     if (!votation.isFinished) {
-      await activateVotation(groupSlug, votation._id).catch(console.error);
+      await activateVotation(groupSlug, votation._id, participants).catch(
+        console.error
+      );
       setIsActive(true);
       setIsChanged(!isChanged);
       if (!assemblyStatus) {

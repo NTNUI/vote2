@@ -76,6 +76,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
           options: optionList,
           isActive: isActive,
           isFinished: vote.isFinished,
+          numberParticipants: vote.numberParticipants,
         };
 
         listOfVotations.push(votationResponse);
@@ -312,6 +313,12 @@ export async function activateVotationStatus(
       // Notify all active participants to fetch the activated votation.
       assembly.participants.forEach((member) => {
         notifyOne(member, JSON.stringify({ status: "update", group: group }));
+      });
+
+      await Votation.findByIdAndUpdate(voteId, {
+        $set: {
+          numberParticipants: req.body.numberParticipants,
+        },
       });
 
       return res

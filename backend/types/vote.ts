@@ -7,6 +7,7 @@ export interface VoteType extends Document {
   voted: number[];
   options: ObjectId[];
   isFinished: boolean;
+  numberParticipants: number;
 }
 
 export interface OptionType extends Document {
@@ -23,6 +24,7 @@ export type VoteResponseType = {
   options: OptionType[];
   isActive: boolean;
   isFinished: boolean;
+  numberParticipants: number;
 };
 
 export type LimitedOptionType = {
