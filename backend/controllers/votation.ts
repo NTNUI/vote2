@@ -498,7 +498,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
           const title: string = options[i];
 
           const newOption = new Option({
-            title: title + " ",
+            title: title,
             voteCount: 0,
           });
           const feedback = await Option.create(newOption);
