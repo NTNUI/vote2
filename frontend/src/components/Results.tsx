@@ -83,7 +83,8 @@ export function Results({ votation }: { votation: VoteType }) {
                       "/" +
                       votation.numberParticipants +
                       " (" +
-                      100 * (option.voteCount / votation.numberParticipants) +
+                      (100 * (option.voteCount / votation.numberParticipants) ||
+                        0) +
                       "%)"
                     }
                   />
