@@ -20,8 +20,16 @@ function App() {
   axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
   axios.defaults.withCredentials = true;
   const [checkedIn, setCheckedIn] = useState(false);
-  const [group, setGroup] = useState("");
-  const value = { checkedIn, setCheckedIn, group, setGroup };
+  const [groupSlug, setGroupSlug] = useState("");
+  const [groupName, setGroupName] = useState("");
+  const value = {
+    checkedIn,
+    setCheckedIn,
+    groupSlug,
+    setGroupSlug,
+    groupName,
+    setGroupName,
+  };
 
   return (
     <checkedInState.Provider value={value}>

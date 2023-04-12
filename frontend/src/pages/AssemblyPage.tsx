@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { QrCode } from "../components/QrCode";
 import useWebSocket from "react-use-websocket";
 import { WaitingRoom } from "../components/WaitingRoom";
@@ -11,23 +11,20 @@ import Arrow from "../assets/Arrow.svg";
 import { getCurrentVotationByGroup } from "../services/votation";
 
 export function AssemblyLobby() {
-  const { state } = useLocation();
   const [kickedOut, setKickedOut] = useState<boolean>(false);
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
   const [voted, setVoted] = useState<boolean>(false);
   const { lastMessage } = useWebSocket(import.meta.env.VITE_SOCKET_URL);
-  const { checkedIn, setCheckedIn, group, setGroup } = useContext(
-    checkedInState
-  ) as checkedInType;
+  const { checkedIn, setCheckedIn, groupSlug, setGroupSlug, groupName } =
+    useContext(checkedInState) as checkedInType;
   let navigate = useNavigate();
 
   useEffect(() => {
     // Redirect to waiting room if already checked in
     const isCheckedIn = async () => {
-      if (await isUserInAssembly(state.groupSlug)) {
+      if (await isUserInAssembly(groupSlug)) {
         setCheckedIn(true);
-        setGroup(state.groupSlug);
-        if ((await getCurrentVotationByGroup(state.groupSlug)) !== null) {
+        if ((await getCurrentVotationByGroup(groupSlug)) !== null) {
           setActiveVotation(true);
           setVoted(false);
         } else {
@@ -36,7 +33,7 @@ export function AssemblyLobby() {
         }
       } else {
         setCheckedIn(false);
-        setGroup("");
+        setGroupSlug("");
       }
     };
     isCheckedIn();
@@ -51,7 +48,7 @@ export function AssemblyLobby() {
         setKickedOut(true);
       }
       // Redirect only if user is checked in on the right group.
-      if (decodedMessage.group == state.groupSlug) {
+      if (decodedMessage.group == groupSlug) {
         if (decodedMessage.status == "verified") {
           setCheckedIn(true);
         }
@@ -99,7 +96,7 @@ export function AssemblyLobby() {
           </Text>
         </Box>
       )}
-      <Text mt={30}>{state.groupName} assembly</Text>
+      <Text mt={30}>{groupName} assembly</Text>
 
       {kickedOut ? (
         <WaitingRoom
@@ -107,19 +104,19 @@ export function AssemblyLobby() {
             "You have logged in on another device, or you are kicked from this assembly."
           }
         />
-      ) : checkedIn && group == state.groupSlug && voted ? (
+      ) : checkedIn && groupSlug && voted ? (
         <WaitingRoom message={"Your vote is submitted!"} />
-      ) : checkedIn && group == state.groupSlug && activeVotation ? (
+      ) : checkedIn && groupSlug && activeVotation ? (
         <VotationBox
-          groupSlug={state.groupSlug}
+          groupSlug={groupSlug}
           userHasVoted={() => userHasVoted()}
         />
-      ) : checkedIn && group == state.groupSlug && !activeVotation ? (
+      ) : checkedIn && groupSlug && !activeVotation ? (
         <WaitingRoom message={"There are currently no active vote, look up!"} />
       ) : (
         <>
-          <Text size={"xl"}>Check-in for {state.groupName.toUpperCase()}</Text>
-          <QrCode {...state}></QrCode>
+          <Text size={"xl"}>Check-in for {groupName.toUpperCase()}</Text>
+          <QrCode />
         </>
       )}
     </>

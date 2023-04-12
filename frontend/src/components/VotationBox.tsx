@@ -1,10 +1,8 @@
 import { Box, Button, Flex, Loader, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { getAssemblyByName } from "../services/assembly";
-import { AssemblyType } from "../types/assembly";
 import { useStyles } from "../styles/VotationStyles";
-import { LimitedOptionType, LimitedVoteType } from "../types/votes";
+import { LimitedVoteType } from "../types/votes";
 import { getCurrentVotationByGroup, submitVote } from "../services/votation";
 
 export function VotationBox(state: {

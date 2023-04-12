@@ -1,11 +1,13 @@
 import { Loader, Text } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { getQrInfo } from "../services/qr";
 import logo from "../assets/ntnuiColor.svg";
 import { useNavigate } from "react-router-dom";
+import { checkedInState, checkedInType } from "../utils/Context";
 
-export function QrCode(state: { groupName: string; groupSlug: string }) {
+export function QrCode() {
+  const { groupSlug } = useContext(checkedInState) as checkedInType;
   const navigate = useNavigate();
   let [access, setAccess] = useState<string>();
   let [time, setTime] = useState<number>(Date.now());
@@ -15,7 +17,7 @@ export function QrCode(state: { groupName: string; groupSlug: string }) {
 
   // Update timestamp every 10 seconds
   useEffect(() => {
-    if (!state) {
+    if (!groupSlug) {
       navigate("/start");
     }
 
@@ -46,7 +48,7 @@ export function QrCode(state: { groupName: string; groupSlug: string }) {
       value={JSON.stringify({
         access: access,
         timestamp: time,
-        group: state.groupSlug,
+        group: groupSlug,
       })}
     />
   );
