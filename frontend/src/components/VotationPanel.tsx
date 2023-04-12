@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import {
   activateVotation,
+  createVotation,
   deactivateVotation,
   deleteVotation,
   editVotation,
@@ -37,14 +38,16 @@ function VotationPanel({
   isChanged,
   setIsChanged,
   assemblyStatus,
+  initEditable,
 }: {
   groupSlug: string;
   votation: VoteType;
   isChanged: boolean;
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
   assemblyStatus: boolean;
+  initEditable: boolean;
 }) {
-  const [editable, setEditable] = useState(false);
+  const [editable, setEditable] = useState(initEditable);
   const [isFinishChecked, setIsFinishChecked] = useState<boolean>(false);
   const [isEndChecked, setIsEndChecked] = useState<boolean>(false);
 
@@ -71,16 +74,28 @@ function VotationPanel({
   );
 
   async function handleSubmit(vote: CaseType, votationId: string) {
-    await editVotation(
-      groupSlug,
-      votationId,
-      vote.title,
-      vote.caseNumber,
-      vote.voteText,
-      vote.options.map((option) => {
-        return option;
-      })
-    ).catch(console.error);
+    if (initEditable) {
+      await createVotation(
+        groupSlug,
+        vote.title,
+        vote.caseNumber,
+        vote.voteText,
+        vote.options.map((option) => {
+          return option;
+        })
+      );
+    } else {
+      await editVotation(
+        groupSlug,
+        votationId,
+        vote.title,
+        vote.caseNumber,
+        vote.voteText,
+        vote.options.map((option) => {
+          return option;
+        })
+      ).catch(console.error);
+    }
     setEditable(false);
     setIsChanged(!isChanged);
   }

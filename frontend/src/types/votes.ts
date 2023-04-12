@@ -8,6 +8,7 @@ export interface VoteType {
   isFinished: boolean;
   caseNumber: number;
   isActive: boolean;
+  editable?: boolean;
 }
 
 export type OptionType = {

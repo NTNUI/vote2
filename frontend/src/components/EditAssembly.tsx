@@ -49,6 +49,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   const [openModal, setOpenModal] = useState(false);
   const [statusChanges, setStatusChanges] = useState(assembly?.isActive);
   const [loadParticipans, setParticipantsLoading] = useState(false);
+  const [accordionActiveTabs, setAccordionActiveTabs] = useState<string[]>([]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -86,14 +87,24 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   }
 
   async function addCase() {
-    await createVotation(
-      group.groupSlug,
-      startCase.title,
-      startCase.caseNumber,
-      startCase.voteText,
-      startCase.options
-    );
-    setIsChanged(!isChanged);
+    if (!votations.some((votation) => votation._id == "temp")) {
+      setAccordionActiveTabs([...accordionActiveTabs, "temp"]);
+      setVotations([
+        ...votations,
+        {
+          _id: "temp",
+          title: "Placeholder",
+          caseNumber: 0.1,
+          voteText: "",
+          voted: [],
+          options: [],
+          isFinished: false,
+          isActive: false,
+          numberParticipants: 0,
+          editable: true,
+        },
+      ]);
+    }
   }
 
   function endAssembly(groupSlug: string) {
@@ -218,15 +229,13 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               <Modal
                 opened={openModal}
                 onClose={() => setOpenModal(false)}
-                // title={"Delete assembly"}
                 size="lg"
                 centered
                 withCloseButton={false}
                 transition="fade"
                 transitionDuration={200}
                 exitTransitionDuration={200}
-                // Styling is done like this to overwrite Mantine styling, therefore i could not use our color variables
-                // The styling could be moved to a styling file
+                // Styling is done like this to overwrite Mantine styling, therefore global color variables is not used.
                 styles={{
                   modal: {
                     backgroundColor: "#1b202c",
@@ -289,6 +298,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               maxWidth: 780,
             })}
             multiple
+            value={accordionActiveTabs}
+            onChange={setAccordionActiveTabs}
           >
             {votations
               .sort((a, b) => a.caseNumber - b.caseNumber)
@@ -303,6 +314,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     isChanged={isChanged}
                     setIsChanged={setIsChanged}
                     assemblyStatus={assembly.isActive}
+                    initEditable={vote.editable || false}
                   />
                 );
               })}
