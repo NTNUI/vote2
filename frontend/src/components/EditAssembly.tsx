@@ -87,6 +87,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   }
 
   async function addCase() {
+    // Creates a temporary case to the votation list, this is not saved as a votation in the database before the required values are provided.
+    // Only one element can exist at the same time, the user therefore has to finish editing the current temporary element before creating another one.
     if (!votations.some((votation) => votation._id == "temp")) {
       setAccordionActiveTabs([...accordionActiveTabs, "temp"]);
       setVotations([
@@ -308,6 +310,11 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                   <Results key={vote._id} votation={vote} />
                 ) : (
                   <VotationPanel
+                    // Passing accordionActiveTabs to VotationPanel so it can provide it's ID to remain open when vote is submitted.
+                    accordionActiveTabs={accordionActiveTabs}
+                    setAccordionActiveTabs={(tabs: string[]) =>
+                      setAccordionActiveTabs(tabs)
+                    }
                     key={vote._id}
                     votation={vote}
                     groupSlug={group.groupSlug}

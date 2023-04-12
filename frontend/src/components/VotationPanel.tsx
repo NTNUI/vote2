@@ -33,6 +33,8 @@ export interface CaseType {
 }
 
 function VotationPanel({
+  accordionActiveTabs,
+  setAccordionActiveTabs,
   groupSlug,
   votation,
   isChanged,
@@ -40,6 +42,8 @@ function VotationPanel({
   assemblyStatus,
   initEditable,
 }: {
+  accordionActiveTabs: string[];
+  setAccordionActiveTabs: (tabs: string[]) => void;
   groupSlug: string;
   votation: VoteType;
   isChanged: boolean;
@@ -75,7 +79,7 @@ function VotationPanel({
 
   async function handleSubmit(vote: CaseType, votationId: string) {
     if (initEditable) {
-      await createVotation(
+      const createdVotation = await createVotation(
         groupSlug,
         vote.title,
         vote.caseNumber,
@@ -84,6 +88,7 @@ function VotationPanel({
           return option;
         })
       );
+      setAccordionActiveTabs([...accordionActiveTabs, createdVotation.vote_id]);
     } else {
       await editVotation(
         groupSlug,
