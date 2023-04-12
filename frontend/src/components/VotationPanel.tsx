@@ -50,6 +50,7 @@ function VotationPanel({
       voted: votation.voted,
       voteText: votation.voteText,
       isActive: votation.isActive,
+      numberParticipants: votation.numberParticipants,
     },
   });
   const { classes } = useStyles();
