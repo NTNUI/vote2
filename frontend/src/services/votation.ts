@@ -6,19 +6,22 @@ export const createVotation = async (
   title: string,
   caseNumber: number,
   voteText: string,
-  options: OptionType[]
-): Promise<VoteType> => {
-  return axios.post(
-    "/votation/create/",
-    {
-      group: group,
-      title: title,
-      caseNumber: caseNumber,
-      voteText: voteText,
-      options: options,
-    },
-    { withCredentials: true }
-  );
+  options: string[]
+): Promise<{ message: string; vote_id: string }> => {
+  const res = (
+    await axios.post(
+      "/votation/create/",
+      {
+        group: group,
+        title: title,
+        caseNumber: caseNumber,
+        voteText: voteText,
+        options: options,
+      },
+      { withCredentials: true }
+    )
+  ).data;
+  return res;
 };
 
 export const activateVotation = async (

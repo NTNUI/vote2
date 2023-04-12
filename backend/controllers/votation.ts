@@ -225,9 +225,10 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
           },
         });
         if (assemblyFeedback) {
-          return res
-            .status(200)
-            .json({ message: "Votation successfully created" });
+          return res.status(200).json({
+            message: "Votation successfully created",
+            vote_id: newVotation._id,
+          });
         }
       } else if (!Number.isFinite(caseNumber)) {
         return res
