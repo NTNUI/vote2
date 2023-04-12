@@ -69,19 +69,6 @@ function VotationPanel({
       return option.title;
     })
   );
-  const [isActive, setIsActive] = useState(false);
-  const [participants, setParticipants] = useState<number>(0);
-
-  useEffect(() => {
-    const fetch = async () => {
-      const numberOfParticipants = await getNumberOfParticipantsInAssembly(
-        groupSlug
-      );
-      setParticipants(numberOfParticipants);
-    };
-
-    fetch().catch(console.error);
-  }, [isActive]);
 
   async function handleSubmit(vote: CaseType, votationId: string) {
     await editVotation(
@@ -100,10 +87,11 @@ function VotationPanel({
 
   async function activateVote(votation: VoteType) {
     if (!votation.isFinished) {
-      await activateVotation(groupSlug, votation._id, participants).catch(
-        console.error
-      );
-      setIsActive(true);
+      await activateVotation(
+        groupSlug,
+        votation._id,
+        await getNumberOfParticipantsInAssembly(groupSlug)
+      ).catch(console.error);
       setIsChanged(!isChanged);
       if (!assemblyStatus) {
         showNotification({ title: "Error", message: "Start assembly first" });
@@ -234,12 +222,6 @@ function VotationPanel({
                 )}
               </Text>
             </Box>
-            <Text
-              fz={"sm"}
-              style={{ minWidth: "fit-content", marginRight: "4px" }}
-            >
-              {participants} eligible participants
-            </Text>
           </Flex>
           <Flex
             direction={matches ? "row" : "column"}

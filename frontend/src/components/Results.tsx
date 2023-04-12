@@ -81,9 +81,8 @@ export function Results({ votation }: { votation: VoteType }) {
                       "/" +
                       votation.voted.length +
                       " (" +
-                      (
-                        100 *
-                        (option.voteCount / votation.voted.length)
+                      Number(
+                        100 * (option.voteCount / votation.voted.length || 0)
                       ).toFixed(2) +
                       "%)"
                     }
