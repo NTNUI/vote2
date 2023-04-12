@@ -22,6 +22,15 @@ import { VoteType } from "../types/votes";
 import { getNumberOfParticipantsInAssembly } from "../services/assembly";
 import { showNotification } from "@mantine/notifications";
 
+export interface CaseType {
+  caseNumber: number;
+  title: string;
+  voteText: string;
+  options: string[];
+  isActive: boolean;
+  numberParticipants: number;
+}
+
 function VotationPanel({
   groupSlug,
   votation,
@@ -39,14 +48,13 @@ function VotationPanel({
   const [isFinishChecked, setIsFinishChecked] = useState<boolean>(false);
   const [isEndChecked, setIsEndChecked] = useState<boolean>(false);
 
-  const form = useForm<VoteType>({
+  const form = useForm<CaseType>({
     initialValues: {
-      _id: votation._id,
       caseNumber: votation.caseNumber,
       title: votation.title,
-      isFinished: votation.isFinished,
-      options: votation.options,
-      voted: votation.voted,
+      options: votation.options.map((option) => {
+        return option.title;
+      }),
       voteText: votation.voteText,
       isActive: votation.isActive,
       numberParticipants: votation.numberParticipants,
@@ -55,7 +63,12 @@ function VotationPanel({
   const { classes } = useStyles();
   const matches = useMediaQuery("(min-width: 400px)");
   const participantMatch = useMediaQuery("(min-width: 500px)");
-  const [options, setOptions] = useState<string[]>(["Yes", "No", "Blank"]);
+  const [defaultOptions] = useState<string[]>(["Yes", "No", "Blank"]);
+  const [options, setOptions] = useState<string[]>(
+    votation.options.map((option) => {
+      return option.title;
+    })
+  );
   const [isActive, setIsActive] = useState(false);
   const [participants, setParticipants] = useState<number>(0);
 
@@ -70,14 +83,16 @@ function VotationPanel({
     fetch().catch(console.error);
   }, [isActive]);
 
-  async function handleSubmit(vote: VoteType, votationId: string) {
+  async function handleSubmit(vote: CaseType, votationId: string) {
     await editVotation(
       groupSlug,
       votationId,
       vote.title,
       vote.caseNumber,
       vote.voteText,
-      vote.options
+      vote.options.map((option) => {
+        return option;
+      })
     ).catch(console.error);
     setEditable(false);
     setIsChanged(!isChanged);
@@ -138,8 +153,10 @@ function VotationPanel({
           })}
         >
           <form
-            onSubmit={form.onSubmit((values) =>
-              handleSubmit(values, votation._id)
+            onSubmit={form.onSubmit(
+              (values) =>
+                form.getInputProps("options").value.length > 0 &&
+                handleSubmit(values, votation._id)
             )}
           >
             <NumberInput
@@ -173,7 +190,7 @@ function VotationPanel({
             <MultiSelect
               label="Creatable MultiSelect"
               className={classes.inputStyle}
-              data={options}
+              data={[...new Set(options.concat(defaultOptions))]}
               placeholder="Select items"
               searchable
               required

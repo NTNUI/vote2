@@ -516,7 +516,8 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
         }
 
         for (let i = 0; i < options.length; i++) {
-          const title = options[i];
+          const title: string = options[i];
+
           const newOption = new Option({
             title: title,
             voteCount: 0,

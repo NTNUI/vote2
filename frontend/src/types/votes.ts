@@ -11,6 +11,7 @@ export interface VoteType {
 }
 
 export type OptionType = {
+  _id: string;
   title: string;
   voteCount: number;
 };
