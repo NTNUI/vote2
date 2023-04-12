@@ -63,9 +63,7 @@ export function Results({ votation }: { votation: VoteType }) {
                     {option.title}
                   </Text>
                   <Progress
-                    value={
-                      100 * (option.voteCount / votation.numberParticipants)
-                    }
+                    value={100 * (option.voteCount / votation.voted.length)}
                     my="xs"
                     size="xl"
                     radius="md"
@@ -81,9 +79,12 @@ export function Results({ votation }: { votation: VoteType }) {
                     label={
                       option.voteCount +
                       "/" +
-                      votation.numberParticipants +
+                      votation.voted.length +
                       " (" +
-                      100 * (option.voteCount / votation.numberParticipants) +
+                      (
+                        100 *
+                        (option.voteCount / votation.voted.length)
+                      ).toFixed(2) +
                       "%)"
                     }
                   />
