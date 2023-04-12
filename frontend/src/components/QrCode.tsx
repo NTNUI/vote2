@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { checkedInState, checkedInType } from "../utils/Context";
 
 export function QrCode() {
-  const { group } = useContext(checkedInState) as checkedInType;
+  const { groupSlug } = useContext(checkedInState) as checkedInType;
   const navigate = useNavigate();
   let [access, setAccess] = useState<string>();
   let [time, setTime] = useState<number>(Date.now());
@@ -17,7 +17,7 @@ export function QrCode() {
 
   // Update timestamp every 10 seconds
   useEffect(() => {
-    if (!group) {
+    if (!groupSlug) {
       navigate("/start");
     }
 
@@ -48,7 +48,7 @@ export function QrCode() {
       value={JSON.stringify({
         access: access,
         timestamp: time,
-        group: group,
+        group: groupSlug,
       })}
     />
   );

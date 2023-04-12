@@ -9,8 +9,14 @@ import { checkedInState, checkedInType } from "../utils/Context";
 export function Groups() {
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { checkedIn, setCheckedIn, group, setGroup, groupName, setGroupName } =
-    useContext(checkedInState) as checkedInType;
+  const {
+    checkedIn,
+    setCheckedIn,
+    groupSlug,
+    setGroupSlug,
+    groupName,
+    setGroupName,
+  } = useContext(checkedInState) as checkedInType;
 
   let [userData, setUserData] = useState<UserDataResponseType | undefined>(
     undefined
@@ -28,7 +34,7 @@ export function Groups() {
   };
   const checkinNavigate = (groupSlug: string, groupName: string) => {
     setCheckedIn(false);
-    setGroup(groupSlug);
+    setGroupSlug(groupSlug);
     setGroupName(groupName);
     navigate("/lobby");
   };

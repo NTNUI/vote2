@@ -15,18 +15,16 @@ export function AssemblyLobby() {
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
   const [voted, setVoted] = useState<boolean>(false);
   const { lastMessage } = useWebSocket(import.meta.env.VITE_SOCKET_URL);
-  const { checkedIn, setCheckedIn, group, setGroup, groupName } = useContext(
-    checkedInState
-  ) as checkedInType;
+  const { checkedIn, setCheckedIn, groupSlug, setGroupSlug, groupName } =
+    useContext(checkedInState) as checkedInType;
   let navigate = useNavigate();
 
   useEffect(() => {
     // Redirect to waiting room if already checked in
     const isCheckedIn = async () => {
-      if (await isUserInAssembly(group)) {
+      if (await isUserInAssembly(groupSlug)) {
         setCheckedIn(true);
-        setGroup(group);
-        if ((await getCurrentVotationByGroup(group)) !== null) {
+        if ((await getCurrentVotationByGroup(groupSlug)) !== null) {
           setActiveVotation(true);
           setVoted(false);
         } else {
@@ -35,7 +33,7 @@ export function AssemblyLobby() {
         }
       } else {
         setCheckedIn(false);
-        setGroup("");
+        setGroupSlug("");
       }
     };
     isCheckedIn();
@@ -50,7 +48,7 @@ export function AssemblyLobby() {
         setKickedOut(true);
       }
       // Redirect only if user is checked in on the right group.
-      if (decodedMessage.group == group) {
+      if (decodedMessage.group == groupSlug) {
         if (decodedMessage.status == "verified") {
           setCheckedIn(true);
         }
@@ -106,11 +104,14 @@ export function AssemblyLobby() {
             "You have logged in on another device, or you are kicked from this assembly."
           }
         />
-      ) : checkedIn && group == group && voted ? (
+      ) : checkedIn && groupSlug && voted ? (
         <WaitingRoom message={"Your vote is submitted!"} />
-      ) : checkedIn && group == group && activeVotation ? (
-        <VotationBox groupSlug={group} userHasVoted={() => userHasVoted()} />
-      ) : checkedIn && group == group && !activeVotation ? (
+      ) : checkedIn && groupSlug && activeVotation ? (
+        <VotationBox
+          groupSlug={groupSlug}
+          userHasVoted={() => userHasVoted()}
+        />
+      ) : checkedIn && groupSlug && !activeVotation ? (
         <WaitingRoom message={"There are currently no active vote, look up!"} />
       ) : (
         <>

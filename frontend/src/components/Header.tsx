@@ -22,7 +22,7 @@ export function HeaderAction() {
   const matches = useMediaQuery("(min-width: 400px)");
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { checkedIn, setCheckedIn, group, setGroup } = useContext(
+  const { checkedIn, setCheckedIn, groupSlug, setGroupSlug } = useContext(
     checkedInState
   ) as checkedInType;
 
@@ -51,7 +51,7 @@ export function HeaderAction() {
         fullScreen={isMobile}
         zIndex={2}
       >
-        {checkedIn && group ? (
+        {checkedIn && groupSlug ? (
           <QrCode />
         ) : (
           <Text>Check out successfull. You can now leave the room</Text>
@@ -84,7 +84,7 @@ export function HeaderAction() {
               ></Image>
             )}
           </Group>
-          {checkedIn && group ? (
+          {checkedIn && groupSlug ? (
             <Text className={classes.button} onClick={open}>
               LEAVE ASSEMBLY
             </Text>
