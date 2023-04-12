@@ -59,7 +59,7 @@ function VotationPanel({
   const { classes } = useStyles();
   const matches = useMediaQuery("(min-width: 400px)");
   const participantMatch = useMediaQuery("(min-width: 500px)");
-  const [defaultOptions] = useState<string[]>(["yes", "no", "blank"]);
+  const [defaultOptions] = useState<string[]>(["Yes", "No", "Blank"]);
   const [options, setOptions] = useState<string[]>(
     votation.options.map((option) => {
       return option.title;
