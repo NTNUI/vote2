@@ -1,5 +1,5 @@
 import axios from "axios";
-import { OptionType, VoteType } from "../types/votes";
+import { LimitedVoteType, OptionType, VoteType } from "../types/votes";
 
 export const createVotation = async (
   group: string,
@@ -21,12 +21,17 @@ export const createVotation = async (
   );
 };
 
-export const activateVotation = async (group: string, voteId: string) => {
+export const activateVotation = async (
+  group: string,
+  voteId: string,
+  numberParticipants: number
+) => {
   return axios.put(
     "/votation/activate/",
     {
       group: group,
       voteId: voteId,
+      numberParticipants: numberParticipants,
     },
     { withCredentials: true }
   );
@@ -85,5 +90,29 @@ export const getVotations = async (group: string): Promise<VoteType[]> => {
         withCredentials: true,
       }
     )
+  ).data;
+};
+
+export const getCurrentVotationByGroup = async (
+  groupSlug: string
+): Promise<LimitedVoteType> => {
+  return (
+    await axios.post("/votation/currentvotation", {
+      group: groupSlug,
+    })
+  ).data;
+};
+
+export const submitVote = async (
+  groupSlug: string,
+  voteId: string,
+  optionId: string
+) => {
+  return (
+    await axios.put("/votation/submit", {
+      group: groupSlug,
+      voteId: voteId,
+      optionId: optionId,
+    })
   ).data;
 };

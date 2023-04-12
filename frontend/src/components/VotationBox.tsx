@@ -1,28 +1,39 @@
 import { Box, Button, Flex, Loader, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { getAssemblyByName } from "../services/assembly";
-import { AssemblyType } from "../types/assembly";
 import { useStyles } from "../styles/VotationStyles";
+import { LimitedVoteType } from "../types/votes";
+import { getCurrentVotationByGroup, submitVote } from "../services/votation";
 
 export function VotationBox(state: {
   groupSlug: string;
   userHasVoted: () => void;
 }) {
-  const [assembly, setAssembly] = useState<AssemblyType | undefined>();
+  const [currentVotation, setCurrentVotation] = useState<
+    LimitedVoteType | undefined
+  >();
   const matches = useMediaQuery("(min-width: 501px)");
   const [chosenOption, setChosenOption] = useState<string>();
   const { classes } = useStyles();
 
   useEffect(() => {
     const fetch = async () => {
-      const assemblyData = await getAssemblyByName(state.groupSlug);
-      setAssembly(assemblyData);
+      const currentVotationData = await getCurrentVotationByGroup(
+        state.groupSlug
+      );
+      setCurrentVotation(currentVotationData);
     };
     fetch().catch(console.error);
   }, []);
 
-  return !assembly?.currentVotation ? (
+  function submit(voteId: string) {
+    if (chosenOption) {
+      submitVote(state.groupSlug, voteId, chosenOption);
+    }
+    state.userHasVoted();
+  }
+
+  return !currentVotation ? (
     <Loader />
   ) : (
     <>
@@ -37,10 +48,10 @@ export function VotationBox(state: {
         })}
       >
         <Text fz={"lg"} fw={700} ta={"left"}>
-          {assembly.currentVotation.title}
+          {currentVotation.title}
         </Text>
         <Text fz={"md"} mb={25} ml={10} ta={"left"}>
-          {assembly.currentVotation.voteText}
+          {currentVotation.voteText}
         </Text>
         <Flex
           mih={50}
@@ -50,12 +61,12 @@ export function VotationBox(state: {
           direction="column"
           wrap="nowrap"
         >
-          {assembly.currentVotation.options.map((option) => (
+          {currentVotation.options.map((option) => (
             <Button
               variant="outline"
               className={classes.optionButton}
               sx={
-                chosenOption == option.title
+                chosenOption == option._id
                   ? (theme) => ({
                       backgroundColor: "white",
                       color: theme.colors.ntnui_background[0],
@@ -66,7 +77,7 @@ export function VotationBox(state: {
               size="lg"
               w={matches ? 400 : 300}
               key={option.title}
-              onClick={() => setChosenOption(option.title)}
+              onClick={() => setChosenOption(option._id)}
             >
               {option.title}
             </Button>
@@ -77,7 +88,8 @@ export function VotationBox(state: {
           size={"md"}
           w={150}
           color={"green"}
-          onClick={() => state.userHasVoted()}
+          disabled={!chosenOption}
+          onClick={() => submit(currentVotation._id)}
         >
           Confirm
         </Button>

@@ -41,6 +41,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     options: [],
     isFinished: true,
     isActive: false,
+    numberParticipants: 0,
   });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
   const [participants, setParticipants] = useState<number>();

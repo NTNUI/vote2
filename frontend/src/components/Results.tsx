@@ -1,14 +1,6 @@
-import {
-  Accordion,
-  Container,
-  Card,
-  Flex,
-  Progress,
-  Text,
-} from "@mantine/core";
+import { Accordion, Container, Card, Progress, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { VoteType } from "../types/votes";
-import { IconChartBar } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 export function Results({ votation }: { votation: VoteType }) {
@@ -70,18 +62,39 @@ export function Results({ votation }: { votation: VoteType }) {
                   <Text ta={"left"} color={"white"} fw={"200"}>
                     {option.title}
                   </Text>
-                  {/* Lag prosentregning i value feltet */}
                   <Progress
-                    value={70}
+                    value={
+                      100 * (option.voteCount / votation.numberParticipants)
+                    }
                     my="xs"
                     size="xl"
                     radius="md"
                     h={"35px"}
-                    label={option.voteCount + "/" + 180}
+                    styles={{
+                      label: {
+                        color: "black",
+                        position: "absolute",
+                        left: "1em",
+                      },
+                    }}
+                    color="#47b550"
+                    label={
+                      option.voteCount +
+                      "/" +
+                      votation.numberParticipants +
+                      " (" +
+                      100 * (option.voteCount / votation.numberParticipants) +
+                      "%)"
+                    }
                   />
                 </Container>
               );
             })}
+            <Text color={"white"}>
+              {" "}
+              {votation.numberParticipants - votation.voted.length} of{" "}
+              {votation.numberParticipants} participants did not vote
+            </Text>
           </Card>
         </Accordion.Panel>
       </Accordion.Item>

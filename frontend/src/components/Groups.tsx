@@ -1,13 +1,22 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Loader, Text, Button, Box, Flex, Stack } from "@mantine/core";
 import { useStyles } from "../styles/groupStyles";
 import { getUserData } from "../services/organizer";
 import { UserDataResponseType } from "../types/user";
 import { useNavigate } from "react-router-dom";
+import { checkedInState, checkedInType } from "../utils/Context";
 
 export function Groups() {
   const { classes } = useStyles();
   const navigate = useNavigate();
+  const {
+    checkedIn,
+    setCheckedIn,
+    groupSlug,
+    setGroupSlug,
+    groupName,
+    setGroupName,
+  } = useContext(checkedInState) as checkedInType;
 
   let [userData, setUserData] = useState<UserDataResponseType | undefined>(
     undefined
@@ -23,10 +32,11 @@ export function Groups() {
     });
     setUserData(userData);
   };
-  const click = (groupName: string, groupSlug: string) => {
-    navigate("/lobby", {
-      state: { groupName: groupName, groupSlug: groupSlug },
-    });
+  const checkinNavigate = (groupSlug: string, groupName: string) => {
+    setCheckedIn(false);
+    setGroupSlug(groupSlug);
+    setGroupName(groupName);
+    navigate("/lobby");
   };
 
   useEffect(() => {
@@ -77,7 +87,8 @@ export function Groups() {
                   className: classes.box,
                 }
               : {
-                  onClick: () => click(group.groupName, group.groupSlug),
+                  onClick: () =>
+                    checkinNavigate(group.groupSlug, group.groupName),
                   className: classes.activeBox,
                 })}
           >

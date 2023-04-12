@@ -27,6 +27,8 @@ export interface CaseType {
   title: string;
   voteText: string;
   options: string[];
+  isActive: boolean;
+  numberParticipants: number;
 }
 
 function VotationPanel({
@@ -54,6 +56,8 @@ function VotationPanel({
         return option.title;
       }),
       voteText: votation.voteText,
+      isActive: votation.isActive,
+      numberParticipants: votation.numberParticipants,
     },
   });
   const { classes } = useStyles();
@@ -66,7 +70,7 @@ function VotationPanel({
     })
   );
   const [isActive, setIsActive] = useState(false);
-  const [participants, setParticipants] = useState<number>();
+  const [participants, setParticipants] = useState<number>(0);
 
   useEffect(() => {
     const fetch = async () => {
@@ -96,7 +100,9 @@ function VotationPanel({
 
   async function activateVote(votation: VoteType) {
     if (!votation.isFinished) {
-      await activateVotation(groupSlug, votation._id).catch(console.error);
+      await activateVotation(groupSlug, votation._id, participants).catch(
+        console.error
+      );
       setIsActive(true);
       setIsChanged(!isChanged);
       if (!assemblyStatus) {
