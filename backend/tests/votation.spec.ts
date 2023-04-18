@@ -122,9 +122,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       });
   });
 
-  test("PUT/ votation: register vote", (done) => {
+  test("POST/ votation: register vote", (done) => {
     request(app)
-      .put("/votation/submit")
+      .post("/votation/submit")
       .set("Cookie", cookies)
       .send({
         group: "sprint",

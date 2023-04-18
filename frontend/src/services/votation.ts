@@ -112,7 +112,7 @@ export const submitVote = async (
   optionId: string
 ) => {
   return (
-    await axios.put("/votation/submit", {
+    await axios.post("/votation/submit", {
       group: groupSlug,
       voteId: voteId,
       optionId: optionId,
