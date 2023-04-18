@@ -1,8 +1,10 @@
 import request from "supertest";
 import app from "../index";
-import { getCookies, setCookies } from "./endpoints.spec";
 
-export function loginTest() {
+export let cookies = "";
+export let accessToken = "";
+
+export function loginTestUser() {
   test("POST/ login: should return status code 200", (done) => {
     request(app)
       .post("/auth/login")
@@ -13,11 +15,13 @@ export function loginTest() {
       .then((response) => {
         expect(response.statusCode).toBe(200);
         expect(response.body["message"]).toBe("Successful login");
-        const cookies = response.headers["set-cookie"];
-        setCookies(cookies);
+        // Store cookies for use in requests.
+        cookies = response.headers["set-cookie"];
+        // Extract access token from header.
+        accessToken = cookies[0].split("=")[1].split(";")[0];
         done();
       });
-  });
+  }, 10000);
 }
 
 export function logoutTest() {
@@ -33,13 +37,13 @@ export function logoutTest() {
   });
 }
 
-export function createAssemblyTest() {
+export function createAssemblyTest(groupSlug: String) {
   test("POST/ assembly: create an assembly", (done) => {
     request(app)
       .post("/assembly/create")
-      .set("Cookie", getCookies())
+      .set("Cookie", cookies)
       .send({
-        group: "sprint",
+        group: groupSlug,
       })
       .then((response) => {
         expect(response.statusCode).toBe(200);
@@ -49,13 +53,13 @@ export function createAssemblyTest() {
   });
 }
 
-export function activateAssemblyTest() {
+export function activateAssemblyTest(groupSlug: String) {
   test("PUT/ assembly: activate created assembly", (done) => {
     request(app)
       .put("/assembly/activation")
-      .set("Cookie", getCookies())
+      .set("Cookie", cookies)
       .send({
-        group: "sprint",
+        group: groupSlug,
         isActive: true,
       })
       .then((response) => {
@@ -66,13 +70,13 @@ export function activateAssemblyTest() {
   });
 }
 
-export function deactivateAssemblyTest() {
+export function deactivateAssemblyTest(groupSlug: String) {
   test("PUT/ assembly: deactivate created assembly", (done) => {
     request(app)
       .put("/assembly/activation")
-      .set("Cookie", getCookies())
+      .set("Cookie", cookies)
       .send({
-        group: "sprint",
+        group: groupSlug,
         isActive: false,
       })
       .then((response) => {
@@ -83,13 +87,13 @@ export function deactivateAssemblyTest() {
   });
 }
 
-export function deleteAssemblyTest() {
+export function deleteAssemblyTest(groupSlug: String) {
   test("DELETE/ assembly: delete created and deactivated assembly", (done) => {
     request(app)
       .delete("/assembly/")
-      .set("Cookie", getCookies())
+      .set("Cookie", cookies)
       .send({
-        group: "sprint",
+        group: groupSlug,
       })
       .then((response) => {
         expect(response.statusCode).toBe(200);

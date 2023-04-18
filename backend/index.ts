@@ -54,9 +54,12 @@ app.ws("/status", (ws, req) => {
 });
 
 try {
-  app.listen(port, (): void => {
-    console.log(`Server is running on port ${port}`);
-  });
+  // Jest will start app itself, and not run on port 3000 to avoid collisions.
+  if (process.env.NODE_ENV !== "test") {
+    app.listen(port, (): void => {
+      console.log(`Server is running on port ${port}`);
+    });
+  }
 } catch (error) {
   if (error instanceof Error) {
     console.error(`Error: ${error.message}`);

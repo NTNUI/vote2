@@ -7,7 +7,7 @@ export const notifyOne = (ntnui_no: number, message: string) => {
     console.log(
       "Could not notify user " +
         ntnui_no +
-        ". Is there a problem with the socket URL?"
+        ". Is there a problem with the socket URL? (Ignore if testing)"
     );
   }
 };
