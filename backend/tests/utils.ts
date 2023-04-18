@@ -37,7 +37,7 @@ export function logoutTest() {
   });
 }
 
-export function createAssemblyTest(groupSlug: String) {
+export function createAssemblyTest(groupSlug: string) {
   test("POST/ assembly: create an assembly", (done) => {
     request(app)
       .post("/assembly/create")
@@ -53,7 +53,7 @@ export function createAssemblyTest(groupSlug: String) {
   });
 }
 
-export function activateAssemblyTest(groupSlug: String) {
+export function activateAssemblyTest(groupSlug: string) {
   test("PUT/ assembly: activate created assembly", (done) => {
     request(app)
       .put("/assembly/activation")
@@ -70,7 +70,7 @@ export function activateAssemblyTest(groupSlug: String) {
   });
 }
 
-export function deactivateAssemblyTest(groupSlug: String) {
+export function deactivateAssemblyTest(groupSlug: string) {
   test("PUT/ assembly: deactivate created assembly", (done) => {
     request(app)
       .put("/assembly/activation")
@@ -87,7 +87,7 @@ export function deactivateAssemblyTest(groupSlug: String) {
   });
 }
 
-export function deleteAssemblyTest(groupSlug: String) {
+export function deleteAssemblyTest(groupSlug: string) {
   test("DELETE/ assembly: delete created and deactivated assembly", (done) => {
     request(app)
       .delete("/assembly/")
