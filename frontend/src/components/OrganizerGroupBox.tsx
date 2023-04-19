@@ -18,6 +18,7 @@ export function OrganizerGroupBox({
   const breakMini = useMediaQuery("(min-width: 390px)");
   const { classes } = useStyles();
 
+  const groupBoxTestID: String = group.groupSlug + "-box"
   const startCheckinTestID: string = "checkin-button-" + group.groupSlug;
   const createAssemblyTestID: string =
     "create-assembly-button-" + group.groupSlug + "-" + index;
@@ -69,6 +70,7 @@ export function OrganizerGroupBox({
           borderBottomRightRadius: 0,
           color: "white",
         })}
+        data-testid={groupBoxTestID}
       >
         <Flex
           mih={50}
