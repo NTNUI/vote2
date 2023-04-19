@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Button,
   createStyles,
@@ -10,11 +9,12 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { login } from "../services/auth";
 import countryCodes from "../utils/countryCodes";
 import NtnuiInfoTooltip from "./Tooltip";
 import { ChevronDown, Lock, Phone, World, X } from "tabler-icons-react";
+import { getUserData } from "../services/organizer";
 
 const useStyles = createStyles((theme) => ({
   phoneNumberWrapper: {
@@ -106,7 +106,7 @@ const useStyles = createStyles((theme) => ({
     color: "white",
   },
   form: {
-    width: "100%",
+    width: "90%",
     display: "flex",
     flexDirection: "column",
     color: "white",
@@ -118,6 +118,21 @@ export function LoginForm() {
   let navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    // Log user in and redirect if user is already logged in.
+    const checkLogin = async () => {
+      try {
+        const userdata = await getUserData();
+        console.log(userdata);
+        navigate("/start");
+        localStorage.setItem("isLoggedIn", "true");
+      } catch (e) {
+        // User is not logged in
+      }
+    };
+    checkLogin();
+  }, []);
 
   type FormValues = {
     country_code: string;

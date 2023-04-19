@@ -21,7 +21,7 @@ import {
   getAssemblyByName,
   getNumberOfParticipantsInAssembly,
 } from "../services/assembly";
-import { createVotation, getVotations } from "../services/votation";
+import { getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
