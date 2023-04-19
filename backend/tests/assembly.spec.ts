@@ -22,7 +22,7 @@ describe("API test: Test assembly cannot be accessed without authorization", () 
         group: "turn",
       })
       .then((response) => {
-        expect(response.statusCode).toBe(400);
+        expect(response.statusCode).toBe(401);
         done();
       });
   });
