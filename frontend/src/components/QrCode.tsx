@@ -1,4 +1,4 @@
-import { Loader, Text } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { getQrInfo } from "../services/qr";
