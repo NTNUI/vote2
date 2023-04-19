@@ -8,7 +8,6 @@ import { checkedInState } from "../utils/Context";
 import React from "react";
 import { act } from "react-dom/test-utils";
 
-// Basic example test
 describe("Startpage test", () => {
   const setStateMock = vi.fn();
   const useStateMock: any = (useState: any) => [useState, setStateMock];

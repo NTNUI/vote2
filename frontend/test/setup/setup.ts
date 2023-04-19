@@ -1,6 +1,7 @@
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
+import { VoteType } from "../../src/types/votes";
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -8,8 +9,6 @@ Object.defineProperty(window, "matchMedia", {
     matches: false,
     media: query,
     onchange: null,
-    addListener: vi.fn(), // deprecated
-    removeListener: vi.fn(), // deprecated
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
@@ -40,9 +39,50 @@ const userData = {
   isOrganizer: true,
 };
 
+const vote2: VoteType = {
+  numberParticipants: 4,
+  _id: "1",
+  title: "Test",
+  voteText: "Testing",
+  voted: [1, 2],
+  options: [{ _id: "1", title: "Case1", voteCount: 0 }],
+  isFinished: false,
+  caseNumber: 2,
+  isActive: false,
+  editable: false,
+};
+const vote1: VoteType = {
+  numberParticipants: 4,
+  _id: "2",
+  title: "Test2",
+  voteText: "Testing2",
+  voted: [1, 2],
+  options: [{ _id: "2", title: "Case2", voteCount: 0 }],
+  isFinished: false,
+  caseNumber: 1,
+  isActive: false,
+  editable: false,
+};
+
+const assemblyByName = {
+  votes: [vote1, vote2],
+  currentVotation: {
+    vote1,
+  },
+  isActive: true,
+  participants: [1, 2, 3],
+  createdBy: 1,
+};
+
 export const restHandlers = [
   rest.get("http://localhost:3000/user/userData", (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(userData));
+  }),
+  rest.post("http://localhost:3000/votation/allVotations", (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json([vote1, vote2]));
+  }),
+  rest.post("http://localhost:3000/assembly", (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(assemblyByName));
   }),
 ];
 

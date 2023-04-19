@@ -9,10 +9,6 @@ import { Accordion, MantineProvider } from "@mantine/core";
 import { checkedInState } from "../utils/Context";
 
 describe("Result component test", () => {
-  //   vi.mock("@mantine/core", () => ({
-  //     ...vi.importActual("@mantine/core"),
-  //     useMediaQuery: vi.fn().mockReturnValue(false),
-  //   }));
   const setStateMock = vi.fn();
   const useStateMock: any = (useState: any) => [useState, setStateMock];
   vi.spyOn(React, "useState").mockImplementation(useStateMock);
@@ -45,7 +41,7 @@ describe("Result component test", () => {
     caseNumber: 1,
     isActive: false,
   };
-  test("HEI", () => {
+  test("Results rendering correctly", () => {
     render(
       <checkedInState.Provider value={value}>
         <BrowserRouter>
@@ -76,48 +72,10 @@ describe("Result component test", () => {
         </BrowserRouter>
       </checkedInState.Provider>
     );
-    expect(screen.getByText("eET")).toBeDefined();
+    expect(screen.getByText("Testvotering")).toBeDefined();
+    expect(screen.queryByText("Dette er en testvotering")).toBeNull();
+    expect(screen.getByText("4 of 9 participants did not vote")).toBeDefined();
+    expect(screen.getByText("3/5 (60.00%)")).toBeDefined();
+    expect(screen.queryByText("4 of 999 participants did not vote")).toBeNull();
   });
-  //   test("Test", () => {
-  //     render(
-  //       <>
-  //         <p>hei</p>
-  //       </>
-  //     );
-  //     //   <>
-  //     //     <checkedInState.Provider value={value}>
-  //     //       <BrowserRouter>
-  //     //         <MantineProvider
-  //     //           theme={{
-  //     //             fontFamily: "Poppins, sans-serif",
-  //     //             colors: colors,
-  //     //             fontSizes: {
-  //     //               xs: 10,
-  //     //               sm: 12,
-  //     //               md: 14,
-  //     //               lg: 20,
-  //     //               xl: 24,
-  //     //             },
-  //     //             breakpoints: {
-  //     //               xs: 500,
-  //     //               sm: 800,
-  //     //               md: 1000,
-  //     //               lg: 1200,
-  //     //               xl: 1400,
-  //     //             },
-  //     //           }}
-  //     //         >
-  //     //           <Accordion>
-  //     //             <Results key={votation._id} votation={votation} />
-  //     //             <p>Hei</p>
-  //     //           </Accordion>
-  //     //           <p>test</p>
-  //     //         </MantineProvider>
-  //     //       </BrowserRouter>
-  //     //     </checkedInState.Provider>
-  //     //     <p>tetete</p>
-  //     //   </>
-  //   });
-  //   expect(screen.getByText("Hei")).toBeDefined();
-  // });
 });
