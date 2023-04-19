@@ -16,22 +16,40 @@ describe("Checking that all elements are present", () => {
 
 describe("Inputting user credentials", () => {
     it("should display an error when inputting incorrect credentials", () => {
+        cy.intercept("/auth/login")
+        cy.intercept("POST", "auth//login")
+        cy.intercept({
+            method: "POST",
+            url: "/auth/login",
+            hostname: "localhost",
+        }).as("loginPost")
         cy.get('[data-testid="phone-input"]').type("12345678");
         cy.get('[data-testid="password-input"]').type("TotallyIncorrectPassword");
         cy.get('[data-testid="login-button"]').click();
+        cy.wait("@loginPost").its("response.statusCode").should("eq", 401)
         cy.get('[data-testid="bad-login-notification"]').should("be.visible");
     });
 
     it("should login when input correct credentials", () => {
+        cy.intercept("/auth/login")
+        cy.intercept("POST", "auth//login")
+        cy.intercept({
+            method: "POST",
+            url: "/auth/login",
+            hostname: "localhost",
+        }).as("loginPost")
         cy.get('[data-testid="phone-input"]').type("99994444");
         cy.get('[data-testid="password-input"]').type("SprintIsTheBest");
         cy.get('[data-testid="login-button"]').click();
+        cy.wait("@loginPost").its("response.statusCode").should("eq", 200)
         cy.get('[data-testid="username-greeting-text"]').should(
             "have.text",
             "Hello Sprint!"
         );
+        cy.url().should("contain", "/start")
     });
 })
+
 describe("Logging out", () => {
     it("should be able to logout after logging in", () => {
         cy.get('[data-testid="phone-input"]').type("99994444");
