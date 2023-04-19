@@ -2,6 +2,11 @@ import request from "supertest";
 import app from "../index";
 import { loginTestUser, logoutTest } from "./utils";
 import { cookies } from "./utils";
+import mongoose from "mongoose";
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
 
 // USERDATA TESTS
 describe("API test userdata", () => {
