@@ -142,7 +142,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   }
 
   return !assembly ? (
-    <Loader />
+    <Loader data-testid="LoaderIcon" />
   ) : (
     <>
       <Box
