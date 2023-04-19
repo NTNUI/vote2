@@ -85,11 +85,19 @@ export function HeaderAction() {
             )}
           </Group>
           {checkedIn && groupSlug ? (
-            <Text className={classes.button} onClick={open}>
+            <Text
+              className={classes.button}
+              onClick={open}
+              data-testid="leave-assembly-button"
+            >
               LEAVE ASSEMBLY
             </Text>
           ) : (
-            <Text className={classes.button} onClick={logOut}>
+            <Text
+              className={classes.button}
+              onClick={logOut}
+              data-testid="logout-button"
+            >
               LOG OUT
             </Text>
           )}
