@@ -13,6 +13,7 @@ describe("Checking that all elements are present", () => {
       .should("have.text", "Organizer")
       .click();
   });
+
   it("should have an creatable assembly", () => {
     cy.intercept("DELETE", "assembly").as("deleteAssembly");
     cy.intercept("POST", "assembly/create").as("createAssembly");
@@ -33,11 +34,11 @@ describe("Checking that all elements are present", () => {
     cy.get('[data-testid="delete-button"]').click();
     cy.wait("@deleteAssembly").its("response.statusCode").should("eq", 200);
   });
+
   it("should add new case", () => {
     cy.intercept("POST", "votation/allvotations").as("getVotations");
     cy.intercept("POST", "assembly/create").as("createAssembly");
     cy.intercept("POST", "votation/create").as("createVotation");
-
     cy.get('[data-testid="organizer-button"]').click();
     cy.get('[data-testid="create-assembly-button-sprint-0"]')
       .should("have.text", "Create assembly")
@@ -59,10 +60,10 @@ describe("Checking that all elements are present", () => {
     cy.get('[data-testid="submitButton"]').click();
     cy.wait("@createVotation").its("response.statusCode").should("eq", 200);
   });
+
   it("should edit already created assembly and votation", () => {
     cy.intercept("POST", "votation/allvotations").as("getVotations");
     cy.intercept("PUT", "votation").as("editVotation");
-
     cy.get('[data-testid="organizer-button"]').click();
     cy.get('[data-testid="edit-assembly-button-sprint"]')
       .should("have.text", "Edit")
@@ -70,7 +71,6 @@ describe("Checking that all elements are present", () => {
     cy.wait("@getVotations").its("response.statusCode").should("eq", 200);
     cy.contains("1 - Test Title").click();
     cy.get('[data-testid="title-field"]').should("have.text", "Test Title");
-
     cy.get('[data-testid="edit-case-button"]')
       .should("have.text", "Edit")
       .click();
