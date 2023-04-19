@@ -168,6 +168,7 @@ function VotationPanel({
             )}
           >
             <NumberInput
+              data-testid="caseNumberInput"
               type="number"
               precision={2}
               min={0}
@@ -180,6 +181,7 @@ function VotationPanel({
               {...form.getInputProps("caseNumber")}
             />
             <TextInput
+              data-testid="titleInput"
               withAsterisk
               required
               label="Title"
@@ -188,6 +190,7 @@ function VotationPanel({
               {...form.getInputProps("title")}
             />
             <TextInput
+              data-testid="descriptionEdit"
               withAsterisk
               required
               label="Description"
@@ -196,6 +199,7 @@ function VotationPanel({
               {...form.getInputProps("voteText")}
             />
             <MultiSelect
+              data-testid="multiselectOptions"
               label="Creatable MultiSelect"
               className={classes.inputStyle}
               data={[...new Set(options.concat(defaultOptions))]}
@@ -211,7 +215,7 @@ function VotationPanel({
               {...form.getInputProps("options")}
             />
 
-            <Button type="submit" mt={10}>
+            <Button type="submit" mt={10} data-testid="submitButton">
               Save current vote
             </Button>
           </form>
@@ -230,7 +234,7 @@ function VotationPanel({
           >
             <Box pl={10} pb={10} ta={"left"}>
               <Text fw={"700"}>Title:</Text>
-              <Text>{votation.title}</Text>
+              <Text data-testid="title-field">{votation.title}</Text>
               <Text fw={"700"}>Description:</Text>
               <Text>{votation.voteText}</Text>
               <Text fw={"700"}>Options:</Text>
@@ -283,6 +287,7 @@ function VotationPanel({
                 m={5}
                 color={"gray"}
                 disabled={votation.isFinished || votation.isActive}
+                data-testid="edit-case-button"
               >
                 Edit
               </Button>
