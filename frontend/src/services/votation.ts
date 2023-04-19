@@ -1,5 +1,5 @@
 import axios from "axios";
-import { LimitedVoteType, OptionType, VoteType } from "../types/votes";
+import { LimitedVoteType, VoteType } from "../types/votes";
 
 export const createVotation = async (
   group: string,
@@ -112,7 +112,7 @@ export const submitVote = async (
   optionId: string
 ) => {
   return (
-    await axios.put("/votation/submit", {
+    await axios.post("/votation/submit", {
       group: groupSlug,
       voteId: voteId,
       optionId: optionId,
