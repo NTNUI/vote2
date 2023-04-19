@@ -44,7 +44,7 @@ describe("Should be able to create an assembly", () => {
     cy.wait(1000);
     cy.get('[data-testid="assembly-title"]').should(
       "have.text",
-      "Genfors dashboard"
+      "Assembly dashboard"
     );
   });
 });

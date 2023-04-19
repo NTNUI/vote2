@@ -1,4 +1,4 @@
-import { Assembly } from "../pages/GenforsDashboard";
+import { Assembly } from "../pages/AssemblyDashboard";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import { BrowserRouter } from "react-router-dom";
@@ -11,6 +11,6 @@ describe("Login test", () => {
         <Assembly />
       </BrowserRouter>
     );
-    //expect(screen.getByText("Genfors dashboard")).toBeDefined()
+    //expect(screen.getByText("Assembly dashboard")).toBeDefined()
   });
 });

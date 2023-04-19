@@ -36,6 +36,6 @@ describe("Login test", () => {
         </MantineProvider>
       </BrowserRouter>
     );
-    //expect(screen.getByText("Genfors dashboard")).toBeDefined()
+    //expect(screen.getByText("Assembly dashboard")).toBeDefined()
   });
 });
