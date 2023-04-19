@@ -45,6 +45,35 @@ jobs:
           npm ci
           npm run build
 
+  backend-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+        env:
+          NTNUI_TOOLS_API_URL: https://dev.api.ntnui.no/
+          DB_URI: mongodb://devUser:topSecret@localhost:27017/vote?authSource=admin
+          MONGO_INITDB_ROOT_USERNAME: devUser
+          MONGO_INITDB_ROOT_PASSWORD: topSecret
+      - run: |
+          cd backend
+          echo "NTNUI_TOOLS_API_URL: https://dev.api.ntnui.no/
+          DB_URI: mongodb://devUser:topSecret@localhost:27017/vote?authSource=admin
+          MONGO_INITDB_ROOT_USERNAME: devUser
+          MONGO_INITDB_ROOT_PASSWORD: topSecret" > .env
+          npm ci
+          npm run db
+          npm run test
+
   frontend-build:
     runs-on: ubuntu-latest
 
