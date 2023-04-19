@@ -133,6 +133,6 @@ describe("Startpage test", () => {
       await Promise.resolve(Groups);
     });
 
-    expect(screen.getAllByTestId("organizer")).toBeDefined();
+    expect(screen.getAllByTestId("organizer-button")).toBeDefined();
   });
 });

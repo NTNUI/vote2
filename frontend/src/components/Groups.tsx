@@ -61,7 +61,7 @@ export function Groups() {
             <Button
               onClick={() => navigate("/admin")}
               className={classes.button}
-              data-testid="organizer"
+              data-testid="organizer-button"
             >
               Organizer
             </Button>
