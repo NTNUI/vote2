@@ -14,6 +14,11 @@ import {
   loginTestUser,
 } from "./utils";
 import { cookies } from "./utils";
+import mongoose from "mongoose";
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
 
 describe("API test: test CRUD operations on a vote, also testing check-in of user in to vote", () => {
   let voteId = "";

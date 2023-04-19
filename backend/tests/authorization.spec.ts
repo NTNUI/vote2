@@ -1,6 +1,11 @@
 import request from "supertest";
 import app from "../index";
 import { loginTestUser, logoutTest } from "./utils";
+import mongoose from "mongoose";
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
 
 // AUTHORIZATION TESTS
 describe("API test auth", () => {

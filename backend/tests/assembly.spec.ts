@@ -8,6 +8,11 @@ import {
   loginTestUser,
 } from "./utils";
 import { cookies } from "./utils";
+import mongoose from "mongoose";
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
 
 describe("API test: Test assembly cannot be accessed without authorization", () => {
   test("POST/ assembly: without cookies", (done) => {
