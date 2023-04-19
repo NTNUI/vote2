@@ -55,7 +55,9 @@ export function Groups() {
           columnGap={100}
           rowGap={20}
         >
-          <Text className={classes.name}>Hello {userData.firstName}!</Text>
+          <Text className={classes.name} data-testid="username-greeting-text">
+            Hello {userData.firstName}!
+          </Text>
 
           {userData.isOrganizer && (
             <Button
