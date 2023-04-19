@@ -106,7 +106,7 @@ const useStyles = createStyles((theme) => ({
     color: "white",
   },
   form: {
-    width: "90%",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     color: "white",
