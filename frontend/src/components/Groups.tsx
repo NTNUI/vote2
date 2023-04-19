@@ -44,7 +44,7 @@ export function Groups() {
   }, []);
 
   return !userData ? (
-    <Loader />
+    <Loader data-testid="LoaderIcon" />
   ) : (
     <>
       <Stack m={10} mt={100}>
@@ -63,6 +63,7 @@ export function Groups() {
             <Button
               onClick={() => navigate("/admin")}
               className={classes.button}
+              data-testid="organizer-button"
             >
               Organizer
             </Button>

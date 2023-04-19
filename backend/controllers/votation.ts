@@ -494,12 +494,19 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
           .json({ message: "No assembly with the given ID found " });
       }
 
-      if (assembly.currentVotation) {
-        if (assembly.currentVotation._id.equals(voteId)) {
-          return res.status(400).json({
-            message: "One cannot edit the currently active votation",
-          });
-        }
+      if (
+        assembly.currentVotation &&
+        assembly.currentVotation._id.equals(voteId)
+      ) {
+        return res.status(400).json({
+          message: "Cannot edit the currently active votation",
+        });
+      }
+
+      if (vote.isFinished) {
+        return res.status(400).json({
+          message: "Cannot edit a finished votation",
+        });
       }
 
       for (const optionID of vote.options) {

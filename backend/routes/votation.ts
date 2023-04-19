@@ -27,6 +27,6 @@ votationRoutes.delete("/", authorization, deleteVotation);
 
 votationRoutes.put("/", authorization, editVotation);
 
-votationRoutes.put("/submit", authorization, submitVote);
+votationRoutes.post("/submit", authorization, submitVote);
 
 export default votationRoutes;
