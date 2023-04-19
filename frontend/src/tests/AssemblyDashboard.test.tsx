@@ -1,13 +1,13 @@
-import { Assembly } from "../pages/GenforsDashboard";
-import { act, render, screen } from "@testing-library/react";
-import { describe, expect, test, vi } from "vitest";
+import { Assembly } from "../pages/AssemblyDashboard";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import { UserDataGroupType } from "../types/user";
-
 import * as ReactRouterDom from "react-router-dom";
 import { EditAssembly } from "../components/EditAssembly";
 import colors from "../utils/theme";
 import { MantineProvider } from "@mantine/core";
+import { act } from "react-dom/test-utils";
 
 // Basic example test
 describe("Test of AssemblyDashboard", () => {

@@ -3,7 +3,7 @@ import { StartPage } from "./pages/StartPage";
 import { Route, Routes } from "react-router-dom";
 import { ProtectRoutes } from "./utils/ProtectedRouter/protectedRoutes";
 import { AssemblyLobby } from "./pages/AssemblyPage";
-import { Assembly } from "./pages/GenforsDashboard";
+import { Assembly } from "./pages/AssemblyDashboard";
 import { CheckIn } from "./pages/CheckIn";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { MantineProvider, Text } from "@mantine/core";
