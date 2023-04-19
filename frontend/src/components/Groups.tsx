@@ -86,7 +86,7 @@ export function Groups() {
             key={group.groupSlug}
             data-testid={"group-" + group.groupSlug}
             {...(!group.hasActiveAssembly
-               ? {
+              ? {
                   opacity: 0.5,
                   className: classes.box,
                 }
