@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "cypress:open-experimental": "vite && npx run cypress",
-    "cypress:open": "cypress open & vite",
+    "cypress:open": "cypress open && vite",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage"
