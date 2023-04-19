@@ -183,7 +183,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             alignSelf: "center",
           })}
         >
-          <Text fz={"xl"} fw={500}>
+          <Text fz={"xl"} fw={500} data-testid="edit-assembly-banner">
             EDIT {group.groupName.toUpperCase()} ASSEMBLY
           </Text>
           <Text>
@@ -225,7 +225,12 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           )}
           {!assembly.isActive && (
             <>
-              <Button color={"red"} onClick={() => setOpenModal(true)} m={10}>
+              <Button
+                color={"red"}
+                onClick={() => setOpenModal(true)}
+                m={10}
+                data-testid="open-delete-modal"
+              >
                 Delete assembly
               </Button>
               <Modal
@@ -267,6 +272,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                   })}
                 >
                   <Button
+                    data-testid="delete-button"
                     onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
                     color="red"
                     mt="md"
@@ -281,12 +287,14 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             </>
           )}
 
-          <Button onClick={addCase} m={10}>
+          <Button onClick={addCase} m={10} data-testid="add-case-button">
             Add case
           </Button>
         </Container>
         {votations.length < 1 ? (
-          <Text>There are currently no cases</Text>
+          <Text data-testid="no-cases-warning">
+            There are currently no cases
+          </Text>
         ) : (
           <Accordion
             sx={(theme) => ({
