@@ -1,14 +1,18 @@
 # Frontend
 
+### How to:
+
 ### Make sure the Backend is running
 
 See README for backend [here](../backend/README.md)
 
 ### Create a file containing the environment variables
 
-Containing the necessary URLs  
+Containing the necessary URLs
+
 Example:  
-Filename: `.env.local`
+Filename: `.env.local`  
+Contents for developing locally:
 
 ```
 VITE_BACKEND_URL=http://localhost:3000/
@@ -20,16 +24,10 @@ VITE_SOCKET_URL=ws://localhost:3000/status
 Install dependencies by typing: `npm i`  
 When the database is running you start the server by typing: `npm run dev`
 
-### Scripts
+### Unit tests
 
-npm run ...
+`npm run test`
 
-| Script       | Running               |
-| ------------ | --------------------- |
-| dev          | vite                  |
-| build        | tsc && vite build     |
-| preview      | vite preview          |
-| cypress:open | cypress open          |
-| test         | vitest                |
-| test:ui      | vitest --ui           |
-| coverage     | vitest run --coverage |
+### End-to-end tests
+
+`npm run cypress:open`

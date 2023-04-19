@@ -1,5 +1,7 @@
 # Backend
 
+## How to:
+
 ### First you need to create a .env file
 
 Here is a working example:
@@ -21,7 +23,7 @@ With docker it's easy by running this command:
 `npm run db`  
 To stop the database type: `npm run stop-db`
 
-You can modify the given [env](.env)-file if you want, but it should already contain a working setup.
+The local database will use the credentials from your .env. Feel free to edit if you want, but make sure DB_URI includes the correct username and password from the MONGO_INITDB_ROOT variables, as this is used when initializing your database in docker. You can also use a DB_URI for a completely different mongoDB database, if you do not want to use docker.
 
 ---
 
@@ -29,3 +31,10 @@ You can modify the given [env](.env)-file if you want, but it should already con
 
 Install dependencies by typing: `npm i`  
 When the database is running you start the server by typing: `npm run dev`
+
+### Endpoint Tests
+
+To run the jest/supertest endpoint tests, run:  
+`npm run test`
+
+For this to work remember to run `npm i` and start the database before running the tests.
