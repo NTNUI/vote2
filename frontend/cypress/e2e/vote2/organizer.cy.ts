@@ -38,7 +38,7 @@ describe("User should be an organizer", () => {
 
   it("Organized groups should have the organizer tag in the list", () => {
     organizedGroups.forEach((group) => {
-      const testId = '[data-testid="group-' + group.groupSlug + '"]'
+      const testId = '[data-testid="group-' + group.groupSlug + '"]';
       cy.get(testId).should(
         "have.text",
         group.groupSlug.toUpperCase() + "Organizer"
