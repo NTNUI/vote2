@@ -92,8 +92,8 @@ export function Results({ votation }: { votation: VoteType }) {
             })}
             <Text color={"white"}>
               {" "}
-              {votation.numberParticipants - votation.voted.length} of{" "}
-              {votation.numberParticipants} participants did not vote
+              {votation.numberParticipants || 0 - votation.voted.length} of{" "}
+              {votation.numberParticipants || 0} participants did not vote
             </Text>
           </Card>
         </Accordion.Panel>
