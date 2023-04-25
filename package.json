@@ -13,7 +13,9 @@
     "prettier:format": "npx prettier --write .",
     "prettier:check": "prettier --check .",
     "lint": "eslint . --ext .ts",
-    "test:backend": "cd backend && npm test"
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "e2e": "cd frontend && npm run cypress:open"
   },
   "repository": {
     "type": "git",

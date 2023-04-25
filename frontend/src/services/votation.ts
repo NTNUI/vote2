@@ -1,32 +1,40 @@
 import axios from "axios";
-import { LimitedVoteType, OptionType, VoteType } from "../types/votes";
+import { LimitedVoteType, VoteType } from "../types/votes";
 
 export const createVotation = async (
   group: string,
   title: string,
   caseNumber: number,
   voteText: string,
-  options: OptionType[]
-): Promise<VoteType> => {
-  return axios.post(
-    "/votation/create/",
-    {
-      group: group,
-      title: title,
-      caseNumber: caseNumber,
-      voteText: voteText,
-      options: options,
-    },
-    { withCredentials: true }
-  );
+  options: string[]
+): Promise<{ message: string; vote_id: string }> => {
+  const res = (
+    await axios.post(
+      "/votation/create/",
+      {
+        group: group,
+        title: title,
+        caseNumber: caseNumber,
+        voteText: voteText,
+        options: options,
+      },
+      { withCredentials: true }
+    )
+  ).data;
+  return res;
 };
 
-export const activateVotation = async (group: string, voteId: string) => {
+export const activateVotation = async (
+  group: string,
+  voteId: string,
+  numberParticipants: number
+) => {
   return axios.put(
     "/votation/activate/",
     {
       group: group,
       voteId: voteId,
+      numberParticipants: numberParticipants,
     },
     { withCredentials: true }
   );
@@ -58,7 +66,7 @@ export const editVotation = async (
   title: string,
   caseNumber: number,
   voteText: string,
-  options: OptionType[]
+  options: string[]
 ): Promise<VoteType> => {
   return axios.put(
     "/votation/",
@@ -104,7 +112,7 @@ export const submitVote = async (
   optionId: string
 ) => {
   return (
-    await axios.put("/votation/submit", {
+    await axios.post("/votation/submit", {
       group: groupSlug,
       voteId: voteId,
       optionId: optionId,

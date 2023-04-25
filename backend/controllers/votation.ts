@@ -76,6 +76,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
           options: optionList,
           isActive: isActive,
           isFinished: vote.isFinished,
+          numberParticipants: vote.numberParticipants,
         };
 
         listOfVotations.push(votationResponse);
@@ -224,9 +225,10 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
           },
         });
         if (assemblyFeedback) {
-          return res
-            .status(200)
-            .json({ message: "Votation successfully created" });
+          return res.status(200).json({
+            message: "Votation successfully created",
+            vote_id: newVotation._id,
+          });
         }
       } else if (!Number.isFinite(caseNumber)) {
         return res
@@ -312,6 +314,12 @@ export async function activateVotationStatus(
       // Notify all active participants to fetch the activated votation.
       assembly.participants.forEach((member) => {
         notifyOne(member, JSON.stringify({ status: "update", group: group }));
+      });
+
+      await Votation.findByIdAndUpdate(voteId, {
+        $set: {
+          numberParticipants: req.body.numberParticipants,
+        },
       });
 
       return res
@@ -486,12 +494,19 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
           .json({ message: "No assembly with the given ID found " });
       }
 
-      if (assembly.currentVotation) {
-        if (assembly.currentVotation._id.equals(voteId)) {
-          return res.status(400).json({
-            message: "One cannot edit the currently active votation",
-          });
-        }
+      if (
+        assembly.currentVotation &&
+        assembly.currentVotation._id.equals(voteId)
+      ) {
+        return res.status(400).json({
+          message: "Cannot edit the currently active votation",
+        });
+      }
+
+      if (vote.isFinished) {
+        return res.status(400).json({
+          message: "Cannot edit a finished votation",
+        });
       }
 
       for (const optionID of vote.options) {
@@ -509,7 +524,8 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
         }
 
         for (let i = 0; i < options.length; i++) {
-          const title = options[i];
+          const title: string = options[i];
+
           const newOption = new Option({
             title: title,
             voteCount: 0,
@@ -625,8 +641,8 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
         });
 
         await Option.findByIdAndUpdate(optionId, {
-          $set: {
-            voteCount: option.voteCount + 1,
+          $inc: {
+            voteCount: 1,
           },
         });
       }

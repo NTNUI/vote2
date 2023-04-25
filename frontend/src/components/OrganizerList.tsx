@@ -1,4 +1,4 @@
-import { Image, Loader, SimpleGrid, Text, Box } from "@mantine/core";
+import { Image, Loader, Text, Box } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserData } from "../services/organizer";

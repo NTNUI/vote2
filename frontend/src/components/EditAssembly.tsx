@@ -21,7 +21,7 @@ import {
   getAssemblyByName,
   getNumberOfParticipantsInAssembly,
 } from "../services/assembly";
-import { createVotation, getVotations } from "../services/votation";
+import { getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
@@ -41,6 +41,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     options: [],
     isFinished: true,
     isActive: false,
+    numberParticipants: 0,
   });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
   const [participants, setParticipants] = useState<number>();
@@ -48,6 +49,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   const [openModal, setOpenModal] = useState(false);
   const [statusChanges, setStatusChanges] = useState(assembly?.isActive);
   const [loadParticipans, setParticipantsLoading] = useState(false);
+  const [accordionActiveTabs, setAccordionActiveTabs] = useState<string[]>([]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -85,14 +87,26 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   }
 
   async function addCase() {
-    await createVotation(
-      group.groupSlug,
-      startCase.title,
-      startCase.caseNumber,
-      startCase.voteText,
-      startCase.options
-    );
-    setIsChanged(!isChanged);
+    // Creates a temporary case to the votation list, this is not saved as a votation in the database before the required values are provided.
+    // Only one element can exist at the same time, the user therefore has to finish editing the current temporary element before creating another one.
+    if (!votations.some((votation) => votation._id == "temp")) {
+      setAccordionActiveTabs([...accordionActiveTabs, "temp"]);
+      setVotations([
+        ...votations,
+        {
+          _id: "temp",
+          title: "Placeholder",
+          caseNumber: 0.1,
+          voteText: "",
+          voted: [],
+          options: [],
+          isFinished: false,
+          isActive: false,
+          numberParticipants: 0,
+          editable: true,
+        },
+      ]);
+    }
   }
 
   function endAssembly(groupSlug: string) {
@@ -128,7 +142,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   }
 
   return !assembly ? (
-    <Loader />
+    <Loader data-testid="LoaderIcon" />
   ) : (
     <>
       <Box
@@ -169,7 +183,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             alignSelf: "center",
           })}
         >
-          <Text fz={"xl"} fw={500}>
+          <Text fz={"xl"} fw={500} data-testid="edit-assembly-banner">
             EDIT {group.groupName.toUpperCase()} ASSEMBLY
           </Text>
           <Text>
@@ -211,21 +225,24 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           )}
           {!assembly.isActive && (
             <>
-              <Button color={"red"} onClick={() => setOpenModal(true)} m={10}>
+              <Button
+                color={"red"}
+                onClick={() => setOpenModal(true)}
+                m={10}
+                data-testid="open-delete-modal"
+              >
                 Delete assembly
               </Button>
               <Modal
                 opened={openModal}
                 onClose={() => setOpenModal(false)}
-                // title={"Delete assembly"}
                 size="lg"
                 centered
                 withCloseButton={false}
                 transition="fade"
                 transitionDuration={200}
                 exitTransitionDuration={200}
-                // Styling is done like this to overwrite Mantine styling, therefore i could not use our color variables
-                // The styling could be moved to a styling file
+                // Styling is done like this to overwrite Mantine styling, therefore global color variables is not used.
                 styles={{
                   modal: {
                     backgroundColor: "#1b202c",
@@ -255,6 +272,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                   })}
                 >
                   <Button
+                    data-testid="delete-button"
                     onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
                     color="red"
                     mt="md"
@@ -269,12 +287,14 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             </>
           )}
 
-          <Button onClick={addCase} m={10}>
+          <Button onClick={addCase} m={10} data-testid="add-case-button">
             Add case
           </Button>
         </Container>
         {votations.length < 1 ? (
-          <Text>There are currently no cases</Text>
+          <Text data-testid="no-cases-warning">
+            There are currently no cases
+          </Text>
         ) : (
           <Accordion
             sx={(theme) => ({
@@ -288,6 +308,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               maxWidth: 780,
             })}
             multiple
+            value={accordionActiveTabs}
+            onChange={setAccordionActiveTabs}
           >
             {votations
               .sort((a, b) => a.caseNumber - b.caseNumber)
@@ -296,12 +318,18 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                   <Results key={vote._id} votation={vote} />
                 ) : (
                   <VotationPanel
+                    // Passing accordionActiveTabs to VotationPanel so it can provide it's ID to remain open when vote is submitted.
+                    accordionActiveTabs={accordionActiveTabs}
+                    setAccordionActiveTabs={(tabs: string[]) =>
+                      setAccordionActiveTabs(tabs)
+                    }
                     key={vote._id}
                     votation={vote}
                     groupSlug={group.groupSlug}
                     isChanged={isChanged}
                     setIsChanged={setIsChanged}
                     assemblyStatus={assembly.isActive}
+                    initEditable={vote.editable || false}
                   />
                 );
               })}

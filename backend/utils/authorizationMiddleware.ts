@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import jsonwebtoken from "jsonwebtoken";
 import { isValidNtnuiToken, refreshNtnuiToken } from "ntnui-tools";
-import { CustomError, UnauthorizedUserError } from "ntnui-tools/customError";
+import { CustomError } from "ntnui-tools/customError";
 import { RequestWithNtnuiNo } from "./request";
 
 /**
@@ -52,9 +52,9 @@ const authorization = async (
       req.ntnuiNo = decoded.ntnui_no;
       return next();
     }
-    throw UnauthorizedUserError;
+    return res.status(401).json({ message: "Unauthorized" });
   } catch (error) {
-    return next(error);
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };
 

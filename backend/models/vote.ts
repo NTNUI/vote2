@@ -41,6 +41,10 @@ export const votationSchema = new Schema<VoteType>(
       type: Boolean,
       required: true,
     },
+    numberParticipants: {
+      type: Number,
+      required: false,
+    },
   },
   { collection: "votation", _id: true }
 );

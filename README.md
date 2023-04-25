@@ -6,14 +6,14 @@ The assemblies and voting is organized by the organizers/main board at the given
 
 ### Permissions:
 
-| Role         | Voting                | Check in                                      |
-| ------------ | --------------------- | --------------------------------------------- |
-| Organizer    | Add voting See result | Check users in/ scan qr-codes                 |
-| Group Member | Vote                  | Access to voting system if qr-code is scanned |
+| Role         | Voting                            | Check in                                                                                    |
+| ------------ | --------------------------------- | ------------------------------------------------------------------------------------------- |
+| Organizer    | Add votation, see result and vote | Check users in/out by scanning qr-codes. <br> Access to voting system if qr-code is scanned |
+| Group Member | Vote                              | Access to voting system if qr-code is scanned                                               |
 
 \* An Organizer is a board member of the given group. The main board is allowed to create a general assembly for NTNUI as a whole.
 
-This project is using the [NTNUI API](https://api.ntnui.no/), in combination with [NTNUI TOOLS](https://github.com/NTNUI/ntnui-tools) to manage user permissions. Application specific data is stored in the MongoDB database.
+This project is using the [NTNUI API](https://api.ntnui.no/), in combination with [NTNUI TOOLS](https://github.com/NTNUI/ntnui-tools) to manage user permissions (group memberships and membership type). Application specific data is stored in the MongoDB database.
 
 ---
 
@@ -46,3 +46,9 @@ ESlint check:
 
 Backend tests run:  
 `npm run test:backend`
+
+Frontend unit tests run:  
+`npm run test:frontend`
+
+End-to-end tests run:  
+`npm run e2e`

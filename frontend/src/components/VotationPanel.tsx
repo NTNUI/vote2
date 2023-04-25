@@ -7,86 +7,111 @@ import {
   Box,
   Flex,
   NumberInput,
-  SimpleGrid,
 } from "@mantine/core";
 import {
   activateVotation,
+  createVotation,
   deactivateVotation,
   deleteVotation,
   editVotation,
 } from "../services/votation";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useStyles } from "../styles/EditAssemblyStyles";
 import { VoteType } from "../types/votes";
 import { getNumberOfParticipantsInAssembly } from "../services/assembly";
 import { showNotification } from "@mantine/notifications";
 
+export interface CaseType {
+  caseNumber: number;
+  title: string;
+  voteText: string;
+  options: string[];
+  isActive: boolean;
+  numberParticipants: number;
+}
+
 function VotationPanel({
+  accordionActiveTabs,
+  setAccordionActiveTabs,
   groupSlug,
   votation,
   isChanged,
   setIsChanged,
   assemblyStatus,
+  initEditable,
 }: {
+  accordionActiveTabs: string[];
+  setAccordionActiveTabs: (tabs: string[]) => void;
   groupSlug: string;
   votation: VoteType;
   isChanged: boolean;
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
   assemblyStatus: boolean;
+  initEditable: boolean;
 }) {
-  const [editable, setEditable] = useState(false);
+  const [editable, setEditable] = useState(initEditable);
   const [isFinishChecked, setIsFinishChecked] = useState<boolean>(false);
   const [isEndChecked, setIsEndChecked] = useState<boolean>(false);
 
-  const form = useForm<VoteType>({
+  const form = useForm<CaseType>({
     initialValues: {
-      _id: votation._id,
       caseNumber: votation.caseNumber,
       title: votation.title,
-      isFinished: votation.isFinished,
-      options: votation.options,
-      voted: votation.voted,
+      options: votation.options.map((option) => {
+        return option.title;
+      }),
       voteText: votation.voteText,
       isActive: votation.isActive,
+      numberParticipants: votation.numberParticipants,
     },
   });
   const { classes } = useStyles();
   const matches = useMediaQuery("(min-width: 400px)");
   const participantMatch = useMediaQuery("(min-width: 500px)");
-  const [options, setOptions] = useState<string[]>(["Yes", "No", "Blank"]);
-  const [isActive, setIsActive] = useState(false);
-  const [participants, setParticipants] = useState<number>();
+  const [defaultOptions] = useState<string[]>(["Yes", "No", "Blank"]);
+  const [options, setOptions] = useState<string[]>(
+    votation.options.map((option) => {
+      return option.title;
+    })
+  );
 
-  useEffect(() => {
-    const fetch = async () => {
-      const numberOfParticipants = await getNumberOfParticipantsInAssembly(
-        groupSlug
+  async function handleSubmit(vote: CaseType, votationId: string) {
+    if (initEditable) {
+      const createdVotation = await createVotation(
+        groupSlug,
+        vote.title,
+        vote.caseNumber,
+        vote.voteText,
+        vote.options.map((option) => {
+          return option;
+        })
       );
-      setParticipants(numberOfParticipants);
-    };
-
-    fetch().catch(console.error);
-  }, [isActive]);
-
-  async function handleSubmit(vote: VoteType, votationId: string) {
-    await editVotation(
-      groupSlug,
-      votationId,
-      vote.title,
-      vote.caseNumber,
-      vote.voteText,
-      vote.options
-    ).catch(console.error);
+      setAccordionActiveTabs([...accordionActiveTabs, createdVotation.vote_id]);
+    } else {
+      await editVotation(
+        groupSlug,
+        votationId,
+        vote.title,
+        vote.caseNumber,
+        vote.voteText,
+        vote.options.map((option) => {
+          return option;
+        })
+      ).catch(console.error);
+    }
     setEditable(false);
     setIsChanged(!isChanged);
   }
 
   async function activateVote(votation: VoteType) {
     if (!votation.isFinished) {
-      await activateVotation(groupSlug, votation._id).catch(console.error);
-      setIsActive(true);
+      await activateVotation(
+        groupSlug,
+        votation._id,
+        await getNumberOfParticipantsInAssembly(groupSlug)
+      ).catch(console.error);
       setIsChanged(!isChanged);
       if (!assemblyStatus) {
         showNotification({ title: "Error", message: "Start assembly first" });
@@ -136,11 +161,14 @@ function VotationPanel({
           })}
         >
           <form
-            onSubmit={form.onSubmit((values) =>
-              handleSubmit(values, votation._id)
+            onSubmit={form.onSubmit(
+              (values) =>
+                form.getInputProps("options").value.length > 0 &&
+                handleSubmit(values, votation._id)
             )}
           >
             <NumberInput
+              data-testid="caseNumberInput"
               type="number"
               precision={2}
               min={0}
@@ -153,6 +181,7 @@ function VotationPanel({
               {...form.getInputProps("caseNumber")}
             />
             <TextInput
+              data-testid="titleInput"
               withAsterisk
               required
               label="Title"
@@ -161,6 +190,7 @@ function VotationPanel({
               {...form.getInputProps("title")}
             />
             <TextInput
+              data-testid="descriptionEdit"
               withAsterisk
               required
               label="Description"
@@ -169,9 +199,10 @@ function VotationPanel({
               {...form.getInputProps("voteText")}
             />
             <MultiSelect
+              data-testid="multiselectOptions"
               label="Creatable MultiSelect"
               className={classes.inputStyle}
-              data={options}
+              data={[...new Set(options.concat(defaultOptions))]}
               placeholder="Select items"
               searchable
               required
@@ -184,7 +215,7 @@ function VotationPanel({
               {...form.getInputProps("options")}
             />
 
-            <Button type="submit" mt={10}>
+            <Button type="submit" mt={10} data-testid="submitButton">
               Save current vote
             </Button>
           </form>
@@ -203,7 +234,7 @@ function VotationPanel({
           >
             <Box pl={10} pb={10} ta={"left"}>
               <Text fw={"700"}>Title:</Text>
-              <Text>{votation.title}</Text>
+              <Text data-testid="title-field">{votation.title}</Text>
               <Text fw={"700"}>Description:</Text>
               <Text>{votation.voteText}</Text>
               <Text fw={"700"}>Options:</Text>
@@ -215,12 +246,6 @@ function VotationPanel({
                 )}
               </Text>
             </Box>
-            <Text
-              fz={"sm"}
-              style={{ minWidth: "fit-content", marginRight: "4px" }}
-            >
-              {participants} eligible participants
-            </Text>
           </Flex>
           <Flex
             direction={matches ? "row" : "column"}
@@ -262,6 +287,7 @@ function VotationPanel({
                 m={5}
                 color={"gray"}
                 disabled={votation.isFinished || votation.isActive}
+                data-testid="edit-case-button"
               >
                 Edit
               </Button>
