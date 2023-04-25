@@ -96,7 +96,9 @@ export function AssemblyLobby() {
           </Text>
         </Box>
       )}
-      <Text mt={30}>{groupName} assembly</Text>
+      <Text mt={100} mb={20}>
+        {groupName} assembly
+      </Text>
 
       {kickedOut ? (
         <WaitingRoom

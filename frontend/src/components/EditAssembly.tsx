@@ -7,9 +7,7 @@ import {
   Image,
   Loader,
   Modal,
-  SimpleGrid,
   Text,
-  useMantineTheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -33,18 +31,6 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   const breakpoint = useMediaQuery("(min-width: 800px)");
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
   const [votations, setVotations] = useState<VoteType[]>([]);
-  const theme = useMantineTheme();
-  const [startCase] = useState<VoteType>({
-    _id: "",
-    title: "placeholder",
-    caseNumber: 0.1,
-    voteText: "",
-    voted: [],
-    options: [],
-    isFinished: true,
-    isActive: false,
-    numberParticipants: 0,
-  });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
   const [participants, setParticipants] = useState<number>();
   const [isChanged, setIsChanged] = useState(false);
@@ -291,7 +277,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             </Button>
           </Container>
         </Container>
-        <Container pt={"xs"} miw={breakpoint ? "45%" : "80%"}>
+        <Container p={0} pt={"xs"} w={breakpoint ? "45%" : "95%"}>
           {votations.length < 1 ? (
             <Text data-testid="no-cases-warning">
               There are currently no cases

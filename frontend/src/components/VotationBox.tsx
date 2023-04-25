@@ -79,7 +79,7 @@ export function VotationBox(state: {
               key={option.title}
               onClick={() => setChosenOption(option._id)}
             >
-              {option.title}
+              <Text truncate>{option.title}</Text>
             </Button>
           ))}
         </Flex>
