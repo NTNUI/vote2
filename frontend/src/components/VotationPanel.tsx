@@ -106,15 +106,24 @@ function VotationPanel({
   }
 
   async function activateVote(votation: VoteType) {
+    let message = "";
     if (!votation.isFinished) {
       await activateVotation(
         groupSlug,
         votation._id,
         await getNumberOfParticipantsInAssembly(groupSlug)
-      ).catch(console.error);
+      ).catch(function (error) {
+        if (error) {
+          console.error(error);
+          message = error.response.data.message;
+        }
+      });
       setIsChanged(!isChanged);
-      if (!assemblyStatus) {
-        showNotification({ title: "Error", message: "Start assembly first" });
+      if (message.length > 0) {
+        showNotification({
+          title: "Error",
+          message: message,
+        });
       }
     }
   }
@@ -126,7 +135,17 @@ function VotationPanel({
   }
 
   async function deleteVote(votation: VoteType) {
-    await deleteVotation(groupSlug, votation._id).catch(console.error);
+    let message = "";
+    await deleteVotation(groupSlug, votation._id).catch(function (error) {
+      console.error(error);
+      message = error.response.data.message;
+    });
+    if (message.length > 0) {
+      showNotification({
+        title: "Error",
+        message: message,
+      });
+    }
     setIsChanged(!isChanged);
   }
 
@@ -200,7 +219,7 @@ function VotationPanel({
             />
             <MultiSelect
               data-testid="multiselectOptions"
-              label="Creatable MultiSelect"
+              label="Options"
               className={classes.inputStyle}
               data={[...new Set(options.concat(defaultOptions))]}
               placeholder="Select items"
