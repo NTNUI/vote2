@@ -117,7 +117,9 @@ export function LoginForm() {
   const { classes } = useStyles();
   let navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<{ active: Boolean; errorCode?: number }>({
+    active: false,
+  });
 
   useEffect(() => {
     // Log user in and redirect if user is already logged in.
@@ -171,9 +173,9 @@ export function LoginForm() {
           navigate("/start");
           localStorage.setItem("isLoggedIn", "true");
         })
-        .catch(() => {
+        .catch((error) => {
           setIsLoading(false);
-          setError(true);
+          setError({ active: true, errorCode: error.response.status });
           localStorage.setItem("isLoggedIn", "false");
         });
     } catch (error) {
@@ -274,7 +276,9 @@ export function LoginForm() {
           color="red"
           data-testid="bad-login-notification"
         >
-          Cannot find any user with this password and username
+          {error.errorCode === 403
+            ? "No active NTNUI membership found on the given user"
+            : "Cannot find any user with this password and username"}
         </Notification>
       )}
       <Button
