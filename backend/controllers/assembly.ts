@@ -3,6 +3,7 @@ import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { Votation, Option } from "../models/vote";
 import { RequestWithNtnuiNo } from "../utils/request";
+import { AssemblyResponseType } from "../types/assembly";
 
 export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -141,7 +142,19 @@ export async function getAssemblyByName(
           .status(400)
           .json({ message: "No assembly with the given ID found" });
       }
-      return res.status(200).json(assembly);
+
+      const vote = await Votation.findById(assembly.currentVotation);
+
+      const assemblyResponse: AssemblyResponseType = {
+        _id: assembly._id,
+        votes: assembly.votes,
+        currentVotation: vote,
+        isActive: assembly.isActive,
+        participants: assembly.participants,
+        createdBy: assembly.createdBy,
+      };
+
+      return res.status(200).json(assemblyResponse);
     }
   }
   return res.status(401).json({ message: "Not authorized" });
