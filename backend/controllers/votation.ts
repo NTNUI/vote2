@@ -64,7 +64,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
 
         let isActive = false;
         if (assembly.currentVotation) {
-          isActive = assembly.currentVotation._id.equals(vote._id);
+          isActive = vote._id.equals(assembly.currentVotation);
         }
 
         const votationResponse: VoteResponseType = {
@@ -121,13 +121,13 @@ export async function getCurrentVotation(
           .json({ message: "This user is not a part of the assembly" });
       }
 
-      if (!Types.ObjectId.isValid(assembly.currentVotation._id)) {
+      if (!Types.ObjectId.isValid(assembly.currentVotation.toString())) {
         return res
           .status(400)
           .json({ message: "No votation with the given ID found " });
       }
 
-      const vote = await Votation.findById(assembly.currentVotation._id);
+      const vote = await Votation.findById(assembly.currentVotation);
       if (!vote) {
         return res.status(400).json({ message: "No votation found" });
       }
@@ -153,7 +153,7 @@ export async function getCurrentVotation(
       }
 
       const votationResponse: LimitedVoteResponseType = {
-        _id: assembly.currentVotation._id,
+        _id: assembly.currentVotation,
         title: vote.title,
         caseNumber: vote.caseNumber,
         voteText: vote.voteText,
@@ -307,7 +307,7 @@ export async function activateVotationStatus(
 
       await Assembly.findByIdAndUpdate(group, {
         $set: {
-          currentVotation: vote,
+          currentVotation: vote._id,
         },
       });
 
@@ -356,7 +356,7 @@ export async function deactivateVotationStatus(
           .json({ message: "There is no current votation ongoing" });
       }
 
-      const voteId = assembly.currentVotation._id;
+      const voteId = assembly.currentVotation;
       const vote = await Votation.findById(voteId);
 
       if (!vote) {
@@ -426,7 +426,7 @@ export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
       }
 
       if (assembly.currentVotation) {
-        if (assembly.currentVotation._id.equals(voteId)) {
+        if (assembly.currentVotation.toString() === voteId.toString()) {
           return res.status(400).json({
             message: "One cannot delete the currently active votation",
           });
@@ -496,7 +496,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
 
       if (
         assembly.currentVotation &&
-        assembly.currentVotation._id.equals(voteId)
+        assembly.currentVotation.toString() === voteId.toString()
       ) {
         return res.status(400).json({
           message: "Cannot edit the currently active votation",
@@ -607,7 +607,7 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
           .json({ message: "This votation is already finished" });
       }
 
-      if (!assembly.currentVotation._id.equals(voteId)) {
+      if (!assembly.currentVotation.toString() === voteId.toString()) {
         return res
           .status(400)
           .json({ message: "You can not vote on this votation" });
