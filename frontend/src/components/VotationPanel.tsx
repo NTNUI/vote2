@@ -291,7 +291,10 @@ function VotationPanel({
                 color={"green"}
                 disabled={votation.isFinished}
                 m={matches ? 10 : 5}
-                onClick={() => activateVote(votation)}
+                onClick={() => {
+                  activateVote(votation);
+                  setIsEndChecked(false);
+                }}
               >
                 Activate
               </Button>
@@ -314,6 +317,7 @@ function VotationPanel({
                 w={matches ? "auto" : "60%"}
                 color={"red"}
                 m={matches ? 10 : 5}
+                disabled={votation.isFinished || votation.isActive}
                 onClick={
                   !isEndChecked
                     ? () => setIsEndChecked(true)
