@@ -106,7 +106,6 @@ function VotationPanel({
   }
 
   async function activateVote(votation: VoteType) {
-    let message = "";
     if (!votation.isFinished) {
       await activateVotation(
         groupSlug,
@@ -115,16 +114,13 @@ function VotationPanel({
       ).catch(function (error) {
         if (error) {
           console.error(error);
-          message = error.response.data.message;
+          showNotification({
+            title: "Error",
+            message: error.response.data.message,
+          });
         }
       });
       setIsChanged(!isChanged);
-      if (message.length > 0) {
-        showNotification({
-          title: "Error",
-          message: message,
-        });
-      }
     }
   }
 
@@ -135,17 +131,13 @@ function VotationPanel({
   }
 
   async function deleteVote(votation: VoteType) {
-    let message = "";
     await deleteVotation(groupSlug, votation._id).catch(function (error) {
       console.error(error);
-      message = error.response.data.message;
-    });
-    if (message.length > 0) {
       showNotification({
         title: "Error",
-        message: message,
+        message: error.response.data.message,
       });
-    }
+    });
     setIsChanged(!isChanged);
   }
 
