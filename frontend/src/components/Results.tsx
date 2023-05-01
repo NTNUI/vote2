@@ -45,11 +45,14 @@ export function Results({ votation }: { votation: VoteType }) {
                 ? votation.caseNumber + " - " + votation.title
                 : votation.caseNumber}
             </Text>
-            <Text>Results</Text>
+            <Text>Results </Text>
           </Container>
         </Accordion.Control>
         <Accordion.Panel>
-          <Text color={"white"}>{votation.title}</Text>
+          <Text weight={"bold"} color={"white"}>
+            {votation.title}
+          </Text>
+          <Text color={"white"}>{votation.voteText}</Text>
           <Card
             radius="md"
             sx={(theme) => ({
