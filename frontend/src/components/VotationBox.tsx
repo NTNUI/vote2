@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Loader, Text } from "@mantine/core";
+import { Box, Button, Card, Flex, Loader, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useStyles } from "../styles/VotationStyles";
@@ -62,8 +62,8 @@ export function VotationBox(state: {
           wrap="nowrap"
         >
           {currentVotation.options.map((option) => (
-            <Button
-              variant="outline"
+            <Card
+              withBorder
               className={classes.optionButton}
               sx={
                 chosenOption == option._id
@@ -74,13 +74,12 @@ export function VotationBox(state: {
                     })
                   : () => ({})
               }
-              size="lg"
               w={matches ? 400 : 300}
               key={option.title}
               onClick={() => setChosenOption(option._id)}
             >
-              <Text truncate>{option.title}</Text>
-            </Button>
+              <Text>{option.title}</Text>
+            </Card>
           ))}
         </Flex>
         <Button
