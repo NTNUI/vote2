@@ -111,11 +111,16 @@ function VotationPanel({
         groupSlug,
         votation._id,
         await getNumberOfParticipantsInAssembly(groupSlug)
-      ).catch(console.error);
+      ).catch(function (error) {
+        if (error) {
+          console.error(error);
+          showNotification({
+            title: "Error",
+            message: error.response.data.message,
+          });
+        }
+      });
       setIsChanged(!isChanged);
-      if (!assemblyStatus) {
-        showNotification({ title: "Error", message: "Start assembly first" });
-      }
     }
   }
 
@@ -126,7 +131,13 @@ function VotationPanel({
   }
 
   async function deleteVote(votation: VoteType) {
-    await deleteVotation(groupSlug, votation._id).catch(console.error);
+    await deleteVotation(groupSlug, votation._id).catch(function (error) {
+      console.error(error);
+      showNotification({
+        title: "Error",
+        message: error.response.data.message,
+      });
+    });
     setIsChanged(!isChanged);
   }
 
@@ -200,7 +211,7 @@ function VotationPanel({
             />
             <MultiSelect
               data-testid="multiselectOptions"
-              label="Creatable MultiSelect"
+              label="Options"
               className={classes.inputStyle}
               data={[...new Set(options.concat(defaultOptions))]}
               placeholder="Select items"
@@ -272,7 +283,10 @@ function VotationPanel({
                 color={"green"}
                 disabled={votation.isFinished}
                 m={matches ? 10 : 5}
-                onClick={() => activateVote(votation)}
+                onClick={() => {
+                  activateVote(votation);
+                  setIsEndChecked(false);
+                }}
               >
                 Activate
               </Button>
@@ -295,6 +309,7 @@ function VotationPanel({
                 w={matches ? "auto" : "60%"}
                 color={"red"}
                 m={matches ? 10 : 5}
+                disabled={votation.isFinished || votation.isActive}
                 onClick={
                   !isEndChecked
                     ? () => setIsEndChecked(true)

@@ -7,9 +7,7 @@ import {
   Image,
   Loader,
   Modal,
-  SimpleGrid,
   Text,
-  useMantineTheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,22 +25,12 @@ import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
 import { Results } from "./Results";
 import { IconRefresh } from "@tabler/icons-react";
+import { useMediaQuery } from "@mantine/hooks";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
+  const breakpoint = useMediaQuery("(min-width: 800px)");
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
   const [votations, setVotations] = useState<VoteType[]>([]);
-  const theme = useMantineTheme();
-  const [startCase] = useState<VoteType>({
-    _id: "",
-    title: "placeholder",
-    caseNumber: 0.1,
-    voteText: "",
-    voted: [],
-    options: [],
-    isFinished: true,
-    isActive: false,
-    numberParticipants: 0,
-  });
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
   const [participants, setParticipants] = useState<number>();
   const [isChanged, setIsChanged] = useState(false);
@@ -172,170 +160,170 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
         </Text>
       </Box>
 
-      <SimpleGrid
-        cols={2}
-        breakpoints={[{ maxWidth: 800, cols: 1, spacing: "sm" }]}
-        w={"80vw"}
-        pt={120}
-      >
-        <Container
-          sx={() => ({
-            alignSelf: "center",
-          })}
-        >
-          <Text fz={"xl"} fw={500} data-testid="edit-assembly-banner">
-            EDIT {group.groupName.toUpperCase()} ASSEMBLY
-          </Text>
-          <Text>
-            <Flex align={"center"} justify={"center"}>
-              Currently {participants} participants
-              <Box
-                style={{
-                  marginLeft: "4px",
-                  cursor: "pointer",
-                  position: "relative",
-                  top: "3px",
-                }}
-                onClick={() => refreshParticipants()}
-              >
-                {!loadParticipans ? (
-                  <IconRefresh height={20} width={20} />
-                ) : (
-                  <Loader height={20} width={20} />
-                )}
-              </Box>
-            </Flex>
-          </Text>
-          {assembly.isActive ? (
-            <Button
-              color={"red"}
-              onClick={() => endAssembly(group.groupSlug)}
-              m={10}
-            >
-              Stop assembly
-            </Button>
-          ) : (
-            <Button
-              color={"green"}
-              onClick={() => startAssembly(group.groupSlug)}
-              m={10}
-            >
-              Start Assembly
-            </Button>
-          )}
-          {!assembly.isActive && (
-            <>
+      <Flex direction={breakpoint ? "row" : "column"} w={"80vw"} pt={120}>
+        <Container miw={breakpoint ? 450 : 0}>
+          <Container
+            sx={() => ({
+              position: breakpoint ? "fixed" : "static",
+              top: breakpoint ? "45vh" : "0",
+            })}
+          >
+            <Text fz={"xl"} fw={500} data-testid="edit-assembly-banner">
+              EDIT {group.groupName.toUpperCase()} ASSEMBLY
+            </Text>
+            <Text>
+              <Flex align={"center"} justify={"center"}>
+                Currently {participants} participants
+                <Box
+                  style={{
+                    marginLeft: "4px",
+                    cursor: "pointer",
+                    position: "relative",
+                    top: "3px",
+                  }}
+                  onClick={() => refreshParticipants()}
+                >
+                  {!loadParticipans ? (
+                    <IconRefresh height={20} width={20} />
+                  ) : (
+                    <Loader height={20} width={20} />
+                  )}
+                </Box>
+              </Flex>
+            </Text>
+            {assembly.isActive ? (
               <Button
                 color={"red"}
-                onClick={() => setOpenModal(true)}
+                onClick={() => endAssembly(group.groupSlug)}
                 m={10}
-                data-testid="open-delete-modal"
               >
-                Delete assembly
+                Stop assembly
               </Button>
-              <Modal
-                opened={openModal}
-                onClose={() => setOpenModal(false)}
-                size="lg"
-                centered
-                withCloseButton={false}
-                transition="fade"
-                transitionDuration={200}
-                exitTransitionDuration={200}
-                // Styling is done like this to overwrite Mantine styling, therefore global color variables is not used.
-                styles={{
-                  modal: {
-                    backgroundColor: "#1b202c",
-                    color: "white",
-                    border: ".5px solid",
-                    borderRadius: 5,
-                    borderBottomRightRadius: 0,
-                    borderColor: "#f8f082",
-                  },
-                  title: {
-                    margin: "0 auto",
-                  },
-                }}
+            ) : (
+              <Button
+                color={"green"}
+                onClick={() => startAssembly(group.groupSlug)}
+                m={10}
               >
-                <Text mb={5} fw={600} ta={"center"}>
-                  Delete {group.groupName} assembly
-                </Text>
-                <Text ta={"center"}>
-                  Are you sure you want to delete this assembly?
-                </Text>
-                <Text ta={"center"}>All data will be lost!</Text>
-                <Container
-                  sx={(theme) => ({
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-evenly",
-                  })}
+                Start Assembly
+              </Button>
+            )}
+            {!assembly.isActive && (
+              <>
+                <Button
+                  color={"red"}
+                  onClick={() => setOpenModal(true)}
+                  m={10}
+                  data-testid="open-delete-modal"
                 >
-                  <Button
-                    data-testid="delete-button"
-                    onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
-                    color="red"
-                    mt="md"
+                  Delete assembly
+                </Button>
+                <Modal
+                  opened={openModal}
+                  onClose={() => setOpenModal(false)}
+                  size="lg"
+                  centered
+                  withCloseButton={false}
+                  transition="fade"
+                  transitionDuration={200}
+                  exitTransitionDuration={200}
+                  // Styling is done like this to overwrite Mantine styling, therefore global color variables is not used.
+                  styles={{
+                    modal: {
+                      backgroundColor: "#1b202c",
+                      color: "white",
+                      border: ".5px solid",
+                      borderRadius: 5,
+                      borderBottomRightRadius: 0,
+                      borderColor: "#f8f082",
+                    },
+                    title: {
+                      margin: "0 auto",
+                    },
+                  }}
+                >
+                  <Text mb={5} fw={600} ta={"center"}>
+                    Delete {group.groupName} assembly
+                  </Text>
+                  <Text ta={"center"}>
+                    Are you sure you want to delete this assembly?
+                  </Text>
+                  <Text ta={"center"}>All data will be lost!</Text>
+                  <Container
+                    sx={(theme) => ({
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-evenly",
+                    })}
                   >
-                    Delete
-                  </Button>
-                  <Button mt="md" onClick={() => setOpenModal(false)}>
-                    Cancel
-                  </Button>
-                </Container>
-              </Modal>
-            </>
-          )}
+                    <Button
+                      data-testid="delete-button"
+                      onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
+                      color="red"
+                      mt="md"
+                    >
+                      Delete
+                    </Button>
+                    <Button mt="md" onClick={() => setOpenModal(false)}>
+                      Cancel
+                    </Button>
+                  </Container>
+                </Modal>
+              </>
+            )}
 
-          <Button onClick={addCase} m={10} data-testid="add-case-button">
-            Add case
-          </Button>
+            <Button onClick={addCase} m={10} data-testid="add-case-button">
+              Add case
+            </Button>
+          </Container>
         </Container>
-        {votations.length < 1 ? (
-          <Text data-testid="no-cases-warning">
-            There are currently no cases
-          </Text>
-        ) : (
-          <Accordion
-            sx={(theme) => ({
-              height: "fit-content",
-              backgroundColor: theme.colors.ntnui_background[0],
-              border: "solid",
-              borderColor: theme.colors.ntnui_yellow[0],
-              borderRadius: "5px",
-              borderBottomRightRadius: "0px",
-              borderBottomWidth: 0.5,
-              maxWidth: 780,
-            })}
-            multiple
-            value={accordionActiveTabs}
-            onChange={setAccordionActiveTabs}
-          >
-            {votations
-              .sort((a, b) => a.caseNumber - b.caseNumber)
-              .map((vote: VoteType) => {
-                return vote.isFinished ? (
-                  <Results key={vote._id} votation={vote} />
-                ) : (
-                  <VotationPanel
-                    // Passing accordionActiveTabs to VotationPanel so it can provide it's ID to remain open when vote is submitted.
-                    accordionActiveTabs={accordionActiveTabs}
-                    setAccordionActiveTabs={(tabs: string[]) =>
-                      setAccordionActiveTabs(tabs)
-                    }
-                    key={vote._id}
-                    votation={vote}
-                    groupSlug={group.groupSlug}
-                    isChanged={isChanged}
-                    setIsChanged={setIsChanged}
-                    assemblyStatus={assembly.isActive}
-                    initEditable={vote.editable || false}
-                  />
-                );
+        <Container p={0} pt={"xs"} w={breakpoint ? "45%" : "95%"}>
+          {votations.length < 1 ? (
+            <Text data-testid="no-cases-warning">
+              There are currently no cases
+            </Text>
+          ) : (
+            <Accordion
+              sx={(theme) => ({
+                height: "fit-content",
+                backgroundColor: theme.colors.ntnui_background[0],
+                border: "solid",
+                borderColor: theme.colors.ntnui_yellow[0],
+                borderRadius: "5px",
+                borderBottomRightRadius: "0px",
+                borderBottomWidth: 0.5,
+                maxWidth: 780,
               })}
-          </Accordion>
-        )}
-      </SimpleGrid>
+              multiple
+              value={accordionActiveTabs}
+              onChange={setAccordionActiveTabs}
+            >
+              {votations
+                .sort((a, b) => a.caseNumber - b.caseNumber)
+                .map((vote: VoteType) => {
+                  return vote.isFinished ? (
+                    <Results key={vote._id} votation={vote} />
+                  ) : (
+                    <VotationPanel
+                      // Passing accordionActiveTabs to VotationPanel so it can provide it's ID to remain open when vote is submitted.
+                      accordionActiveTabs={accordionActiveTabs}
+                      setAccordionActiveTabs={(tabs: string[]) =>
+                        setAccordionActiveTabs(tabs)
+                      }
+                      key={vote._id}
+                      votation={vote}
+                      groupSlug={group.groupSlug}
+                      isChanged={isChanged}
+                      setIsChanged={setIsChanged}
+                      assemblyStatus={assembly.isActive}
+                      initEditable={vote.editable || false}
+                    />
+                  );
+                })}
+            </Accordion>
+          )}
+        </Container>
+      </Flex>
     </>
   );
 }
