@@ -262,7 +262,7 @@ export function LoginForm() {
         {...form.getInputProps("password")}
         data-testid="password-input"
       />
-      {error && (
+      {error.active && (
         <Notification
           title="Could not log in!"
           disallowClose
