@@ -18,7 +18,12 @@ dotenv.config();
 const appBase: Application = express();
 appBase.use(
   cors({
-    origin: ["http://localhost:5173", "https://dev.vote.ntnui.no"],
+    origin: [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173/",
+      "https://dev.vote.ntnui.no",
+      "https://vote.ntnui.no",
+    ],
     credentials: true,
   })
 );
