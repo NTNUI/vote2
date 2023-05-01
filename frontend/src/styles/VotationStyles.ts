@@ -7,6 +7,7 @@ export const useStyles = createStyles((theme) => ({
     borderColor: "white",
     borderRadius: 5,
     borderBottomRightRadius: 0,
+    cursor: "pointer",
     "&:hover": {
       backgroundColor: "white",
       color: theme.colors.ntnui_background[0],
