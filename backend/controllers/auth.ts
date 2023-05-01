@@ -12,6 +12,19 @@ export async function login(req: Request, res: Response) {
     );
     const userProfile = await getNtnuiProfile(tokens.access);
 
+    // User must have a valid NTNUI membership for logging into the application.
+    // The membership are valid until and including the expiry date.
+    if (
+      !userProfile.data.contract_expiry_date ||
+      new Date(userProfile.data.contract_expiry_date || "") <
+        new Date(new Date().toISOString().split("T")[0])
+    ) {
+      return res.status(403).send({
+        message: "Unauthorized",
+        info: "NTNUI membership is expired",
+      });
+    }
+
     let mainAssemblyOrganizer = false;
 
     // Members of the Main Board can modify the main assembly
