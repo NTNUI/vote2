@@ -1,4 +1,4 @@
-import { connections } from "..";
+import { connections } from "./wsCookieRetriever";
 
 export const notifyOne = (ntnui_no: number, message: string) => {
   try {

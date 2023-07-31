@@ -1,4 +1,5 @@
 import express, { Application } from "express";
+import { createServer } from "http";
 import authRoutes from "./routes/auth";
 import mongoConnect from "./utils/db";
 import dotenv from "dotenv";
@@ -7,16 +8,17 @@ import cookieParser = require("cookie-parser");
 import userRoutes from "./routes/user";
 import assemblyRoutes from "./routes/assembly";
 import qrRoutes from "./routes/qr";
-import expressWs from "express-ws";
 import WebSocket from "ws";
-import jsonwebtoken from "jsonwebtoken";
 import votationRoutes from "./routes/votation";
-import { notifyOne } from "./utils/socketNotifier";
+import { parse } from "url";
+import { lobbyWss } from "./wsServers/lobby";
 
 dotenv.config();
 
-const appBase: Application = express();
-appBase.use(
+const app: Application = express();
+const server = createServer(app);
+
+app.use(
   cors({
     origin: [
       "http://localhost:5173",
@@ -27,9 +29,7 @@ appBase.use(
     credentials: true,
   })
 );
-const wsInstance = expressWs(appBase);
-export const allSockets = wsInstance.getWss();
-const { app } = wsInstance;
+
 const port = process.env.BACKEND_PORT;
 
 mongoConnect();
@@ -38,30 +38,30 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// App routes
+// Express routes
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/assembly", assemblyRoutes);
 app.use("/qr", qrRoutes);
 app.use("/votation", votationRoutes);
 
-export const connections: WebSocket[] = [];
-app.ws("/status", (ws, req) => {
-  const decoded = jsonwebtoken.decode(req.cookies.accessToken);
-  if (decoded && typeof decoded !== "string") {
-    // Notify about kicking out old device if user already is connected.
-    if (typeof connections[decoded.ntnui_no] !== "undefined") {
-      notifyOne(decoded.ntnui_no, JSON.stringify({ status: "removed" }));
-    }
-    // Store socket connection on NTNUI ID
-    connections[decoded.ntnui_no] = ws;
+// WebSocket routes
+server.on("upgrade", function upgrade(request, socket, head) {
+  const { pathname } = parse(request.url || "");
+
+  if (pathname === "/lobby") {
+    lobbyWss.handleUpgrade(request, socket, head, function done(ws: WebSocket) {
+      lobbyWss.emit("connection", ws, request);
+    });
+  } else {
+    socket.destroy();
   }
 });
 
 try {
-  // Jest will start app itself, and not run on port 3000 to avoid collisions.
+  // Jest will start app itself when testing, and not run on port 3000 to avoid collisions.
   if (process.env.NODE_ENV !== "test") {
-    app.listen(port, (): void => {
+    server.listen(port, (): void => {
       console.log(`Server is running on port ${port}`);
     });
   }
@@ -72,4 +72,4 @@ try {
   console.error("Something went very wrong (is your .env correct?)");
 }
 
-export default app;
+export default server;
