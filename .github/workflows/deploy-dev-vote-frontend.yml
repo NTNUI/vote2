@@ -37,7 +37,7 @@ jobs:
           ###### End of Repository/Build Configurations ######
         env:
           VITE_BACKEND_URL: https://api.dev.vote.ntnui.no
-          VITE_SOCKET_URL: wss://api.dev.vote.ntnui.no/lobby
+          VITE_SOCKET_URL: wss://api.dev.vote.ntnui.no
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
