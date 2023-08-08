@@ -10,7 +10,10 @@ import {
   OptionType,
   VoteResponseType,
 } from "../types/vote";
-import { notifyOne } from "../utils/socketNotifier";
+import {
+  notifyOneParticipant,
+  notifyOrganizers,
+} from "../utils/socketNotifier";
 
 export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -313,7 +316,10 @@ export async function activateVotationStatus(
 
       // Notify all active participants to fetch the activated votation.
       assembly.participants.forEach((member) => {
-        notifyOne(member, JSON.stringify({ status: "update", group: group }));
+        notifyOneParticipant(
+          member,
+          JSON.stringify({ status: "update", group: group })
+        );
       });
 
       await Votation.findByIdAndUpdate(voteId, {
@@ -378,7 +384,10 @@ export async function deactivateVotationStatus(
 
       // Notify all active participants to return to lobby.
       assembly.participants.forEach((member) => {
-        notifyOne(member, JSON.stringify({ status: "ended", group: group }));
+        notifyOneParticipant(
+          member,
+          JSON.stringify({ status: "ended", group: group })
+        );
       });
 
       return res
@@ -646,6 +655,9 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
           },
         });
       }
+
+      // Notify organizers of new vote
+      notifyOrganizers(group, JSON.stringify({ voteSubmitted: 1 }));
 
       return res.status(200).json({ message: "Successfully submited vote" });
     }

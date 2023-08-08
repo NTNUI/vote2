@@ -17,27 +17,52 @@ import {
   activateAssembly,
   deleteAssembly,
   getAssemblyByName,
-  getNumberOfParticipantsInAssembly,
 } from "../services/assembly";
 import { getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
 import { VoteType } from "../types/votes";
 import { Results } from "./Results";
-import { IconRefresh } from "@tabler/icons-react";
 import { useMediaQuery } from "@mantine/hooks";
+import useWebSocket from "react-use-websocket";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const breakpoint = useMediaQuery("(min-width: 800px)");
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
   const [votations, setVotations] = useState<VoteType[]>([]);
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
-  const [participants, setParticipants] = useState<number>();
+  const [participants, setParticipants] = useState<number>(0);
+  const [submittedVotes, setSubmittedVotes] = useState<number>(0);
   const [isChanged, setIsChanged] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [statusChanges, setStatusChanges] = useState(assembly?.isActive);
-  const [loadParticipans, setParticipantsLoading] = useState(false);
   const [accordionActiveTabs, setAccordionActiveTabs] = useState<string[]>([]);
+
+  const { lastMessage, sendJsonMessage } = useWebSocket(
+    import.meta.env.VITE_SOCKET_URL + "/organizer"
+  );
+
+  // Request access to live assembly data for the given group when component is mounted.
+  useEffect(() => {
+    sendJsonMessage({ groupSlug: group.groupSlug });
+  }, []);
+
+  useEffect(() => {
+    // Update state every time the websocket receive a message.
+    if (lastMessage) {
+      const decodedMessage = JSON.parse(lastMessage.data);
+      console.log(decodedMessage);
+      // User is is removed from current lobby if logged in on another device.
+      if (decodedMessage.participants != undefined) {
+        setParticipants(participants + parseInt(decodedMessage.participants));
+      }
+      if (decodedMessage.voteSubmitted != undefined) {
+        setSubmittedVotes(
+          submittedVotes + parseInt(decodedMessage.voteSubmitted)
+        );
+      }
+    }
+  }, [lastMessage]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -49,10 +74,23 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     fetch().catch(console.error);
   }, [statusChanges]);
 
+  // Triggered when a votation is created, edited, deleted (started/stopped).
   useEffect(() => {
     const fetch = async () => {
       const votes = await getVotations(group.groupSlug);
       setVotations(votes);
+
+      // Set number of submitted votes on current votation when page is initially loaded.
+      // Using websocket to update this value in real time.
+      let currentVotes = 0;
+      votes.forEach((vote) => {
+        if (vote.isActive) {
+          vote.options.forEach((option) => {
+            currentVotes += option.voteCount;
+          });
+        }
+      });
+      setSubmittedVotes(currentVotes);
     };
 
     fetch().catch(console.error);
@@ -66,12 +104,6 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
 
   function handleBreadcrumbOrganizerClick() {
     navigate("/admin");
-  }
-
-  async function refreshParticipants() {
-    setParticipantsLoading(true);
-    setParticipants(await getNumberOfParticipantsInAssembly(group.groupSlug));
-    setParticipantsLoading(false);
   }
 
   async function addCase() {
@@ -171,26 +203,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             <Text fz={"xl"} fw={500} data-testid="edit-assembly-banner">
               EDIT {group.groupName.toUpperCase()} ASSEMBLY
             </Text>
-            <Text>
-              <Flex align={"center"} justify={"center"}>
-                Currently {participants} participants
-                <Box
-                  style={{
-                    marginLeft: "4px",
-                    cursor: "pointer",
-                    position: "relative",
-                    top: "3px",
-                  }}
-                  onClick={() => refreshParticipants()}
-                >
-                  {!loadParticipans ? (
-                    <IconRefresh height={20} width={20} />
-                  ) : (
-                    <Loader height={20} width={20} />
-                  )}
-                </Box>
-              </Flex>
-            </Text>
+            <Text>Logged in participants: {participants}</Text>
+            <Text>Submitted votes on current votation: {submittedVotes}</Text>
             {assembly.isActive ? (
               <Button
                 color={"red"}
