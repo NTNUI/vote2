@@ -143,7 +143,9 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
         }
       }
     } catch (e) {
-      return res.status(401).json({ message: "Invalid token in body " + e });
+      return res
+        .status(401)
+        .json({ message: "Something went wrong (Invalid credentials?)" });
     }
   }
   return res.status(401).json({ message: "Unauthorized" });
