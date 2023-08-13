@@ -85,9 +85,31 @@ resource backendDevSlot 'Microsoft.Web/sites/slots@2022-09-01' = {
 resource frontend 'Microsoft.Web/staticSites@2022-09-01' = {
   name: '${appName}-frontend'
   location: staticWebAppLocation
+  properties: {
+    repositoryUrl: 'https://github.com/NTNUI/vote2/'
+    branch: 'main'
+    buildProperties: {
+      appLocation: '/frontend'
+    }
+  }
+  sku: {
+    tier: 'Free'
+    name: 'Free'
+  }
 }
 
-resource frontend_dev 'Microsoft.Web/staticSites@2022-09-01' = {
+resource frontendDev 'Microsoft.Web/staticSites@2022-09-01' = {
   name: '${appName}-frontend-dev'
   location: staticWebAppLocation
+  properties: {
+    repositoryUrl: 'https://github.com/NTNUI/vote2/'
+    branch: 'dev'
+    buildProperties: {
+      appLocation: '/frontend'
+    }
+  }
+  sku: {
+    tier: 'Free'
+    name: 'Free'
+  }
 }

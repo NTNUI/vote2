@@ -21,6 +21,12 @@ const mongoConnect = async () => {
     console.log("Connected to MongoDB 🌱");
   });
 
+  if (process.env.NODE_ENV === "development") {
+    database.useDb("development");
+  } else if (process.env.NODE_ENV === "production") {
+    database.useDb("production");
+  }
+
   // In case of any error while running
   database.on("error", () => {
     console.error(`Error connecting to database`);
