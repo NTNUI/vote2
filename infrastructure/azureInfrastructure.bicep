@@ -87,9 +87,13 @@ resource databaseAccounts_development 'Microsoft.DocumentDB/databaseAccounts/mon
 resource backend 'Microsoft.Web/sites@2022-09-01' = {
   name: '${appName}-backend'
   location: location
+  kind: 'app,linux'
   properties: {
     serverFarmId: appServicePlan.id
+    httpsOnly: true
     siteConfig: {
+      numberOfWorkers: 1
+      linuxFxVersion: 'NODE|18-lts'
       appSettings: [
         {
           name: 'DB_URI'
@@ -117,8 +121,19 @@ resource backendDevSlot 'Microsoft.Web/sites/slots@2022-09-01' = {
   location: location
   name: 'dev'
   properties: {
+    httpsOnly: true
     siteConfig: {
+      numberOfWorkers: 1
+      linuxFxVersion: 'NODE|18-lts'
       appSettings: [
+        {
+          name: 'DB_URI'
+          value: voteDB.listConnectionStrings().connectionStrings[0].connectionString
+        }
+        {
+          name: 'BACKEND_PORT'
+          value: '8080'
+        }
         {
           name: 'NODE_ENV'
           value: 'development'
