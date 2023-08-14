@@ -11,12 +11,16 @@ const uri: string = process.env.DB_URI || "";
 const mongoConnect = async () => {
   console.log("Connecting to MongoDb ...");
   try {
-    mongoose.connect(uri);
+    mongoose.connect(uri, {
+      dbName:
+        process.env.NODE_ENV === "production" ? "production" : "development",
+    });
   } catch (e) {
     console.error("ERROR: ", e);
   }
 
   database = mongoose.connection;
+
   database.once("open", async () => {
     console.log("Connected to MongoDB 🌱");
   });

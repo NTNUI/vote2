@@ -1,9 +1,9 @@
-name: Build and deploy dev frontend
+name: Build and deploy prod frontend
 
 on:
   push:
     branches:
-      - dev
+      - main
   workflow_dispatch:
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_FRONTEND_DEV_TOKEN }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_FRONTEND_PROD_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
@@ -29,8 +29,8 @@ jobs:
           output_location: "/dist" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
         env:
-          VITE_BACKEND_URL: https://dev.api.vote.ntnui.no/
-          VITE_SOCKET_URL: wss://dev.api.vote.ntnui.no/lobby
+          VITE_BACKEND_URL: https://api.vote.ntnui.no
+          VITE_SOCKET_URL: wss://api.vote.ntnui.no/lobby
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -41,5 +41,5 @@ jobs:
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_FRONTEND_DEV_TOKEN }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_FRONTEND_PROD_TOKEN }}
           action: "close"
