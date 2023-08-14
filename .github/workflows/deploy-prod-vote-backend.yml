@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy dev backend
+name: Build and deploy prod backend
 
 on:
   push:
@@ -58,7 +58,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "vote-backend/dev"
-          slot-name: "development"
-          publish-profile: ${{ secrets.AZURE_BACKEND_DEV_PUBLISH_PROFILE }}
+          app-name: "vote-backend"
+          slot-name: "production"
+          publish-profile: ${{ secrets.AZURE_BACKEND_PROD_PUBLISH_PROFILE }}
           package: "./backend"
