@@ -30,7 +30,8 @@ Now you have all the resources set up, but there is still some manual steps:
 
 This repository contains some [workflows](../.github/workflows/). The ones containing "deploy" deploys either the backend or the frontend to the development or the production environment.
 
-The backend workflows contain a `publish-profile`. The publish profiles are stored in the secrets section of this GitHub repository. These secrets has to be updated with the new ones for the workflows to function.
+In the backend workflows you have to add the correct `app-name` and `slot-name`.
+The backend workflows also contain a `publish-profile`. The publish profiles are stored in the secrets section of this GitHub repository. These secrets has to be updated with the new ones for the workflows to function.
 
 ![Image](azure-publish-profile.png)
 The secret can be downloaded from here or by using Azure CLI.
