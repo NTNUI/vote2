@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - dev
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - dev
-    paths-ignore:
-      - "**"
-      - "!frontend/**"
   workflow_dispatch:
 
 jobs:
