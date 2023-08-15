@@ -51,9 +51,9 @@ resource voteDB 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
       {
         name: 'EnableMongo'
       }
-      // {
-      //   name: 'DisableRateLimitingResponses'
-      // }
+      {
+        name: 'DisableRateLimitingResponses'
+      }
       // {
       //   name: 'EnableServerless'
       // }
