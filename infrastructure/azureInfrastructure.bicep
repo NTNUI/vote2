@@ -32,7 +32,10 @@ resource voteDB 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
     type: 'None'
   }
   properties: {
-    enableFreeTier: false
+    enableFreeTier: true
+    capacity: {
+      totalThroughputLimit: 1000
+    }
     databaseAccountOfferType: 'Standard'
     apiProperties: {
       serverVersion: '4.2'
@@ -48,12 +51,12 @@ resource voteDB 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
       {
         name: 'EnableMongo'
       }
-      {
-        name: 'DisableRateLimitingResponses'
-      }
-      {
-        name: 'EnableServerless'
-      }
+      // {
+      //   name: 'DisableRateLimitingResponses'
+      // }
+      // {
+      //   name: 'EnableServerless'
+      // }
     ]
     backupPolicy: {
       type: 'Continuous'
