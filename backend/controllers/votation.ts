@@ -311,9 +311,39 @@ export async function activateVotationStatus(
         },
       });
 
+      // Add votaton and options to an element for sending to participants.
+      const optionList: LimitedOptionType[] = [];
+
+      for (const optionID of vote.options) {
+        const id = optionID;
+        const option = await Option.findById(id);
+        if (option) {
+          const newOption: LimitedOptionType = {
+            _id: id,
+            title: option.title,
+          };
+          optionList.push(newOption);
+        }
+      }
+
+      const votationResponse: LimitedVoteResponseType = {
+        _id: voteId,
+        title: vote.title,
+        caseNumber: vote.caseNumber,
+        voteText: vote.voteText,
+        options: optionList,
+      };
+
       // Notify all active participants to fetch the activated votation.
       assembly.participants.forEach((member) => {
-        notifyOne(member, JSON.stringify({ status: "update", group: group }));
+        notifyOne(
+          member,
+          JSON.stringify({
+            status: "update",
+            group: group,
+            votation: votationResponse,
+          })
+        );
       });
 
       await Votation.findByIdAndUpdate(voteId, {

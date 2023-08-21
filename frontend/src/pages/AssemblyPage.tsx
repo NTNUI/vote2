@@ -9,10 +9,14 @@ import { checkedInState, checkedInType } from "../utils/Context";
 import { Box, Image, Text } from "@mantine/core";
 import Arrow from "../assets/Arrow.svg";
 import { getCurrentVotationByGroup } from "../services/votation";
+import { LimitedVoteType } from "../types/votes";
 
 export function AssemblyLobby() {
   const [kickedOut, setKickedOut] = useState<boolean>(false);
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
+  const [currentVotation, setCurrentVotation] = useState<
+    LimitedVoteType | undefined
+  >(undefined);
   const [voted, setVoted] = useState<boolean>(false);
   const { lastMessage } = useWebSocket(import.meta.env.VITE_SOCKET_URL);
   const { checkedIn, setCheckedIn, groupSlug, setGroupSlug, groupName } =
@@ -53,6 +57,7 @@ export function AssemblyLobby() {
           setCheckedIn(true);
         }
         if (decodedMessage.status == "update") {
+          setCurrentVotation(decodedMessage.votation);
           setCheckedIn(true);
           setActiveVotation(true);
         }
@@ -111,6 +116,7 @@ export function AssemblyLobby() {
       ) : checkedIn && groupSlug && activeVotation ? (
         <VotationBox
           groupSlug={groupSlug}
+          currentVotation={currentVotation}
           userHasVoted={() => userHasVoted()}
         />
       ) : checkedIn && groupSlug && !activeVotation ? (
