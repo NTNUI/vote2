@@ -8,22 +8,27 @@ import { getCurrentVotationByGroup, submitVote } from "../services/votation";
 export function VotationBox(state: {
   groupSlug: string;
   userHasVoted: () => void;
+  currentVotation: LimitedVoteType | undefined;
 }) {
   const [currentVotation, setCurrentVotation] = useState<
     LimitedVoteType | undefined
-  >();
+  >(state.currentVotation);
   const matches = useMediaQuery("(min-width: 501px)");
   const [chosenOption, setChosenOption] = useState<string>();
   const { classes } = useStyles();
 
   useEffect(() => {
-    const fetch = async () => {
-      const currentVotationData = await getCurrentVotationByGroup(
-        state.groupSlug
-      );
-      setCurrentVotation(currentVotationData);
-    };
-    fetch().catch(console.error);
+    // The current votation are initially set by websocket/state from parent component/assemblyPage.
+    // Undefined if page is reloaded, and in that case the votation will be fetched again.
+    if (!currentVotation) {
+      const fetch = async () => {
+        const currentVotationData = await getCurrentVotationByGroup(
+          state.groupSlug
+        );
+        setCurrentVotation(currentVotationData);
+      };
+      fetch().catch(console.error);
+    }
   }, []);
 
   function submit(voteId: string) {
