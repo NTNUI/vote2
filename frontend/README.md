@@ -16,7 +16,7 @@ Contents for developing locally:
 
 ```
 VITE_BACKEND_URL=http://localhost:3000/
-VITE_SOCKET_URL=ws://localhost:3000/lobby
+VITE_SOCKET_URL=ws://localhost:3000
 ```
 
 ### Then install dependencies and start the app

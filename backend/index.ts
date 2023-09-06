@@ -12,6 +12,7 @@ import WebSocket from "ws";
 import votationRoutes from "./routes/votation";
 import { parse } from "url";
 import { lobbyWss } from "./wsServers/lobby";
+import { organizerWss } from "./wsServers/organizer";
 
 dotenv.config();
 
@@ -52,6 +53,10 @@ server.on("upgrade", function upgrade(request, socket, head) {
   if (pathname === "/lobby") {
     lobbyWss.handleUpgrade(request, socket, head, function done(ws: WebSocket) {
       lobbyWss.emit("connection", ws, request);
+    });
+  } else if (pathname === "/organizer") {
+    lobbyWss.handleUpgrade(request, socket, head, function done(ws: WebSocket) {
+      organizerWss.emit("connection", ws, request);
     });
   } else {
     socket.destroy();

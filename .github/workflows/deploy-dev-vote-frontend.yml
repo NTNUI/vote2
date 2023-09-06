@@ -29,8 +29,8 @@ jobs:
           output_location: "/dist" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
         env:
-          VITE_BACKEND_URL: https://dev.api.vote.ntnui.no/
-          VITE_SOCKET_URL: wss://dev.api.vote.ntnui.no/lobby
+          VITE_BACKEND_URL: https://dev.api.vote.ntnui.no
+          VITE_SOCKET_URL: wss://dev.api.vote.ntnui.no
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

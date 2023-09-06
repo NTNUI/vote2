@@ -18,7 +18,9 @@ export function AssemblyLobby() {
     LimitedVoteType | undefined
   >(undefined);
   const [voted, setVoted] = useState<boolean>(false);
-  const { lastMessage } = useWebSocket(import.meta.env.VITE_SOCKET_URL);
+  const { lastMessage } = useWebSocket(
+    import.meta.env.VITE_SOCKET_URL + "/lobby"
+  );
   const { checkedIn, setCheckedIn, groupSlug, setGroupSlug, groupName } =
     useContext(checkedInState) as checkedInType;
   let navigate = useNavigate();

@@ -5,7 +5,10 @@ import { Log } from "../models/log";
 import { User } from "../models/user";
 import { logActionTypes } from "../types/log";
 import { RequestWithNtnuiNo } from "../utils/request";
-import { notifyOne } from "../utils/socketNotifier";
+import {
+  notifyOneParticipant,
+  notifyOrganizers,
+} from "../utils/socketNotifier";
 
 export async function getToken(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -85,7 +88,7 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
               { $pull: { participants: Number(scannedUser._id) } }
             );
             // Notify user when QR is scanned
-            notifyOne(
+            notifyOneParticipant(
               scannedUser._id,
               JSON.stringify({ status: "checkout", group: group })
             );
@@ -96,6 +99,9 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
               action: logActionTypes.checkout,
               user: scannedUser,
             });
+
+            // Notify organizers of user leaving
+            notifyOrganizers(group, JSON.stringify({ participants: -1 }));
 
             return res.status(200).json({
               message:
@@ -111,7 +117,7 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
             );
 
             // Notify user when QR is scanned
-            notifyOne(
+            notifyOneParticipant(
               scannedUser._id,
               JSON.stringify({ status: "verified", group: group })
             );
@@ -122,6 +128,9 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
               action: logActionTypes.checkin,
               user: scannedUser,
             });
+
+            // Notify organizers of user entering
+            notifyOrganizers(group, JSON.stringify({ participants: 1 }));
 
             return res.status(200).json({
               message:
@@ -134,7 +143,9 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
         }
       }
     } catch (e) {
-      return res.status(401).json({ message: "Invalid token in body" });
+      return res
+        .status(401)
+        .json({ message: "Something went wrong (Invalid credentials?)" });
     }
   }
   return res.status(401).json({ message: "Unauthorized" });
