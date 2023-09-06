@@ -51,12 +51,11 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     // Update state every time the websocket receive a message.
     if (lastMessage) {
       const decodedMessage = JSON.parse(lastMessage.data);
-      console.log(decodedMessage);
       // User is is removed from current lobby if logged in on another device.
-      if (decodedMessage.participants != undefined) {
+      if (decodedMessage.participants) {
         setParticipants(participants + parseInt(decodedMessage.participants));
       }
-      if (decodedMessage.voteSubmitted != undefined) {
+      if (decodedMessage.voteSubmitted) {
         setSubmittedVotes(
           submittedVotes + parseInt(decodedMessage.voteSubmitted)
         );
