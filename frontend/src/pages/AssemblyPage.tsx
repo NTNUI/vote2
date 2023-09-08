@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { QrCode } from "../components/QrCode";
 import useWebSocket from "react-use-websocket";
 import { WaitingRoom } from "../components/WaitingRoom";
@@ -10,20 +10,24 @@ import { Box, Image, Text } from "@mantine/core";
 import Arrow from "../assets/Arrow.svg";
 import { getCurrentVotationByGroup } from "../services/votation";
 import { LimitedVoteType } from "../types/votes";
+import { UserDataResponseType } from "../types/user";
+import { getUserData } from "../services/organizer";
 
 export function AssemblyLobby() {
+  let navigate = useNavigate();
+  const { groupSlug } = useParams() as { groupSlug: string };
+
   const [kickedOut, setKickedOut] = useState<boolean>(false);
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
   const [currentVotation, setCurrentVotation] = useState<
     LimitedVoteType | undefined
   >(undefined);
   const [voted, setVoted] = useState<boolean>(false);
-  const { lastMessage } = useWebSocket(
-    import.meta.env.VITE_SOCKET_URL + "/lobby"
-  );
-  const { checkedIn, setCheckedIn, groupSlug, setGroupSlug, groupName } =
-    useContext(checkedInState) as checkedInType;
-  let navigate = useNavigate();
+  const { lastMessage } = useWebSocket(import.meta.env.VITE_SOCKET_URL);
+  const { checkedIn, setCheckedIn } = useContext(
+    checkedInState
+  ) as checkedInType;
+  const [groupName, setGroupName] = useState<string>("");
 
   useEffect(() => {
     // Redirect to waiting room if already checked in
@@ -39,9 +43,18 @@ export function AssemblyLobby() {
         }
       } else {
         setCheckedIn(false);
-        setGroupSlug("");
       }
     };
+    const getGroupName = async () => {
+      const userData = await getUserData();
+
+      userData.groups.forEach((group) => {
+        if (group.groupSlug == groupSlug) {
+          setGroupName(group.groupName);
+        }
+      });
+    };
+    getGroupName();
     isCheckedIn();
   }, []);
 
@@ -104,7 +117,7 @@ export function AssemblyLobby() {
         </Box>
       )}
       <Text mt={100} mb={20}>
-        {groupName} assembly
+        {groupName && <>{groupName} assembly</>}
       </Text>
 
       {kickedOut ? (
@@ -125,7 +138,7 @@ export function AssemblyLobby() {
         <WaitingRoom message={"There are currently no active vote, look up!"} />
       ) : (
         <>
-          <Text size={"xl"}>Check-in for {groupName.toUpperCase()}</Text>
+          <Text size={"xl"}>Check-in for {groupName}</Text>
           <QrCode />
         </>
       )}

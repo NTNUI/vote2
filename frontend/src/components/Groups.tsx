@@ -9,16 +9,9 @@ import { checkedInState, checkedInType } from "../utils/Context";
 export function Groups() {
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const {
-    checkedIn,
-    setCheckedIn,
-    groupSlug,
-    setGroupSlug,
-    groupName,
-    setGroupName,
-  } = useContext(checkedInState) as checkedInType;
+  const { setCheckedIn } = useContext(checkedInState) as checkedInType;
 
-  let [userData, setUserData] = useState<UserDataResponseType | undefined>(
+  const [userData, setUserData] = useState<UserDataResponseType | undefined>(
     undefined
   );
   const fetchData = async () => {
@@ -32,11 +25,9 @@ export function Groups() {
     });
     setUserData(userData);
   };
-  const checkinNavigate = (groupSlug: string, groupName: string) => {
+  const checkinNavigate = (groupSlug: string) => {
     setCheckedIn(false);
-    setGroupSlug(groupSlug);
-    setGroupName(groupName);
-    navigate("/lobby");
+    navigate("/lobby/" + groupSlug);
   };
 
   useEffect(() => {
@@ -91,8 +82,7 @@ export function Groups() {
                   className: classes.box,
                 }
               : {
-                  onClick: () =>
-                    checkinNavigate(group.groupSlug, group.groupName),
+                  onClick: () => checkinNavigate(group.groupSlug),
                   className: classes.activeBox,
                 })}
           >
