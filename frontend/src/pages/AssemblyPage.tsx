@@ -10,12 +10,12 @@ import { Box, Image, Text } from "@mantine/core";
 import Arrow from "../assets/Arrow.svg";
 import { getCurrentVotationByGroup } from "../services/votation";
 import { LimitedVoteType } from "../types/votes";
-import { UserDataResponseType } from "../types/user";
 import { getUserData } from "../services/organizer";
 
 export function AssemblyLobby() {
   let navigate = useNavigate();
   const { groupSlug } = useParams() as { groupSlug: string };
+  const [groupName, setGroupName] = useState<string | undefined>(undefined);
 
   const [kickedOut, setKickedOut] = useState<boolean>(false);
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
@@ -29,7 +29,6 @@ export function AssemblyLobby() {
   const { checkedIn, setCheckedIn } = useContext(
     checkedInState
   ) as checkedInType;
-  const [groupName, setGroupName] = useState<string>("");
 
   useEffect(() => {
     // Redirect to waiting room if already checked in
