@@ -21,10 +21,11 @@ import {
 import { getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
-import { VoteType } from "../types/votes";
+import { OptionType, VoteType } from "../types/votes";
 import { Results } from "./Results";
 import { useMediaQuery } from "@mantine/hooks";
 import useWebSocket from "react-use-websocket";
+import { showNotification } from "@mantine/notifications";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const breakpoint = useMediaQuery("(min-width: 800px)");
@@ -105,7 +106,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
     navigate("/admin");
   }
 
-  async function addCase() {
+  async function addCase(votationTemplate?: VoteType) {
     // Creates a temporary case to the votation list, this is not saved as a votation in the database before the required values are provided.
     // Only one element can exist at the same time, the user therefore has to finish editing the current temporary element before creating another one.
     if (!votations.some((votation) => votation._id == "temp")) {
@@ -114,17 +115,22 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
         ...votations,
         {
           _id: "temp",
-          title: "Placeholder",
+          title: votationTemplate ? votationTemplate.title : "Placeholder",
           caseNumber: 0.1,
-          voteText: "",
+          voteText: votationTemplate ? votationTemplate.voteText : "",
           voted: [],
-          options: [],
+          options: votationTemplate ? votationTemplate.options : [],
           isFinished: false,
           isActive: false,
           numberParticipants: 0,
           editable: true,
         },
       ]);
+    } else {
+      showNotification({
+        title: "Error",
+        message: "You can only create one new votation at a time",
+      });
     }
   }
 
@@ -285,7 +291,11 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               </>
             )}
 
-            <Button onClick={addCase} m={10} data-testid="add-case-button">
+            <Button
+              onClick={() => addCase()}
+              m={10}
+              data-testid="add-case-button"
+            >
               Add case
             </Button>
           </Container>
@@ -315,7 +325,13 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                 .sort((a, b) => a.caseNumber - b.caseNumber)
                 .map((vote: VoteType) => {
                   return vote.isFinished ? (
-                    <Results key={vote._id} votation={vote} />
+                    <Results
+                      key={vote._id}
+                      votation={vote}
+                      addCase={(votationTemplate: VoteType) =>
+                        addCase(votationTemplate)
+                      }
+                    />
                   ) : (
                     <VotationPanel
                       // Passing accordionActiveTabs to VotationPanel so it can provide it's ID to remain open when vote is submitted.

@@ -1,9 +1,22 @@
-import { Accordion, Container, Card, Progress, Text } from "@mantine/core";
+import {
+  Accordion,
+  Container,
+  Card,
+  Progress,
+  Text,
+  Button,
+} from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { VoteType } from "../types/votes";
 import { useEffect, useState } from "react";
 
-export function Results({ votation }: { votation: VoteType }) {
+export function Results({
+  votation,
+  addCase,
+}: {
+  votation: VoteType;
+  addCase: (votation: VoteType) => void;
+}) {
   const matches = useMediaQuery("(min-width: 400px)");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -99,6 +112,9 @@ export function Results({ votation }: { votation: VoteType }) {
                 votation.voted.length} of {votation.numberParticipants || 0}{" "}
               participants did not vote
             </Text>
+            <Button mt={15} onClick={() => addCase(votation)}>
+              Duplicate votation
+            </Button>
           </Card>
         </Accordion.Panel>
       </Accordion.Item>
