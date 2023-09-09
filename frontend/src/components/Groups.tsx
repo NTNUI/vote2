@@ -22,6 +22,19 @@ export function Groups() {
     undefined
   );
   const fetchData = async () => {
+    try {
+      const userData = await getUserData();
+      userData.groups.sort((group) => {
+        if (group.hasActiveAssembly) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+      setUserData(userData);
+    } catch (error) {
+      navigate("/login");
+    }
     const userData = await getUserData();
     userData.groups.sort((group) => {
       if (group.hasActiveAssembly) {
