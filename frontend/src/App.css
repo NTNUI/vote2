@@ -8,7 +8,9 @@
 }
 
 body {
-  background: #1b202c url("./assets/Lines.svg") repeat-x fixed center 40%;
+  background: #1b202c url("./assets/Lines.svg") fixed center 40%;
+  background-repeat: no-repeat;
+  background-size: contain;
   display: flex;
   min-height: 90vh;
 }
