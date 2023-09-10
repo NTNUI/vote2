@@ -28,7 +28,7 @@ import useWebSocket from "react-use-websocket";
 import { showNotification } from "@mantine/notifications";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
-  const breakpoint = useMediaQuery("(min-width: 800px)");
+  const breakpoint = useMediaQuery("(min-width: 1010px)");
   const [group, setGroup] = useState<UserDataGroupType>(state.group);
   const [votations, setVotations] = useState<VoteType[]>([]);
   const [assembly, setAssembly] = useState<AssemblyType | undefined>();
@@ -296,14 +296,14 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               m={10}
               data-testid="add-case-button"
             >
-              Add case
+              Add votation
             </Button>
           </Container>
         </Container>
         <Container p={0} pt={"xs"} w={breakpoint ? "45%" : "95%"}>
           {votations.length < 1 ? (
             <Text data-testid="no-cases-warning">
-              There are currently no cases
+              There are currently no votations in this assembly.
             </Text>
           ) : (
             <Accordion
@@ -346,6 +346,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                       setIsChanged={setIsChanged}
                       assemblyStatus={assembly.isActive}
                       initEditable={vote.editable || false}
+                      addCase={(votationTemplate: VoteType) =>
+                        addCase(votationTemplate)
+                      }
                     />
                   );
                 })}

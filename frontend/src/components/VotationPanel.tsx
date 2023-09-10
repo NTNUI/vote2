@@ -41,6 +41,7 @@ function VotationPanel({
   setIsChanged,
   assemblyStatus,
   initEditable,
+  addCase,
 }: {
   accordionActiveTabs: string[];
   setAccordionActiveTabs: (tabs: string[]) => void;
@@ -50,6 +51,7 @@ function VotationPanel({
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
   assemblyStatus: boolean;
   initEditable: boolean;
+  addCase: (votation: VoteType) => void;
 }) {
   const [editable, setEditable] = useState(initEditable);
   const [isFinishChecked, setIsFinishChecked] = useState<boolean>(false);
@@ -69,7 +71,6 @@ function VotationPanel({
   });
   const { classes } = useStyles();
   const matches = useMediaQuery("(min-width: 400px)");
-  const participantMatch = useMediaQuery("(min-width: 500px)");
   const [defaultOptions] = useState<string[]>(["Yes", "No", "Blank"]);
   const [options, setOptions] = useState<string[]>(
     votation.options.map((option) => {
@@ -282,7 +283,8 @@ function VotationPanel({
               <Button
                 color={"green"}
                 disabled={votation.isFinished}
-                m={matches ? 10 : 5}
+                m={5}
+                ml={10}
                 onClick={() => {
                   activateVote(votation);
                   setIsEndChecked(false);
@@ -297,18 +299,25 @@ function VotationPanel({
                 onClick={() => {
                   setEditable(true);
                 }}
-                w={matches ? "auto" : "30%"}
                 m={5}
-                color={"gray"}
                 disabled={votation.isFinished || votation.isActive}
                 data-testid="edit-case-button"
               >
                 Edit
               </Button>
               <Button
-                w={matches ? "auto" : "60%"}
+                onClick={() => {
+                  addCase(votation);
+                }}
+                m={5}
+                disabled={votation.isFinished || votation.isActive}
+                data-testid="edit-case-button"
+              >
+                Duplicate
+              </Button>
+              <Button
                 color={"red"}
-                m={matches ? 10 : 5}
+                m={5}
                 disabled={votation.isFinished || votation.isActive}
                 onClick={
                   !isEndChecked
