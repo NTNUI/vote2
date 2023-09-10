@@ -60,6 +60,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           submittedVotes + parseInt(decodedMessage.voteSubmitted)
         );
       }
+      if (decodedMessage.voteEnded) {
+        setSubmittedVotes(0);
+      }
     }
   }, [lastMessage]);
 

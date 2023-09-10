@@ -417,6 +417,8 @@ export async function deactivateVotationStatus(
         );
       });
 
+      notifyOrganizers(group, JSON.stringify({ voteEnded: true }));
+
       return res
         .status(200)
         .json({ message: "Votation successfully deactivated" });
