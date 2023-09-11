@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { Assembly } from "../models/assembly";
 import { Log } from "../models/log";
 import { User } from "../models/user";
