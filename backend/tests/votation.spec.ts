@@ -6,7 +6,6 @@
 import request from "supertest";
 import app from "../index";
 import {
-  accessToken,
   activateAssemblyTest,
   createAssemblyTest,
   deactivateAssemblyTest,
