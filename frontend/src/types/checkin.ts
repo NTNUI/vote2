@@ -1,5 +1,4 @@
 export type QRType = {
-  access: string;
+  QRData: string;
   group: string;
-  timestamp: number;
 };

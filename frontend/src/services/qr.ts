@@ -1,7 +1,7 @@
 import axios from "axios";
 import { QRType } from "../types/checkin";
 
-export const getQrInfo = async (): Promise<{ access: string }> => {
+export const getQrData = async (): Promise<{ QRData: string }> => {
   return (await axios.get("/qr")).data;
 };
 
@@ -10,9 +10,8 @@ export const assemblyCheckin = async (
 ): Promise<{ title: string; message: string }> => {
   try {
     const res = await axios.post("/qr/checkin", {
+      QRData: qrScan.QRData,
       group: qrScan.group,
-      token: qrScan.access,
-      timestamp: qrScan.timestamp,
     });
     if (res.status == 200) {
       return {

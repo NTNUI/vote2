@@ -9,24 +9,18 @@ import {
   notifyOneParticipant,
   notifyOrganizers,
 } from "../utils/socketNotifier";
+import { decrypt, encrypt } from "../utils/crypto";
 
 export async function getToken(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
   try {
-    const { refreshToken } = req.cookies;
-    // Refresh token to ensure token is fresh (maximum lifespan).
-    const accessToken = await refreshNtnuiToken(refreshToken);
-    return res
-      .cookie("accessToken", accessToken.access, {
-        maxAge: 1800000, // 30 minutes
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: true,
-      })
-      .status(200)
-      .json(accessToken);
+    return res.status(200).json({
+      QRData: encrypt(
+        JSON.stringify({ ntnuiNo: req.ntnuiNo, timestamp: Date.now() })
+      ),
+    });
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -37,24 +31,19 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const group = req.body.group;
-  const token = req.body.token;
-  const timestamp = req.body.timestamp;
-  const user = await User.findById(req.ntnuiNo);
+  const { ntnuiNo, timestamp } = JSON.parse(decrypt(req.body.QRData));
+  const organizerUser = await User.findById(req.ntnuiNo);
 
   if (
-    user &&
-    user.groups.some(
+    organizerUser &&
+    organizerUser.groups.some(
       (membership) => membership.organizer && membership.groupSlug == group
     )
   ) {
     try {
-      const scannedUser = await User.findById(
-        (
-          await getNtnuiProfile(token)
-        ).data.ntnui_no
-      );
+      const scannedUser = await User.findById(ntnuiNo);
 
-      // If user is logged inn, the correct token is provided,
+      // If user is logged in, the correct userID is provided,
       // and timestamp is less than 15 seconds ago and not negative (created before current time)
       if (
         scannedUser &&
