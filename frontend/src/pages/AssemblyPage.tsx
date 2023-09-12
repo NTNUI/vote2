@@ -11,11 +11,13 @@ import Arrow from "../assets/Arrow.svg";
 import { getCurrentVotationByGroup } from "../services/votation";
 import { LimitedVoteType } from "../types/votes";
 import { getUserData } from "../services/organizer";
+import { NotFound } from "./NotFound";
 
 export function AssemblyLobby() {
   let navigate = useNavigate();
   const { groupSlug } = useParams() as { groupSlug: string };
   const [groupName, setGroupName] = useState<string | undefined>(undefined);
+  const [groupNotFound, setGroupNotFound] = useState<boolean>(false);
 
   const [kickedOut, setKickedOut] = useState<boolean>(false);
   const [activeVotation, setActiveVotation] = useState<boolean>(false);
@@ -54,6 +56,10 @@ export function AssemblyLobby() {
           setGroupName(group.groupName);
         }
       });
+
+      if (!userData.groups.some((group) => group.groupSlug == groupSlug)) {
+        setGroupNotFound(true);
+      }
     };
     getGroupName();
     isCheckedIn();
@@ -95,7 +101,10 @@ export function AssemblyLobby() {
     navigate("/start");
   }
 
-  return (
+  return groupNotFound ? (
+    // Render 404 not found component if group is not found
+    <NotFound />
+  ) : (
     <>
       {!checkedIn && (
         <Box
@@ -139,7 +148,7 @@ export function AssemblyLobby() {
         <WaitingRoom message={"There are currently no active vote, look up!"} />
       ) : (
         <>
-          <Text size={"xl"}>Check-in for {groupName}</Text>
+          {groupName && <Text size={"xl"}>Check-in for {groupName}</Text>}
           <QrCode />
         </>
       )}
