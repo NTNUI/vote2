@@ -10,7 +10,7 @@ export function QrCode() {
   const { groupSlug } = useContext(checkedInState) as checkedInType;
   const navigate = useNavigate();
   const [QRData, setQRData] = useState<string>();
-  const getCredentials = async () => {
+  const updateQR = async () => {
     setQRData((await getQrData()).QRData);
   };
 
@@ -20,8 +20,8 @@ export function QrCode() {
       navigate("/start");
     }
 
-    getCredentials();
-    const interval = setInterval(() => getCredentials(), 10000);
+    updateQR();
+    const interval = setInterval(() => updateQR(), 10000);
     return () => {
       clearInterval(interval);
     };

@@ -10,7 +10,7 @@ import {
 } from "../utils/socketNotifier";
 import { decrypt, encrypt } from "../utils/crypto";
 
-export async function getToken(req: RequestWithNtnuiNo, res: Response) {
+export async function getQRData(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
