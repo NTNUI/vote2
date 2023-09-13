@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
-import Arrow from "../assets/arrow.svg";
+import Arrow from "../assets/Arrow.svg";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -44,7 +44,7 @@ export function FAQ() {
       <Box
         style={{
           position: "absolute",
-          top: 70,
+          top: 20,
           left: 30,
           display: "flex",
           alignItems: "center",
@@ -60,7 +60,7 @@ export function FAQ() {
         </Text>
       </Box>
 
-      <Container miw={breakpoint ? 750 : 0}>
+      <Container mt={40} miw={breakpoint ? 750 : 0}>
         <Title align="center" size={25} mb={30} className={classes.title}>
           Frequently Asked Questions
         </Title>
