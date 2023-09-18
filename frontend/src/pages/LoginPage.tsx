@@ -1,8 +1,10 @@
-import { Image, Container } from "@mantine/core";
+import { Image, Container, Text } from "@mantine/core";
 import { LoginForm } from "../components/LoginForm";
 import logo from "../assets/ntnuiLogo.svg";
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
+  const navigate = useNavigate();
   return (
     <>
       <Image
@@ -17,6 +19,15 @@ export function Login() {
       <Container style={{ width: "90%" }}>
         <LoginForm />
       </Container>
+
+      <Text
+        style={{ cursor: "pointer" }}
+        mt={10}
+        size={"sm"}
+        onClick={() => navigate("/faq")}
+      >
+        Questions about using Vote? Check out the FAQ
+      </Text>
     </>
   );
 }

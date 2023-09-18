@@ -15,6 +15,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { useState } from "react";
 import { NotFound } from "./pages/NotFound";
 import { checkedInState } from "./utils/Context";
+import { FAQ } from "./pages/FAQ";
 
 function App() {
   axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
@@ -56,6 +57,7 @@ function App() {
         <NotificationsProvider>
           <Routes>
             <Route path="/" element={<Login />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route
               path="*"
               element={
