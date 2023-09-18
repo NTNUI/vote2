@@ -6,7 +6,6 @@
 import request from "supertest";
 import app from "../index";
 import {
-  accessToken,
   activateAssemblyTest,
   createAssemblyTest,
   deactivateAssemblyTest,
@@ -15,6 +14,7 @@ import {
 } from "./utils";
 import { cookies } from "./utils";
 import mongoose from "mongoose";
+import { encrypt } from "../utils/crypto";
 
 afterAll(async () => {
   await mongoose.connection.close();
@@ -71,8 +71,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       .set("Cookie", cookies)
       .send({
         group: "sprint",
-        timestamp: Date.now(),
-        token: accessToken,
+        QRData: encrypt(JSON.stringify({ ntnuiNo: 1, timestamp: Date.now() })),
       })
       .then((response) => {
         expect(response.statusCode).toBe(200);
@@ -103,8 +102,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       .set("Cookie", cookies)
       .send({
         group: "sprint",
-        timestamp: Date.now(),
-        token: accessToken,
+        QRData: encrypt(JSON.stringify({ ntnuiNo: 1, timestamp: Date.now() })),
       })
       .then((response) => {
         expect(response.statusCode).toBe(400);
