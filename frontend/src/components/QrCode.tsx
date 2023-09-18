@@ -5,7 +5,7 @@ import { getQrData } from "../services/qr";
 import logo from "../assets/ntnuiColor.svg";
 import { useParams } from "react-router-dom";
 
-export function QrCode() {
+export function QrCode({ representsGroup }: { representsGroup?: string }) {
   const { groupSlug } = useParams() as { groupSlug: string };
   const [QRData, setQRData] = useState<string>();
   const updateQR = async () => {
@@ -33,6 +33,7 @@ export function QrCode() {
       value={JSON.stringify({
         QRData: QRData,
         group: groupSlug,
+        representsGroup: representsGroup,
       })}
     />
   );

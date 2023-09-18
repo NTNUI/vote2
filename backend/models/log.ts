@@ -8,13 +8,17 @@ const logSchema = new Schema<logType>(
       type: String,
       required: true,
     },
+    representsGroup: {
+      type: String,
+      required: true,
+    },
     action: {
       type: String,
       enum: logActionTypes,
       required: true,
     },
     user: {
-      type: userSchema,
+      type: Number,
       required: true,
     },
   },

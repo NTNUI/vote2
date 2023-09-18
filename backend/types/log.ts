@@ -7,6 +7,7 @@ export enum logActionTypes {
 
 export interface logType {
   assemblyID: string;
+  representsGroup: string;
   action: logActionTypes;
   user: UserType;
 }
