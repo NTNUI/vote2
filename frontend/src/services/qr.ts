@@ -12,6 +12,7 @@ export const assemblyCheckin = async (
     const res = await axios.post("/qr/checkin", {
       QRData: qrScan.QRData,
       group: qrScan.group,
+      representsGroup: qrScan.representsGroup,
     });
     if (res.status == 200) {
       return {

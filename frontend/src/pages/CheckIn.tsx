@@ -24,8 +24,8 @@ export function CheckIn() {
     if (result) {
       try {
         const decodedResult = JSON.parse(result);
-        const { QRData, group } = decodedResult;
-        checkInUser({ QRData, group });
+        const { QRData, group, representsGroup } = decodedResult;
+        checkInUser({ QRData, group, representsGroup });
       } catch (error) {
         showNotification({
           title: "Error",

@@ -6,15 +6,25 @@ import { WaitingRoom } from "../components/WaitingRoom";
 import { VotationBox } from "../components/VotationBox";
 import { isUserInAssembly } from "../services/assembly";
 import { checkedInState, checkedInType } from "../utils/Context";
-import { Box, Image, Text } from "@mantine/core";
+import { Box, Button, Card, Flex, Image, Modal, Text } from "@mantine/core";
 import Arrow from "../assets/Arrow.svg";
 import { getCurrentVotationByGroup } from "../services/votation";
 import { LimitedVoteType } from "../types/votes";
 import { getUserData } from "../services/organizer";
 import { NotFound } from "./NotFound";
+import { useMediaQuery } from "@mantine/hooks";
+import { UserDataGroupType } from "../types/user";
+import { useStyles } from "../styles/VotationStyles";
 
 export function AssemblyLobby() {
   let navigate = useNavigate();
+  const [chooseGroup, setChooseGroup] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<string>("");
+  const [groups, setGroups] = useState<UserDataGroupType[]>([]);
+  const { classes } = useStyles();
+  const [chosenOption, setChosenOption] = useState<string>();
+  const matches = useMediaQuery("(min-width: 501px)");
+
   const { groupSlug } = useParams() as { groupSlug: string };
   const [groupName, setGroupName] = useState<string | undefined>(undefined);
   const [groupNotFound, setGroupNotFound] = useState<boolean>(false);
@@ -50,10 +60,17 @@ export function AssemblyLobby() {
     };
     const getGroupName = async () => {
       const userData = await getUserData();
+      setGroups(userData.groups);
 
       userData.groups.forEach((group) => {
         if (group.groupSlug == groupSlug) {
           setGroupName(group.groupName);
+          if (
+            group.groupSlug == "main-assembly" &&
+            userData.groups.length > 1
+          ) {
+            setChooseGroup(true);
+          }
         }
       });
 
@@ -97,9 +114,15 @@ export function AssemblyLobby() {
   const userHasVoted = () => {
     setVoted(true);
   };
+
   function handleBreadcrumbGroupClick() {
     navigate("/start");
   }
+
+  const selectGroup = (selectedGroup: string) => {
+    setSelectedGroup(selectedGroup);
+    setChooseGroup(false);
+  };
 
   return groupNotFound ? (
     // Render 404 not found component if group is not found
@@ -146,10 +169,59 @@ export function AssemblyLobby() {
         />
       ) : checkedIn && groupSlug && !activeVotation ? (
         <WaitingRoom message={"There are currently no active vote, look up!"} />
+      ) : chooseGroup ? (
+        <>
+          <Text size={"lg"} mb={20}>
+            Choose the group you represent
+          </Text>
+          <Flex
+            mih={50}
+            gap="xs"
+            justify="center"
+            align="center"
+            direction="column"
+            wrap="nowrap"
+          >
+            {groups.map((group) => (
+              <Card
+                withBorder
+                className={classes.optionButton}
+                sx={
+                  chosenOption == group.groupSlug
+                    ? (theme) => ({
+                        backgroundColor: "white",
+                        color: theme.colors.ntnui_background[0],
+                        borderColor: "white",
+                      })
+                    : () => ({})
+                }
+                w={matches ? 400 : 300}
+                key={group.groupSlug}
+                onClick={() => setChosenOption(group.groupSlug)}
+              >
+                {group.groupName == "NTNUI" ? (
+                  <Text>Myself</Text>
+                ) : (
+                  <Text>{group.groupName}</Text>
+                )}
+              </Card>
+            ))}
+          </Flex>
+          <Button
+            m={30}
+            size={"md"}
+            w={150}
+            color={"green"}
+            disabled={!chosenOption}
+            onClick={() => selectGroup(chosenOption as string)}
+          >
+            Confirm
+          </Button>
+        </>
       ) : (
         <>
           {groupName && <Text size={"xl"}>Check-in for {groupName}</Text>}
-          <QrCode />
+          <QrCode representsGroup={selectedGroup} />
         </>
       )}
     </>

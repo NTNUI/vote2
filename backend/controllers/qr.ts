@@ -30,6 +30,8 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const group = req.body.group;
+  const representsGroup = req.body.representsGroup || "unknown";
+  console.log(representsGroup);
   const { ntnuiNo, timestamp } = JSON.parse(decrypt(req.body.QRData));
   const organizerUser = await User.findById(req.ntnuiNo);
 
@@ -82,11 +84,14 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
             );
 
             // Create log of user leaving
-            await Log.create({
-              assemblyID: group,
-              action: logActionTypes.checkout,
-              user: scannedUser,
-            });
+            if (group == "main-assembly") {
+              await Log.create({
+                assemblyID: group,
+                representsGroup: representsGroup,
+                action: logActionTypes.checkout,
+                user: scannedUser.id,
+              });
+            }
 
             // Notify organizers of user leaving
             notifyOrganizers(group, JSON.stringify({ participants: -1 }));
@@ -111,11 +116,14 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
             );
 
             // Create log of entry
-            await Log.create({
-              assemblyID: group,
-              action: logActionTypes.checkin,
-              user: scannedUser,
-            });
+            if (group == "main-assembly") {
+              await Log.create({
+                assemblyID: group,
+                representsGroup: representsGroup,
+                action: logActionTypes.checkin,
+                user: scannedUser.id,
+              });
+            }
 
             // Notify organizers of user entering
             notifyOrganizers(group, JSON.stringify({ participants: 1 }));
@@ -133,7 +141,7 @@ export async function assemblyCheckin(req: RequestWithNtnuiNo, res: Response) {
     } catch (e) {
       return res
         .status(401)
-        .json({ message: "Something went wrong (Invalid credentials?)" });
+        .json({ message: "Something went wrong (Invalid credentials?) " + e });
     }
   }
   return res.status(401).json({ message: "Unauthorized" });
