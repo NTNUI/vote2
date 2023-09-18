@@ -2,15 +2,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logoHeader.svg";
 import logoSmall from "../assets/ntnuiLogo.svg";
-import {
-  Header,
-  Container,
-  Group,
-  Text,
-  Space,
-  Image,
-  Modal,
-} from "@mantine/core";
+import { Header, Container, Group, Text, Image, Modal } from "@mantine/core";
 import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 import { useStyles } from "../styles/headerStyles";
 import { QrCode } from "./QrCode";
@@ -22,9 +14,7 @@ export function HeaderAction() {
   const matches = useMediaQuery("(min-width: 400px)");
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { checkedIn, setCheckedIn, groupSlug, setGroupSlug } = useContext(
-    checkedInState
-  ) as checkedInType;
+  const { checkedIn } = useContext(checkedInState) as checkedInType;
 
   const logOut = async () => {
     await axios
@@ -51,10 +41,10 @@ export function HeaderAction() {
         fullScreen={isMobile}
         zIndex={2}
       >
-        {checkedIn && groupSlug ? (
+        {checkedIn ? (
           <QrCode />
         ) : (
-          <Text>Check out successfull. You can now leave the room</Text>
+          <Text>Check out successful. You can now leave the room</Text>
         )}
       </Modal>
 
@@ -84,7 +74,7 @@ export function HeaderAction() {
               ></Image>
             )}
           </Group>
-          {checkedIn && groupSlug ? (
+          {checkedIn ? (
             <Text
               className={classes.button}
               onClick={open}

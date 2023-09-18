@@ -78,7 +78,7 @@ function App() {
                 }
               />
               <Route
-                path="/lobby"
+                path="/lobby/:groupSlug"
                 element={
                   <>
                     <HeaderAction />

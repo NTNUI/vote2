@@ -1,14 +1,12 @@
 import { Loader } from "@mantine/core";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { getQrData } from "../services/qr";
 import logo from "../assets/ntnuiColor.svg";
-import { useNavigate } from "react-router-dom";
-import { checkedInState, checkedInType } from "../utils/Context";
+import { useParams } from "react-router-dom";
 
 export function QrCode() {
-  const { groupSlug } = useContext(checkedInState) as checkedInType;
-  const navigate = useNavigate();
+  const { groupSlug } = useParams() as { groupSlug: string };
   const [QRData, setQRData] = useState<string>();
   const updateQR = async () => {
     setQRData((await getQrData()).QRData);
@@ -16,10 +14,6 @@ export function QrCode() {
 
   // Update QR every 10 seconds
   useEffect(() => {
-    if (!groupSlug) {
-      navigate("/start");
-    }
-
     updateQR();
     const interval = setInterval(() => updateQR(), 10000);
     return () => {
