@@ -78,6 +78,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
           voted: vote.voted,
           options: optionList,
           isActive: isActive,
+          maximumOptions: vote.maximumOptions,
           isFinished: vote.isFinished,
           numberParticipants: vote.numberParticipants,
         };
@@ -161,6 +162,7 @@ export async function getCurrentVotation(
         caseNumber: vote.caseNumber,
         voteText: vote.voteText,
         options: optionList,
+        maximumOptions: vote.maximumOptions,
       };
       return res.status(200).json(votationResponse);
     }
@@ -179,6 +181,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
   let voteText = req.body.voteText;
   const caseNumber = req.body.caseNumber;
   const options: [] = req.body.options;
+  const maximumOptions = req.body.maximumOptions || 1;
   const user = await User.findById(req.ntnuiNo);
 
   if (!voteText) {
@@ -217,6 +220,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
         isFinished: false,
         options: tempOptionTitles,
         voteText: voteText,
+        maximumOptions: maximumOptions,
       });
 
       const assembly = await Assembly.findById(group);
@@ -335,6 +339,7 @@ export async function activateVotationStatus(
         caseNumber: vote.caseNumber,
         voteText: vote.voteText,
         options: optionList,
+        maximumOptions: vote.maximumOptions,
       };
 
       // Notify all active participants to fetch the activated votation.
@@ -601,7 +606,7 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
   const group = req.body.group;
   const voteId = req.body.voteId;
   const user = await User.findById(req.ntnuiNo);
-  const optionId = req.body.optionId;
+  const optionIDs: string[] = req.body.optionIDs;
 
   if (user) {
     if (user.groups.some((membership) => membership.groupSlug == group)) {
@@ -611,15 +616,30 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
           .json({ message: "No votation with the given ID found" });
       }
 
-      if (!Types.ObjectId.isValid(optionId)) {
-        return res
-          .status(400)
-          .json({ message: "No option with the given ID found" });
+      if (optionIDs) {
+        if (!Array.isArray(optionIDs)) {
+          return res
+            .status(400)
+            .json({ message: "Options is not on correct format" });
+        }
+      }
+
+      for (const optionID of optionIDs) {
+        if (!Types.ObjectId.isValid(optionID)) {
+          return res
+            .status(400)
+            .json({ message: "No option with the given ID found" });
+        }
+        const option = await Option.findById(optionID);
+        if (!option) {
+          return res
+            .status(400)
+            .json({ message: "No option with the given ID found " });
+        }
       }
 
       const vote = await Votation.findById(voteId);
       const assembly = await Assembly.findById(group);
-      const option = await Option.findById(optionId);
 
       if (!assembly) {
         return res
@@ -645,16 +665,16 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
           .json({ message: "This votation is already finished" });
       }
 
+      if (vote.maximumOptions < optionIDs.length) {
+        return res
+          .status(400)
+          .json({ message: "You have selected too many options" });
+      }
+
       if (!assembly.currentVotation.toString() === voteId.toString()) {
         return res
           .status(400)
           .json({ message: "You can not vote on this votation" });
-      }
-
-      if (!option) {
-        return res
-          .status(400)
-          .json({ message: "No option with the given ID found " });
       }
 
       const participants: number[] = assembly.participants;
@@ -678,11 +698,13 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
           },
         });
 
-        await Option.findByIdAndUpdate(optionId, {
-          $inc: {
-            voteCount: 1,
-          },
-        });
+        for (const optionID of optionIDs) {
+          await Option.findByIdAndUpdate(optionID, {
+            $inc: {
+              voteCount: 1,
+            },
+          });
+        }
       }
 
       // Notify organizers of new vote

@@ -5,6 +5,7 @@ export interface VoteType {
   voteText: string;
   voted: number[];
   options: OptionType[];
+  maximumOptions: number;
   isFinished: boolean;
   caseNumber: number;
   isActive: boolean;
@@ -23,6 +24,7 @@ export type LimitedVoteType = {
   caseNumber: number;
   voteText: string;
   options: LimitedOptionType[];
+  maximumOptions: number;
 };
 
 export type LimitedOptionType = {

@@ -6,7 +6,8 @@ export const createVotation = async (
   title: string,
   caseNumber: number,
   voteText: string,
-  options: string[]
+  options: string[],
+  maximumOptions: number
 ): Promise<{ message: string; vote_id: string }> => {
   const res = (
     await axios.post(
@@ -17,6 +18,7 @@ export const createVotation = async (
         caseNumber: caseNumber,
         voteText: voteText,
         options: options,
+        maximumOptions: maximumOptions,
       },
       { withCredentials: true }
     )
@@ -109,13 +111,13 @@ export const getCurrentVotationByGroup = async (
 export const submitVote = async (
   groupSlug: string,
   voteId: string,
-  optionId: string
+  optionId: string[]
 ) => {
   return (
     await axios.post("/votation/submit", {
       group: groupSlug,
       voteId: voteId,
-      optionId: optionId,
+      optionIDs: optionId,
     })
   ).data;
 };
