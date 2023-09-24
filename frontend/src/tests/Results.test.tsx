@@ -66,7 +66,11 @@ describe("Result component test", () => {
             }}
           >
             <Accordion>
-              <Results key={votation._id} votation={votation} />
+              <Results
+                key={votation._id}
+                votation={votation}
+                addCase={() => {}}
+              />
             </Accordion>
           </MantineProvider>
         </BrowserRouter>
