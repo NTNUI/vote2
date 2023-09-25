@@ -148,7 +148,12 @@ export function AssemblyLobby() {
         <WaitingRoom message={"There are currently no active vote, look up!"} />
       ) : (
         <>
-          {groupName && <Text size={"xl"}>Check-in for {groupName}</Text>}
+          {groupName && <Text size={"xl"}>Check-in</Text>}
+          {groupName && (
+            <Text size={"sm"} mb={10}>
+              Please present this QR-code to the secretary when entering.
+            </Text>
+          )}
           <QrCode />
         </>
       )}
