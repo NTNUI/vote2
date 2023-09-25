@@ -50,14 +50,12 @@ export const notifyOneParticipant = (ntnui_no: number, message: string) => {
     console.log(
       "Could not notify user " +
         ntnui_no +
-        ". Is there a problem with the socket URL? (Ignore if testing)"
+        ". Is there a problem with the socket URL? (Ignore if testing / dev has restarted)"
     );
   }
 };
 
 export const notifyOrganizers = (groupSlug: string, message: string) => {
-  console.log("organizerConnections: ");
-  console.log(organizerConnections[groupSlug]);
   if (organizerConnections[groupSlug]) {
     for (const ntnui_no in organizerConnections[groupSlug]) {
       console.log("Sending message to organizer " + ntnui_no);
@@ -67,7 +65,7 @@ export const notifyOrganizers = (groupSlug: string, message: string) => {
         console.log(
           "Could not notify organizer " +
             ntnui_no +
-            ". Is there a problem with the socket URL? (Ignore if testing)"
+            ". Is there a problem with the socket URL? (Ignore if testing / dev has restarted)"
         );
       }
     }
