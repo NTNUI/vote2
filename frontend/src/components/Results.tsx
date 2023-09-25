@@ -79,7 +79,7 @@ export function Results({
                     {option.title}
                   </Text>
                   <Progress
-                    value={100 * (option.voteCount / votation.voted.length)}
+                    value={100 * (option.voteCount / votation.voted)}
                     my="xs"
                     size="xl"
                     radius="md"
@@ -95,10 +95,10 @@ export function Results({
                     label={
                       option.voteCount +
                       "/" +
-                      votation.voted.length +
+                      votation.voted +
                       " (" +
                       Number(
-                        100 * (option.voteCount / votation.voted.length || 0)
+                        100 * (option.voteCount / votation.voted || 0)
                       ).toFixed(2) +
                       "%)"
                     }
@@ -108,9 +108,8 @@ export function Results({
             })}
             <Text color={"white"}>
               {" "}
-              {(votation.numberParticipants || 0) -
-                votation.voted.length} of {votation.numberParticipants || 0}{" "}
-              participants did not vote
+              {(votation.numberParticipants || 0) - votation.voted} of{" "}
+              {votation.numberParticipants || 0} participants did not vote
             </Text>
             <Button mt={15} onClick={() => addCase(votation)}>
               Duplicate votation
