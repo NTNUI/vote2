@@ -21,7 +21,7 @@ export type VoteResponseType = {
   title: string;
   caseNumber: number;
   voteText: string;
-  voted: number[];
+  voted: number;
   options: OptionType[];
   maximumOptions: number;
   isActive: boolean;

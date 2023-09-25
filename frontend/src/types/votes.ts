@@ -3,7 +3,7 @@ export interface VoteType {
   _id: string;
   title: string;
   voteText: string;
-  voted: number[];
+  voted: number;
   options: OptionType[];
   maximumOptions: number;
   isFinished: boolean;

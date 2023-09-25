@@ -75,7 +75,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
           title: vote.title,
           caseNumber: vote.caseNumber,
           voteText: vote.voteText,
-          voted: vote.voted,
+          voted: vote.voted.length,
           options: optionList,
           isActive: isActive,
           maximumOptions: vote.maximumOptions,
