@@ -131,7 +131,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       .set("Cookie", cookies)
       .send({
         group: "sprint",
-        optionId: optionId,
+        optionIDs: [optionId],
         voteId: voteId,
       })
       .then((response) => {

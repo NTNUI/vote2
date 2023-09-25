@@ -28,6 +28,7 @@ export interface CaseType {
   title: string;
   voteText: string;
   options: string[];
+  maximumOptions: number;
   isActive: boolean;
   numberParticipants: number;
 }
@@ -64,6 +65,7 @@ function VotationPanel({
       options: votation.options.map((option) => {
         return option.title;
       }),
+      maximumOptions: votation.maximumOptions,
       voteText: votation.voteText,
       isActive: votation.isActive,
       numberParticipants: votation.numberParticipants,
@@ -87,7 +89,8 @@ function VotationPanel({
         vote.voteText,
         vote.options.map((option) => {
           return option;
-        })
+        }),
+        vote.maximumOptions
       );
       setAccordionActiveTabs([...accordionActiveTabs, createdVotation.vote_id]);
     } else {
@@ -225,6 +228,16 @@ function VotationPanel({
                 return query;
               }}
               {...form.getInputProps("options")}
+            />
+            <NumberInput
+              data-testid="maxOptionsInput"
+              withAsterisk
+              required
+              label="Max allowd options to choose"
+              className={classes.inputStyle}
+              placeholder="Max allowd options to choose"
+              defaultValue={1}
+              {...form.getInputProps("maximumOptions")}
             />
 
             <Button type="submit" mt={10} data-testid="submitButton">

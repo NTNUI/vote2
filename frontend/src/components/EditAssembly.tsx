@@ -123,6 +123,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           voteText: votationTemplate ? votationTemplate.voteText : "",
           voted: [],
           options: votationTemplate ? votationTemplate.options : [],
+          maximumOptions: 1,
           isFinished: false,
           isActive: false,
           numberParticipants: 0,

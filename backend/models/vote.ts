@@ -37,6 +37,10 @@ export const votationSchema = new Schema<VoteType>(
       type: [Types.ObjectId],
       required: false,
     },
+    maximumOptions: {
+      type: Number,
+      required: true,
+    },
     isFinished: {
       type: Boolean,
       required: true,

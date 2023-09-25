@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useStyles } from "../styles/VotationStyles";
 import { LimitedVoteType } from "../types/votes";
 import { getCurrentVotationByGroup, submitVote } from "../services/votation";
+import { showNotification } from "@mantine/notifications";
 
 export function VotationBox(state: {
   groupSlug: string;
@@ -14,8 +15,29 @@ export function VotationBox(state: {
     LimitedVoteType | undefined
   >(state.currentVotation);
   const matches = useMediaQuery("(min-width: 501px)");
-  const [chosenOption, setChosenOption] = useState<string>();
+  const [chosenOption, setChosenOption] = useState<string[]>([]);
   const { classes } = useStyles();
+
+  const updateChosenOption = (optionId: string) => {
+    if (currentVotation?.maximumOptions === 1) {
+      // If the votation only allows one option, the chosen option is set to the clicked option
+      setChosenOption([optionId]);
+    } else if (
+      currentVotation &&
+      chosenOption.length >= currentVotation?.maximumOptions &&
+      !chosenOption?.includes(optionId)
+    ) {
+      showNotification({
+        title: "Error",
+        message:
+          "You can only choose " + currentVotation?.maximumOptions + " options",
+      });
+    } else if (chosenOption?.includes(optionId)) {
+      setChosenOption(chosenOption.filter((id) => id !== optionId));
+    } else {
+      setChosenOption([...(chosenOption || []), optionId]);
+    }
+  };
 
   useEffect(() => {
     // The current votation are initially set by websocket/state from parent component/assemblyPage.
@@ -71,7 +93,7 @@ export function VotationBox(state: {
               withBorder
               className={classes.optionButton}
               sx={
-                chosenOption == option._id
+                chosenOption.includes(option._id)
                   ? (theme) => ({
                       backgroundColor: "white",
                       color: theme.colors.ntnui_background[0],
@@ -81,7 +103,7 @@ export function VotationBox(state: {
               }
               w={matches ? 400 : 300}
               key={option.title}
-              onClick={() => setChosenOption(option._id)}
+              onClick={() => updateChosenOption(option._id)}
             >
               <Text>{option.title}</Text>
             </Card>
@@ -92,7 +114,7 @@ export function VotationBox(state: {
           size={"md"}
           w={150}
           color={"green"}
-          disabled={!chosenOption}
+          disabled={chosenOption.length < 1}
           onClick={() => submit(currentVotation._id)}
         >
           Confirm

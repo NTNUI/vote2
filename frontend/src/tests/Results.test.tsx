@@ -37,6 +37,7 @@ describe("Result component test", () => {
     voteText: "Dette er en testvotering",
     voted: [1, 2, 4, 7, 9],
     options: [testOption1, testOption2],
+    maximumOptions: 1,
     isFinished: true,
     caseNumber: 1,
     isActive: false,
