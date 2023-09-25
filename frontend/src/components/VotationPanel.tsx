@@ -233,9 +233,9 @@ function VotationPanel({
               data-testid="maxOptionsInput"
               withAsterisk
               required
-              label="Max allowd options to choose"
+              label="Maximum selectable options"
               className={classes.inputStyle}
-              placeholder="Max allowd options to choose"
+              placeholder="Maximum selectable options"
               defaultValue={1}
               {...form.getInputProps("maximumOptions")}
             />
@@ -270,6 +270,8 @@ function VotationPanel({
                     : option.title + ""
                 )}
               </Text>
+              <Text fw={"700"}>Maximum selectable options:</Text>
+              <Text>{votation.maximumOptions}</Text>
             </Box>
           </Flex>
           <Flex

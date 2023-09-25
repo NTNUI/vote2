@@ -77,9 +77,16 @@ export function VotationBox(state: {
         <Text fz={"lg"} fw={700} ta={"left"}>
           {currentVotation.title}
         </Text>
-        <Text fz={"md"} mb={25} ml={10} ta={"left"}>
+        <Text fz={"md"} mb={10} ta={"left"}>
           {currentVotation.voteText}
         </Text>
+        {currentVotation.maximumOptions > 1 && (
+          <>
+            <Text fz={"md"} mb={10} ta={"left"}>
+              You can choose up to {currentVotation.maximumOptions} options
+            </Text>
+          </>
+        )}
         <Flex
           mih={50}
           gap="xs"
