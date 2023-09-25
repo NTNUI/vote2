@@ -88,9 +88,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
       let currentVotes = 0;
       votes.forEach((vote) => {
         if (vote.isActive) {
-          vote.options.forEach((option) => {
-            currentVotes += option.voteCount;
-          });
+          currentVotes = vote.voted;
         }
       });
       setSubmittedVotes(currentVotes);
