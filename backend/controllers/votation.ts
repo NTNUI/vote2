@@ -50,20 +50,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
           continue;
         }
 
-        const optionList: OptionType[] = [];
-
-        for (const optionID of vote.options) {
-          const id = optionID;
-          const option = await Option.findById(id);
-          if (option) {
-            const newOption = new Option({
-              _id: id,
-              title: option.title,
-              voteCount: option.voteCount,
-            });
-            optionList.push(newOption);
-          }
-        }
+        const optionList = await Option.find({ _id: { $in: vote.options } });
 
         let isActive = false;
         if (assembly.currentVotation) {
@@ -142,19 +129,9 @@ export async function getCurrentVotation(
         return res.status(200).json(null);
       }
 
-      const optionList: LimitedOptionType[] = [];
-
-      for (const optionID of vote.options) {
-        const id = optionID;
-        const option = await Option.findById(id);
-        if (option) {
-          const newOption: LimitedOptionType = {
-            _id: id,
-            title: option.title,
-          };
-          optionList.push(newOption);
-        }
-      }
+      const optionList: LimitedOptionType[] = await Option.find({
+        _id: { $in: vote.options },
+      }).select("_id title");
 
       const votationResponse: LimitedVoteResponseType = {
         _id: assembly.currentVotation,
