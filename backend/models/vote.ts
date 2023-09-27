@@ -9,7 +9,8 @@ export const optionSchema = new Schema<OptionType>(
     },
     voteCount: {
       type: Number,
-      required: true,
+      required: false,
+      default: 0,
     },
   },
   { collection: "options", _id: true }

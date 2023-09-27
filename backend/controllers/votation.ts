@@ -33,7 +33,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
       if (!assembly) {
         return res
           .status(400)
-          .json({ message: "No assembly found on the given group found " });
+          .json({ message: "No assembly found on the given group found" });
       }
 
       const listOfVotations: VoteResponseType[] = await Votation.aggregate([
@@ -44,7 +44,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
         },
         {
           $lookup: {
-            from: "options", // The name of the Option collection
+            from: "options", // The name of the collection containing the option documents (for joining data).
             localField: "options",
             foreignField: "_id",
             as: "options",
@@ -56,7 +56,7 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
             title: 1,
             caseNumber: 1,
             voteText: 1,
-            voted: { $size: "$voted" },
+            voted: { $size: "$voted" }, // Count the number of elements in the array to get the number of votes.
             maximumOptions: 1,
             isFinished: 1,
             numberParticipants: 1,
@@ -166,8 +166,12 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
         (membership) => membership.organizer && membership.groupSlug == group
       )
     ) {
-      const tempOptionTitles: OptionType[] = [];
-
+      const assembly = await Assembly.findById(group);
+      if (!(assembly && title && Number.isFinite(caseNumber))) {
+        return res
+          .status(400)
+          .json({ message: "Error with groupID or case number" });
+      }
       if (options) {
         if (!Array.isArray(options)) {
           return res
@@ -175,57 +179,61 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        for (const optionID of options) {
-          const title = optionID;
-          const newOption = new Option({
-            title: title,
-            voteCount: 0,
-          });
-          const feedback = await Option.create(newOption);
-          tempOptionTitles.push(feedback);
-        }
-      }
+        const newOptions = options.map((title) => ({
+          title: title,
+        }));
 
-      const newVotation = new Votation({
-        title: title,
-        caseNumber: caseNumber,
-        isFinished: false,
-        options: tempOptionTitles,
-        voteText: voteText,
-        maximumOptions: maximumOptions,
-      });
+        // Insert the array of Options and create a new Votation
+        try {
+          await Option.insertMany(
+            newOptions,
+            async (error: any, options: OptionType[]) => {
+              if (error) {
+                console.error(error);
+                return res.status(500).json({
+                  message: "Error while creating options",
+                });
+              } else {
+                console.log("Options inserted successfully:", options);
 
-      const assembly = await Assembly.findById(group);
-      if (assembly && title && Number.isFinite(caseNumber)) {
-        const votationFeedback = await Votation.create(newVotation);
-        const assemblyFeedback = await Assembly.findByIdAndUpdate(group, {
-          $push: {
-            votes: votationFeedback,
-          },
-        });
-        if (assemblyFeedback) {
-          return res.status(200).json({
-            message: "Votation successfully created",
-            vote_id: newVotation._id,
-          });
-        }
-      } else if (!Number.isFinite(caseNumber)) {
-        return res
-          .status(400)
-          .json({ message: "Votation is missing casenumber" });
-      } else {
-        return res
-          .status(400)
-          .json(
-            title == undefined
-              ? { message: "Votation is missing title" }
-              : { message: "Assembly not found" }
+                // Extract the _id values from the inserted documents
+                const insertedIDs: OptionType[] = options.map(
+                  (option: OptionType) => option._id
+                );
+
+                const newVotation = await Votation.create({
+                  title: title,
+                  caseNumber: caseNumber,
+                  isFinished: false,
+                  options: insertedIDs,
+                  voteText: voteText,
+                  maximumOptions: maximumOptions,
+                });
+
+                await Assembly.findByIdAndUpdate(group, {
+                  $push: {
+                    votes: newVotation._id,
+                  },
+                });
+
+                return res.status(200).json({
+                  message: "Votation successfully created",
+                  vote_id: newVotation._id,
+                });
+              }
+            }
           );
+        } catch (error) {
+          console.error(error);
+          return res.status(500).json({
+            message: "Error while creating votation",
+          });
+        }
       }
     }
+  } else {
+    return res.status(401).json({ message: "Unauthorized" });
   }
-
-  return res.status(401).json({ message: "Unauthorized" });
 }
 
 export async function activateVotationStatus(
