@@ -29,49 +29,44 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
         (membership) => membership.organizer && membership.groupSlug == group
       )
     ) {
-      const listOfVotations: VoteResponseType[] = [];
-
       const assembly = await Assembly.findById(group);
       if (!assembly) {
         return res
           .status(400)
-          .json({ message: "No assembly with the given group found " });
+          .json({ message: "No assembly found on the given group found " });
       }
 
-      const voteIDs = assembly.votes;
-
-      for (const voteID of voteIDs) {
-        if (!Types.ObjectId.isValid(String(voteID))) {
-          continue;
-        }
-        const vote = await Votation.findById(voteID);
-
-        if (!vote) {
-          continue;
-        }
-
-        const optionList = await Option.find({ _id: { $in: vote.options } });
-
-        let isActive = false;
-        if (assembly.currentVotation) {
-          isActive = vote._id.equals(assembly.currentVotation);
-        }
-
-        const votationResponse: VoteResponseType = {
-          _id: vote._id,
-          title: vote.title,
-          caseNumber: vote.caseNumber,
-          voteText: vote.voteText,
-          voted: vote.voted.length,
-          options: optionList,
-          isActive: isActive,
-          maximumOptions: vote.maximumOptions,
-          isFinished: vote.isFinished,
-          numberParticipants: vote.numberParticipants,
-        };
-
-        listOfVotations.push(votationResponse);
-      }
+      const listOfVotations: VoteResponseType[] = await Votation.aggregate([
+        {
+          $match: {
+            _id: { $in: assembly.votes },
+          },
+        },
+        {
+          $lookup: {
+            from: "options", // The name of the Option collection
+            localField: "options",
+            foreignField: "_id",
+            as: "options",
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            title: 1,
+            caseNumber: 1,
+            voteText: 1,
+            voted: { $size: "$voted" },
+            maximumOptions: 1,
+            isFinished: 1,
+            numberParticipants: 1,
+            options: 1,
+            isActive: {
+              $eq: ["$_id", assembly.currentVotation], // Compare _id with assembly.CurrentVotation
+            },
+          },
+        },
+      ]);
 
       return res.status(200).json(listOfVotations);
     }
