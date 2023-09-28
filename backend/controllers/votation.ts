@@ -194,8 +194,6 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
                   message: "Error while creating options",
                 });
               } else {
-                console.log("Options inserted successfully:", options);
-
                 // Extract the _id values from the inserted documents
                 const insertedIDs: OptionType[] = options.map(
                   (option: OptionType) => option._id
@@ -254,11 +252,6 @@ export async function activateVotationStatus(
         (membership) => membership.organizer && membership.groupSlug == group
       )
     ) {
-      if (!Types.ObjectId.isValid(voteId)) {
-        return res
-          .status(400)
-          .json({ message: "No votation with the given ID found" });
-      }
       const vote = await Votation.findById(voteId);
       const assembly = await Assembly.findById(group);
 
@@ -268,13 +261,7 @@ export async function activateVotationStatus(
           .json({ message: "No votation with the given ID found " });
       }
 
-      if (!assembly) {
-        return res
-          .status(400)
-          .json({ message: "No assembly with the given group found " });
-      }
-
-      if (!assembly.isActive) {
+      if (!assembly || !assembly.isActive) {
         return res
           .status(400)
           .json({ message: "No active assembly with the given group found " });
@@ -299,19 +286,9 @@ export async function activateVotationStatus(
       });
 
       // Add votaton and options to an element for sending to participants.
-      const optionList: LimitedOptionType[] = [];
-
-      for (const optionID of vote.options) {
-        const id = optionID;
-        const option = await Option.findById(id);
-        if (option) {
-          const newOption: LimitedOptionType = {
-            _id: id,
-            title: option.title,
-          };
-          optionList.push(newOption);
-        }
-      }
+      const optionList: LimitedOptionType[] = await Option.find({
+        _id: { $in: vote.options },
+      }).select("_id title");
 
       const votationResponse: LimitedVoteResponseType = {
         _id: voteId,
@@ -334,6 +311,8 @@ export async function activateVotationStatus(
         );
       });
 
+      // Set number of participants to the number of active participants.
+      // This is used to store the number of logged in users when the votation was held.
       await Votation.findByIdAndUpdate(voteId, {
         $set: {
           numberParticipants: req.body.numberParticipants,
@@ -371,7 +350,7 @@ export async function deactivateVotationStatus(
       if (!assembly || !assembly.currentVotation) {
         return res
           .status(400)
-          .json({ message: "There is no current votation ongoing" });
+          .json({ message: "There are currently no votation ongoing" });
       }
 
       const voteId = assembly.currentVotation;
@@ -380,7 +359,7 @@ export async function deactivateVotationStatus(
       if (!vote) {
         return res
           .status(400)
-          .json({ message: "No votation with the given ID found " });
+          .json({ message: "No votation with the given ID found" });
       }
 
       await Assembly.findByIdAndUpdate(group, {
@@ -456,11 +435,7 @@ export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
         }
       }
 
-      for (const optionID of vote.options) {
-        const oldOptionId = optionID;
-        await Option.findByIdAndDelete(oldOptionId);
-      }
-
+      await Option.deleteMany({ _id: { $in: vote.options } });
       await Votation.findByIdAndDelete(voteId);
 
       await Assembly.findByIdAndUpdate(group, {
@@ -532,13 +507,9 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
         });
       }
 
-      for (const optionID of vote.options) {
-        const oldOptionId = optionID;
-        await Option.findByIdAndDelete(oldOptionId);
-      }
+      await Option.deleteMany({ _id: { $in: vote.options } });
 
-      const tempOptionTitles: OptionType[] = [];
-
+      let insertedOptionIDs: OptionType[] = [];
       if (options) {
         if (!Array.isArray(options)) {
           return res
@@ -546,23 +517,21 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        for (let i = 0; i < options.length; i++) {
-          const title: string = options[i];
-
-          const newOption = new Option({
+        const newOptions = await Option.insertMany(
+          options.map((title) => ({
             title: title,
-            voteCount: 0,
-          });
-          const feedback = await Option.create(newOption);
-          tempOptionTitles.push(feedback);
-        }
+          }))
+        );
+
+        // Extract the _id values from the inserted documents
+        insertedOptionIDs = newOptions.map((option: OptionType) => option._id);
       }
 
       await Votation.findByIdAndUpdate(voteId, {
         $set: {
           title: !title ? vote.title : title,
           voteText: !voteText ? vote.voteText : voteText,
-          options: !options ? vote.options : tempOptionTitles,
+          options: !options ? vote.options : insertedOptionIDs,
           caseNumber: !Number.isFinite(caseNumber)
             ? vote.caseNumber
             : caseNumber,
@@ -690,7 +659,7 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
       // Notify organizers of new vote
       notifyOrganizers(group, JSON.stringify({ voteSubmitted: 1 }));
 
-      return res.status(200).json({ message: "Successfully submited vote" });
+      return res.status(200).json({ message: "Successfully submitted vote" });
     }
   }
 
