@@ -142,15 +142,11 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
 
   const group = req.body.group;
   const title = req.body.title;
-  let voteText = req.body.voteText;
+  const voteText = req.body.voteText || "";
   const caseNumber = req.body.caseNumber;
   const options: [] = req.body.options;
   const maximumOptions = req.body.maximumOptions || 1;
   const user = await User.findById(req.ntnuiNo);
-
-  if (!voteText) {
-    voteText = "";
-  }
 
   if (user) {
     if (
