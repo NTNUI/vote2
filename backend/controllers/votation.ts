@@ -99,28 +99,20 @@ export async function getCurrentVotation(
         return res.status(200).json(null);
       }
 
-      const participants: number[] = assembly.participants;
-
-      if (!participants.includes(user._id)) {
+      if (!assembly.participants.includes(user._id)) {
         return res
           .status(400)
           .json({ message: "This user is not a part of the assembly" });
       }
 
-      if (!Types.ObjectId.isValid(assembly.currentVotation.toString())) {
-        return res
-          .status(400)
-          .json({ message: "No votation with the given ID found " });
-      }
-
       const vote = await Votation.findById(assembly.currentVotation);
       if (!vote) {
-        return res.status(400).json({ message: "No votation found" });
+        return res
+          .status(500)
+          .json({ message: "There was an error getting the votation" });
       }
 
-      const voted: number[] = vote.voted;
-
-      if (voted.includes(user._id)) {
+      if (vote.voted.includes(user._id)) {
         return res.status(200).json(null);
       }
 
