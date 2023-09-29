@@ -559,20 +559,8 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
             .status(400)
             .json({ message: "Options is not on correct format" });
         }
-      }
-
-      for (const optionID of optionIDs) {
-        if (!Types.ObjectId.isValid(optionID)) {
-          return res
-            .status(400)
-            .json({ message: "No option with the given ID found" });
-        }
-        const option = await Option.findById(optionID);
-        if (!option) {
-          return res
-            .status(400)
-            .json({ message: "No option with the given ID found " });
-        }
+      } else {
+        return res.status(400).json({ message: "No vote provided" });
       }
 
       const vote = await Votation.findById(voteId);
@@ -614,17 +602,13 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
           .json({ message: "You can not vote on this votation" });
       }
 
-      const participants: number[] = assembly.participants;
-
-      if (!participants.includes(user._id)) {
+      if (!assembly.participants.includes(user._id)) {
         return res
           .status(400)
           .json({ message: "This user is not a part of the assembly" });
       }
 
-      const voted: number[] = vote.voted;
-
-      if (voted.indexOf(user._id) !== -1) {
+      if (vote.voted.includes(user._id)) {
         return res
           .status(400)
           .json({ message: "This user have already voted" });
@@ -635,13 +619,10 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
           },
         });
 
-        for (const optionID of optionIDs) {
-          await Option.findByIdAndUpdate(optionID, {
-            $inc: {
-              voteCount: 1,
-            },
-          });
-        }
+        await Option.updateMany(
+          { _id: { $in: optionIDs } },
+          { $inc: { voteCount: 1 } }
+        );
       }
 
       // Notify organizers of new vote
