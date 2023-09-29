@@ -17,40 +17,60 @@ type OrganizersByGroupSlug = { [key: string]: SocketList };
 // This makes it possible to send messages to all logged in organizers of a group.
 export const organizerConnections: OrganizersByGroupSlug = {};
 // Store all active participant connections, for access when sending messages about assembly.
-export const lobbyConnections: SocketList = [];
+export const lobbyConnections = new Map<number, WebSocket>();
 
-export function storeLobbyConnectionByCookie(
+const sendPing = (ws: WebSocket) => {
+  if (ws.readyState === WebSocket.OPEN) {
+    ws.ping();
+  }
+};
+
+// Send ping to all participants to check if they are still connected and prevent the connection from closing.
+export const startHeartbeatInterval = setInterval(() => {
+  lobbyConnections.forEach((ws: WebSocket) => {
+    sendPing(ws);
+  });
+}, 30000); // 30 seconds
+
+export const storeLobbyConnectionByCookie = (
   ws: WebSocket,
   req: IncomingMessage
-) {
+) => {
   const ntnuiNo = NTNUINoFromRequest(req);
   if (ntnuiNo !== null) {
     // Notify about kicking out old connection if user already is connected.
-    if (typeof lobbyConnections[ntnuiNo] !== null) {
+    if (typeof lobbyConnections.get(ntnuiNo) !== null) {
       notifyOneParticipant(ntnuiNo, JSON.stringify({ status: "removed" }));
     }
     // Store socket connection on NTNUI ID.
-    lobbyConnections[ntnuiNo] = ws;
+    lobbyConnections.set(ntnuiNo, ws);
   }
-}
+};
 
-export function storeOrganizerConnectionByNTNUINo(
+export const removeLobbyConnectionByCookie = (req: IncomingMessage) => {
+  const ntnuiNo = NTNUINoFromRequest(req);
+  if (ntnuiNo !== null) {
+    lobbyConnections.delete(ntnuiNo);
+  }
+};
+
+export const storeOrganizerConnectionByNTNUINo = (
   ntnui_no: number,
   groupSlug: string,
   ws: WebSocket
-) {
+) => {
   if (!organizerConnections[groupSlug]) organizerConnections[groupSlug] = [];
   organizerConnections[groupSlug][ntnui_no] = ws;
-}
+};
 
 export const notifyOneParticipant = (ntnui_no: number, message: string) => {
-  try {
-    lobbyConnections[ntnui_no].send(message);
-  } catch (error) {
+  const connection = lobbyConnections.get(ntnui_no);
+  if (connection) connection.send(message);
+  else {
     console.log(
       "Could not notify user " +
         ntnui_no +
-        ". Is there a problem with the socket URL? (Ignore if testing / dev has restarted)"
+        " (disconnected). Is there a problem with the socket URL? (Ignore if testing / dev has restarted)"
     );
   }
 };
