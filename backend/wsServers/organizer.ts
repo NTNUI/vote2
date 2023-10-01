@@ -1,7 +1,10 @@
 import { WebSocketServer } from "ws";
 import { NTNUINoFromRequest } from "../utils/wsCookieRetriever";
 import { User } from "../models/user";
-import { storeOrganizerConnectionByNTNUINo } from "../utils/socketNotifier";
+import {
+  removeOrganizerConnectionByCookie,
+  storeOrganizerConnectionByNTNUINo,
+} from "../utils/socketNotifier";
 
 export const organizerWss = new WebSocketServer({ noServer: true });
 
@@ -44,5 +47,13 @@ organizerWss.on("connection", function connection(ws, req) {
       // User not logged in / invalid cookie
       ws.close();
     }
+  });
+
+  ws.on("pong", () => {
+    // The client responded to the ping, so the connection is still active.
+  });
+
+  ws.on("close", () => {
+    removeOrganizerConnectionByCookie(req);
   });
 });

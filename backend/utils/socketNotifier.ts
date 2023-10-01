@@ -10,12 +10,9 @@ import { NTNUINoFromRequest } from "./wsCookieRetriever";
  * https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits
  */
 
-type SocketList = { [key: number]: WebSocket };
-type OrganizersByGroupSlug = { [key: string]: SocketList };
-
 // Store all active organizer connections, the connections are stored by their respective groupSlug.
 // This makes it possible to send messages to all logged in organizers of a group.
-export const organizerConnections: OrganizersByGroupSlug = {};
+export const organizerConnections = new Map<string, Map<number, WebSocket>>();
 // Store all active participant connections, for access when sending messages about assembly.
 export const lobbyConnections = new Map<number, WebSocket>();
 
@@ -30,6 +27,12 @@ export const startHeartbeatInterval = setInterval(() => {
   lobbyConnections.forEach((ws: WebSocket) => {
     sendPing(ws);
   });
+
+  organizerConnections.forEach((socketList) => {
+    socketList.forEach((ws: WebSocket) => {
+      sendPing(ws);
+    });
+  });
 }, 30000); // 30 seconds
 
 export const storeLobbyConnectionByCookie = (
@@ -39,8 +42,9 @@ export const storeLobbyConnectionByCookie = (
   const ntnuiNo = NTNUINoFromRequest(req);
   if (ntnuiNo !== null) {
     // Notify about kicking out old connection if user already is connected.
-    if (typeof lobbyConnections.get(ntnuiNo) !== null) {
+    if (lobbyConnections.has(ntnuiNo)) {
       notifyOneParticipant(ntnuiNo, JSON.stringify({ status: "removed" }));
+      lobbyConnections.get(ntnuiNo)?.close();
     }
     // Store socket connection on NTNUI ID.
     lobbyConnections.set(ntnuiNo, ws);
@@ -54,13 +58,39 @@ export const removeLobbyConnectionByCookie = (req: IncomingMessage) => {
   }
 };
 
+export const removeOrganizerConnectionByCookie = (req: IncomingMessage) => {
+  const ntnuiNo = NTNUINoFromRequest(req);
+  if (ntnuiNo !== null) {
+    for (const groupSlug of organizerConnections.keys()) {
+      for (const ntnui_no of organizerConnections.get(groupSlug)?.keys() ||
+        []) {
+        if (ntnui_no === ntnuiNo) {
+          try {
+            organizerConnections.get(groupSlug)?.delete(ntnui_no);
+          } catch (e) {
+            console.error(
+              "Tried to delete connection that did not exist. " + e
+            );
+          }
+          console.log(
+            "Organizer " + ntnui_no + " unsubscribed from group " + groupSlug
+          );
+          return;
+        }
+      }
+    }
+  }
+};
+
 export const storeOrganizerConnectionByNTNUINo = (
   ntnui_no: number,
   groupSlug: string,
   ws: WebSocket
 ) => {
-  if (!organizerConnections[groupSlug]) organizerConnections[groupSlug] = [];
-  organizerConnections[groupSlug][ntnui_no] = ws;
+  if (!organizerConnections.get(groupSlug)) {
+    organizerConnections.set(groupSlug, new Map<number, WebSocket>());
+  }
+  organizerConnections.get(groupSlug)?.set(ntnui_no, ws);
 };
 
 export const notifyOneParticipant = (ntnui_no: number, message: string) => {
@@ -76,16 +106,15 @@ export const notifyOneParticipant = (ntnui_no: number, message: string) => {
 };
 
 export const notifyOrganizers = (groupSlug: string, message: string) => {
-  if (organizerConnections[groupSlug]) {
-    for (const ntnui_no in organizerConnections[groupSlug]) {
-      console.log("Sending message to organizer " + ntnui_no);
+  for (const ntnui_no of organizerConnections.get(groupSlug)?.keys() || []) {
+    console.log("Sending message to organizer " + ntnui_no);
+    const socket = organizerConnections.get(groupSlug)?.get(ntnui_no);
+    if (socket) {
       try {
-        organizerConnections[groupSlug][ntnui_no].send(message);
-      } catch (error) {
-        console.log(
-          "Could not notify organizer " +
-            ntnui_no +
-            ". Is there a problem with the socket URL? (Ignore if testing / dev has restarted)"
+        socket.send(message);
+      } catch (e) {
+        console.error(
+          "Error when sending message to organizer " + ntnui_no + ": " + e
         );
       }
     }

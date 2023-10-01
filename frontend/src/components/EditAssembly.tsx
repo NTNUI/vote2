@@ -42,6 +42,8 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   const { lastMessage, sendJsonMessage } = useWebSocket(
     import.meta.env.VITE_SOCKET_URL + "/organizer",
     {
+      // Request access to live assembly data for the given group when the websocket is opened.
+      onOpen: () => sendJsonMessage({ groupSlug: group.groupSlug }),
       //Will attempt to reconnect on all close events, such as server shutting down
       shouldReconnect: () => true,
       // Try to reconnect 300 times before giving up.
@@ -49,11 +51,6 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
       reconnectAttempts: 300,
     }
   );
-
-  // Request access to live assembly data for the given group when component is mounted.
-  useEffect(() => {
-    sendJsonMessage({ groupSlug: group.groupSlug });
-  }, []);
 
   useEffect(() => {
     // Update state every time the websocket receive a message.

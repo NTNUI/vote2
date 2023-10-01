@@ -13,7 +13,7 @@ import { LimitedVoteType } from "../types/votes";
 import { getUserData } from "../services/organizer";
 import { NotFound } from "./NotFound";
 
-export function AssemblyLobxby() {
+export function AssemblyLobby() {
   let navigate = useNavigate();
   const { groupSlug } = useParams() as { groupSlug: string };
   const [groupName, setGroupName] = useState<string | undefined>(undefined);
@@ -25,11 +25,11 @@ export function AssemblyLobxby() {
     LimitedVoteType | undefined
   >(undefined);
   const [voted, setVoted] = useState<boolean>(false);
-  const { lastMessage } = useWebSocket(
+  const { lastMessage, getWebSocket } = useWebSocket(
     import.meta.env.VITE_SOCKET_URL + "/lobby",
     {
       //Will attempt to reconnect on all close events, such as server shutting down
-      shouldReconnect: () => true,
+      shouldReconnect: () => !kickedOut,
       // Try to reconnect 300 times before giving up.
       // Also possible to change interval (default is 5000ms)
       reconnectAttempts: 300,
@@ -79,6 +79,7 @@ export function AssemblyLobxby() {
       // User is is removed from current lobby if logged in on another device.
       if (decodedMessage.status == "removed") {
         setKickedOut(true);
+        getWebSocket()?.close();
       }
       // Redirect only if user is checked in on the right group.
       if (decodedMessage.group == groupSlug) {
