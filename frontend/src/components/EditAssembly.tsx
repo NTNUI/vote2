@@ -40,7 +40,14 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
   const [accordionActiveTabs, setAccordionActiveTabs] = useState<string[]>([]);
 
   const { lastMessage, sendJsonMessage } = useWebSocket(
-    import.meta.env.VITE_SOCKET_URL + "/organizer"
+    import.meta.env.VITE_SOCKET_URL + "/organizer",
+    {
+      //Will attempt to reconnect on all close events, such as server shutting down
+      shouldReconnect: () => true,
+      // Try to reconnect 300 times before giving up.
+      // Also possible to change interval (default is 5000ms)
+      reconnectAttempts: 300,
+    }
   );
 
   // Request access to live assembly data for the given group when component is mounted.

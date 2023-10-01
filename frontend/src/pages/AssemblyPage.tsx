@@ -13,7 +13,7 @@ import { LimitedVoteType } from "../types/votes";
 import { getUserData } from "../services/organizer";
 import { NotFound } from "./NotFound";
 
-export function AssemblyLobby() {
+export function AssemblyLobxby() {
   let navigate = useNavigate();
   const { groupSlug } = useParams() as { groupSlug: string };
   const [groupName, setGroupName] = useState<string | undefined>(undefined);
@@ -26,7 +26,14 @@ export function AssemblyLobby() {
   >(undefined);
   const [voted, setVoted] = useState<boolean>(false);
   const { lastMessage } = useWebSocket(
-    import.meta.env.VITE_SOCKET_URL + "/lobby"
+    import.meta.env.VITE_SOCKET_URL + "/lobby",
+    {
+      //Will attempt to reconnect on all close events, such as server shutting down
+      shouldReconnect: () => true,
+      // Try to reconnect 300 times before giving up.
+      // Also possible to change interval (default is 5000ms)
+      reconnectAttempts: 300,
+    }
   );
   const { checkedIn, setCheckedIn } = useContext(
     checkedInState
