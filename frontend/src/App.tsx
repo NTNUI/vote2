@@ -6,7 +6,7 @@ import { AssemblyLobby } from "./pages/AssemblyPage";
 import { Assembly } from "./pages/AssemblyDashboard";
 import { CheckIn } from "./pages/CheckIn";
 import { AdminDashboard } from "./pages/AdminDashboard";
-import { MantineProvider, Text } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import colors from "./utils/theme";
 import { Login } from "./pages/LoginPage";
 import axios from "axios";
@@ -16,10 +16,13 @@ import { useState } from "react";
 import { NotFound } from "./pages/NotFound";
 import { checkedInState } from "./utils/Context";
 import { FAQ } from "./pages/FAQ";
+import { setupInterceptors } from "./services/axiosIntercept";
+
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.withCredentials = true;
 
 function App() {
-  axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
-  axios.defaults.withCredentials = true;
+  setupInterceptors();
   const [checkedIn, setCheckedIn] = useState(false);
   const [groupSlug, setGroupSlug] = useState("");
   const [groupName, setGroupName] = useState("");

@@ -1,18 +1,15 @@
 import { Response, NextFunction } from "express";
 import jsonwebtoken from "jsonwebtoken";
-import { isValidNtnuiToken, refreshNtnuiToken } from "ntnui-tools";
-import { CustomError } from "ntnui-tools/customError";
+import { isValidNtnuiToken } from "ntnui-tools";
+import { CustomError, UnauthorizedUserError } from "ntnui-tools/customError";
 import { RequestWithNtnuiNo } from "./request";
 
 /**
  * # The authorization middleware - Provided by NTNUI
- * 1. Retrieve access- and refresh-token from cookies
+ * 1. Retrieve access-token from cookies
  *     * If none are sent return error
  * 2. Check validity of access token against NTNUI
- *     - If not valid, check if refresh token is sent
- *         * If refresh token is sent, try refreshing against NTNUI
- *         * Retrieve new access token
- *         * Return new accessToken
+ *     * If not valid, return error
  *     - Decode ntnui_no from token and add to request
  *     - Allow user through middleware with next()
  */
@@ -22,39 +19,22 @@ const authorization = async (
   next: NextFunction
 ) => {
   let { accessToken } = req.cookies;
-  const { refreshToken } = req.cookies;
   try {
-    if (!refreshToken && !accessToken) {
-      throw new CustomError("No tokens sent", 401);
+    if (!accessToken) {
+      throw new CustomError("No access token sent", 401);
     }
     const isValid = await isValidNtnuiToken(accessToken);
     if (!isValid) {
-      // Try to refresh
-      if (!refreshToken) {
-        throw new CustomError("No refresh-token sent", 401);
-      }
-      const newToken = await refreshNtnuiToken(refreshToken);
-      if (newToken) {
-        accessToken = newToken.access;
-        // Set cookies
-        res.cookie("accessToken", newToken.access, {
-          maxAge: 1800000, // 30 minutes
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: true,
-        });
-      } else {
-        throw new CustomError("Invalid token", 401);
-      }
+      throw new CustomError("Invalid token", 401);
     }
     const decoded = jsonwebtoken.decode(accessToken);
     if (decoded && typeof decoded !== "string") {
       req.ntnuiNo = decoded.ntnui_no;
       return next();
     }
-    return res.status(401).json({ message: "Unauthorized" });
+    throw UnauthorizedUserError;
   } catch (error) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return next(error);
   }
 };
 
