@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import jsonwebtoken from "jsonwebtoken";
 import { isValidNtnuiToken } from "ntnui-tools";
-import { CustomError, UnauthorizedUserError } from "ntnui-tools/customError";
+import { CustomError } from "ntnui-tools/customError";
 import { RequestWithNtnuiNo } from "./request";
 
 /**
@@ -18,7 +18,7 @@ const authorization = async (
   res: Response,
   next: NextFunction
 ) => {
-  let { accessToken } = req.cookies;
+  const { accessToken } = req.cookies;
   try {
     if (!accessToken) {
       throw new CustomError("No access token sent", 401);
@@ -32,9 +32,9 @@ const authorization = async (
       req.ntnuiNo = decoded.ntnui_no;
       return next();
     }
-    throw UnauthorizedUserError;
+    return res.status(401).json({ message: "Unauthorized" });
   } catch (error) {
-    return next(error);
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };
 

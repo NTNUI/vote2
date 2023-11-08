@@ -3,7 +3,6 @@ import { getNtnuiToken, getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { User } from "../models/user";
 import { GroupType } from "../types/user";
 import { groupOrganizers } from "../utils/user";
-import path from "path";
 
 export async function login(req: Request, res: Response) {
   try {
@@ -103,10 +102,9 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
   }
 
   try {
-    const newAccessTokenResponse = await refreshNtnuiToken(refreshToken);
-    let newAccessToken = newAccessTokenResponse.access;
+    const refreshedTokens = await refreshNtnuiToken(refreshToken);
     return res
-      .cookie("accessToken", newAccessToken, {
+      .cookie("accessToken", refreshedTokens.access, {
         maxAge: 1800000, // 30 minutes
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
