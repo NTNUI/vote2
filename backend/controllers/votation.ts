@@ -543,7 +543,7 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
   const group = req.body.group;
   const voteId = req.body.voteId;
   const user = await User.findById(req.ntnuiNo);
-  const optionIDs: string[] = req.body.optionIDs;
+  let optionIDs: string[] = req.body.optionIDs;
 
   if (user) {
     if (user.groups.some((membership) => membership.groupSlug == group)) {
@@ -562,6 +562,9 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
       } else {
         return res.status(400).json({ message: "No vote provided" });
       }
+
+      // Remove duplicates (maximum one vote per option)
+      optionIDs = [...new Set(optionIDs)];
 
       const vote = await Votation.findById(voteId);
       const assembly = await Assembly.findById(group);
