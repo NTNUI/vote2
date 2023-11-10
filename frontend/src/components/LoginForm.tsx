@@ -10,11 +10,10 @@ import {
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { login } from "../services/auth";
+import { login, refreshAccessToken } from "../services/auth";
 import countryCodes from "../utils/countryCodes";
 import NtnuiInfoTooltip from "./Tooltip";
 import { ChevronDown, Lock, Phone, World, X } from "tabler-icons-react";
-import { getUserData } from "../services/organizer";
 
 const useStyles = createStyles((theme) => ({
   phoneNumberWrapper: {
@@ -124,13 +123,10 @@ export function LoginForm() {
   useEffect(() => {
     // Log user in and redirect if user is already logged in.
     const checkLogin = async () => {
-      try {
-        const userdata = await getUserData();
-        console.log(userdata);
+      const isLoggedIn = await refreshAccessToken();
+      if (isLoggedIn.status === 200) {
         navigate("/start");
         localStorage.setItem("isLoggedIn", "true");
-      } catch (e) {
-        // User is not logged in
       }
     };
     checkLogin();

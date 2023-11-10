@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getNtnuiToken, getNtnuiProfile } from "ntnui-tools";
+import { getNtnuiToken, getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { User } from "../models/user";
 import { GroupType } from "../types/user";
 import { groupOrganizers } from "../utils/user";
@@ -76,6 +76,7 @@ export async function login(req: Request, res: Response) {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: true,
+        path: "/auth/token/refresh",
       })
       .status(200)
       .json({ message: "Successful login" });
@@ -89,7 +90,29 @@ export async function login(req: Request, res: Response) {
 export async function logout(req: Request, res: Response) {
   return res
     .clearCookie("accessToken")
-    .clearCookie("refreshToken")
+    .clearCookie("refreshToken", { path: "/auth/token/refresh" })
     .status(200)
     .json({ message: "Successfully logged out" });
 }
+
+export const refreshAccessToken = async (req: Request, res: Response) => {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) {
+    return res.status(401).json({ message: "No refresh token sent" });
+  }
+
+  try {
+    const refreshedTokens = await refreshNtnuiToken(refreshToken);
+    return res
+      .cookie("accessToken", refreshedTokens.access, {
+        maxAge: 1800000, // 30 minutes
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: true,
+      })
+      .status(200)
+      .json({ message: "accessToken refreshed" });
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid refresh token" });
+  }
+};
