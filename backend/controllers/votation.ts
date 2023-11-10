@@ -29,62 +29,44 @@ export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
         (membership) => membership.organizer && membership.groupSlug == group
       )
     ) {
-      const listOfVotations: VoteResponseType[] = [];
-
       const assembly = await Assembly.findById(group);
       if (!assembly) {
         return res
           .status(400)
-          .json({ message: "No assembly with the given group found " });
+          .json({ message: "No assembly found on the given group found" });
       }
 
-      const voteIDs = assembly.votes;
-
-      for (const voteID of voteIDs) {
-        if (!Types.ObjectId.isValid(String(voteID))) {
-          continue;
-        }
-        const vote = await Votation.findById(voteID);
-
-        if (!vote) {
-          continue;
-        }
-
-        const optionList: OptionType[] = [];
-
-        for (const optionID of vote.options) {
-          const id = optionID;
-          const option = await Option.findById(id);
-          if (option) {
-            const newOption = new Option({
-              _id: id,
-              title: option.title,
-              voteCount: option.voteCount,
-            });
-            optionList.push(newOption);
-          }
-        }
-
-        let isActive = false;
-        if (assembly.currentVotation) {
-          isActive = vote._id.equals(assembly.currentVotation);
-        }
-
-        const votationResponse: VoteResponseType = {
-          _id: vote._id,
-          title: vote.title,
-          caseNumber: vote.caseNumber,
-          voteText: vote.voteText,
-          voted: vote.voted.length,
-          options: optionList,
-          isActive: isActive,
-          maximumOptions: vote.maximumOptions,
-          isFinished: vote.isFinished,
-          numberParticipants: vote.numberParticipants,
-        };
-
-        listOfVotations.push(votationResponse);
-      }
+      const listOfVotations: VoteResponseType[] = await Votation.aggregate([
+        {
+          $match: {
+            _id: { $in: assembly.votes },
+          },
+        },
+        {
+          $lookup: {
+            from: "options", // The name of the collection containing the option documents (for joining data).
+            localField: "options",
+            foreignField: "_id",
+            as: "options",
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            title: 1,
+            caseNumber: 1,
+            voteText: 1,
+            voted: { $size: "$voted" }, // Count the number of elements in the array to get the number of votes.
+            maximumOptions: 1,
+            isFinished: 1,
+            numberParticipants: 1,
+            options: 1,
+            isActive: {
+              $eq: ["$_id", assembly.currentVotation], // Compare _id with assembly.CurrentVotation
+            },
+          },
+        },
+      ]);
 
       return res.status(200).json(listOfVotations);
     }
@@ -117,44 +99,26 @@ export async function getCurrentVotation(
         return res.status(200).json(null);
       }
 
-      const participants: number[] = assembly.participants;
-
-      if (!participants.includes(user._id)) {
+      if (!assembly.participants.includes(user._id)) {
         return res
           .status(400)
           .json({ message: "This user is not a part of the assembly" });
       }
 
-      if (!Types.ObjectId.isValid(assembly.currentVotation.toString())) {
-        return res
-          .status(400)
-          .json({ message: "No votation with the given ID found " });
-      }
-
       const vote = await Votation.findById(assembly.currentVotation);
       if (!vote) {
-        return res.status(400).json({ message: "No votation found" });
+        return res
+          .status(500)
+          .json({ message: "There was an error getting the votation" });
       }
 
-      const voted: number[] = vote.voted;
-
-      if (voted.includes(user._id)) {
+      if (vote.voted.includes(user._id)) {
         return res.status(200).json(null);
       }
 
-      const optionList: LimitedOptionType[] = [];
-
-      for (const optionID of vote.options) {
-        const id = optionID;
-        const option = await Option.findById(id);
-        if (option) {
-          const newOption: LimitedOptionType = {
-            _id: id,
-            title: option.title,
-          };
-          optionList.push(newOption);
-        }
-      }
+      const optionList: LimitedOptionType[] = await Option.find({
+        _id: { $in: vote.options },
+      }).select("_id title");
 
       const votationResponse: LimitedVoteResponseType = {
         _id: assembly.currentVotation,
@@ -178,15 +142,11 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
 
   const group = req.body.group;
   const title = req.body.title;
-  let voteText = req.body.voteText;
+  const voteText = req.body.voteText || "";
   const caseNumber = req.body.caseNumber;
   const options: [] = req.body.options;
   const maximumOptions = req.body.maximumOptions || 1;
   const user = await User.findById(req.ntnuiNo);
-
-  if (!voteText) {
-    voteText = "";
-  }
 
   if (user) {
     if (
@@ -194,8 +154,12 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
         (membership) => membership.organizer && membership.groupSlug == group
       )
     ) {
-      const tempOptionTitles: OptionType[] = [];
-
+      const assembly = await Assembly.findById(group);
+      if (!(assembly && title && Number.isFinite(caseNumber))) {
+        return res
+          .status(400)
+          .json({ message: "Error with groupID or case number" });
+      }
       if (options) {
         if (!Array.isArray(options)) {
           return res
@@ -203,57 +167,59 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        for (const optionID of options) {
-          const title = optionID;
-          const newOption = new Option({
-            title: title,
-            voteCount: 0,
-          });
-          const feedback = await Option.create(newOption);
-          tempOptionTitles.push(feedback);
-        }
-      }
+        const newOptions = options.map((title) => ({
+          title: title,
+        }));
 
-      const newVotation = new Votation({
-        title: title,
-        caseNumber: caseNumber,
-        isFinished: false,
-        options: tempOptionTitles,
-        voteText: voteText,
-        maximumOptions: maximumOptions,
-      });
+        // Insert the array of Options and create a new Votation
+        try {
+          await Option.insertMany(
+            newOptions,
+            async (error: any, options: OptionType[]) => {
+              if (error) {
+                console.error(error);
+                return res.status(500).json({
+                  message: "Error while creating options",
+                });
+              } else {
+                // Extract the _id values from the inserted documents
+                const insertedIDs: OptionType[] = options.map(
+                  (option: OptionType) => option._id
+                );
 
-      const assembly = await Assembly.findById(group);
-      if (assembly && title && Number.isFinite(caseNumber)) {
-        const votationFeedback = await Votation.create(newVotation);
-        const assemblyFeedback = await Assembly.findByIdAndUpdate(group, {
-          $push: {
-            votes: votationFeedback,
-          },
-        });
-        if (assemblyFeedback) {
-          return res.status(200).json({
-            message: "Votation successfully created",
-            vote_id: newVotation._id,
-          });
-        }
-      } else if (!Number.isFinite(caseNumber)) {
-        return res
-          .status(400)
-          .json({ message: "Votation is missing casenumber" });
-      } else {
-        return res
-          .status(400)
-          .json(
-            title == undefined
-              ? { message: "Votation is missing title" }
-              : { message: "Assembly not found" }
+                const newVotation = await Votation.create({
+                  title: title,
+                  caseNumber: caseNumber,
+                  isFinished: false,
+                  options: insertedIDs,
+                  voteText: voteText,
+                  maximumOptions: maximumOptions,
+                });
+
+                await Assembly.findByIdAndUpdate(group, {
+                  $push: {
+                    votes: newVotation._id,
+                  },
+                });
+
+                return res.status(200).json({
+                  message: "Votation successfully created",
+                  vote_id: newVotation._id,
+                });
+              }
+            }
           );
+        } catch (error) {
+          console.error(error);
+          return res.status(500).json({
+            message: "Error while creating votation",
+          });
+        }
       }
     }
+  } else {
+    return res.status(401).json({ message: "Unauthorized" });
   }
-
-  return res.status(401).json({ message: "Unauthorized" });
 }
 
 export async function activateVotationStatus(
@@ -274,11 +240,6 @@ export async function activateVotationStatus(
         (membership) => membership.organizer && membership.groupSlug == group
       )
     ) {
-      if (!Types.ObjectId.isValid(voteId)) {
-        return res
-          .status(400)
-          .json({ message: "No votation with the given ID found" });
-      }
       const vote = await Votation.findById(voteId);
       const assembly = await Assembly.findById(group);
 
@@ -288,13 +249,7 @@ export async function activateVotationStatus(
           .json({ message: "No votation with the given ID found " });
       }
 
-      if (!assembly) {
-        return res
-          .status(400)
-          .json({ message: "No assembly with the given group found " });
-      }
-
-      if (!assembly.isActive) {
+      if (!assembly || !assembly.isActive) {
         return res
           .status(400)
           .json({ message: "No active assembly with the given group found " });
@@ -319,19 +274,9 @@ export async function activateVotationStatus(
       });
 
       // Add votaton and options to an element for sending to participants.
-      const optionList: LimitedOptionType[] = [];
-
-      for (const optionID of vote.options) {
-        const id = optionID;
-        const option = await Option.findById(id);
-        if (option) {
-          const newOption: LimitedOptionType = {
-            _id: id,
-            title: option.title,
-          };
-          optionList.push(newOption);
-        }
-      }
+      const optionList: LimitedOptionType[] = await Option.find({
+        _id: { $in: vote.options },
+      }).select("_id title");
 
       const votationResponse: LimitedVoteResponseType = {
         _id: voteId,
@@ -354,6 +299,8 @@ export async function activateVotationStatus(
         );
       });
 
+      // Set number of participants to the number of active participants.
+      // This is used to store the number of logged in users when the votation was held.
       await Votation.findByIdAndUpdate(voteId, {
         $set: {
           numberParticipants: req.body.numberParticipants,
@@ -391,7 +338,7 @@ export async function deactivateVotationStatus(
       if (!assembly || !assembly.currentVotation) {
         return res
           .status(400)
-          .json({ message: "There is no current votation ongoing" });
+          .json({ message: "There are currently no votation ongoing" });
       }
 
       const voteId = assembly.currentVotation;
@@ -400,7 +347,7 @@ export async function deactivateVotationStatus(
       if (!vote) {
         return res
           .status(400)
-          .json({ message: "No votation with the given ID found " });
+          .json({ message: "No votation with the given ID found" });
       }
 
       await Assembly.findByIdAndUpdate(group, {
@@ -476,11 +423,7 @@ export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
         }
       }
 
-      for (const optionID of vote.options) {
-        const oldOptionId = optionID;
-        await Option.findByIdAndDelete(oldOptionId);
-      }
-
+      await Option.deleteMany({ _id: { $in: vote.options } });
       await Votation.findByIdAndDelete(voteId);
 
       await Assembly.findByIdAndUpdate(group, {
@@ -552,13 +495,9 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
         });
       }
 
-      for (const optionID of vote.options) {
-        const oldOptionId = optionID;
-        await Option.findByIdAndDelete(oldOptionId);
-      }
+      await Option.deleteMany({ _id: { $in: vote.options } });
 
-      const tempOptionTitles: OptionType[] = [];
-
+      let insertedOptionIDs: OptionType[] = [];
       if (options) {
         if (!Array.isArray(options)) {
           return res
@@ -566,23 +505,21 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        for (let i = 0; i < options.length; i++) {
-          const title: string = options[i];
-
-          const newOption = new Option({
+        const newOptions = await Option.insertMany(
+          options.map((title) => ({
             title: title,
-            voteCount: 0,
-          });
-          const feedback = await Option.create(newOption);
-          tempOptionTitles.push(feedback);
-        }
+          }))
+        );
+
+        // Extract the _id values from the inserted documents
+        insertedOptionIDs = newOptions.map((option: OptionType) => option._id);
       }
 
       await Votation.findByIdAndUpdate(voteId, {
         $set: {
           title: !title ? vote.title : title,
           voteText: !voteText ? vote.voteText : voteText,
-          options: !options ? vote.options : tempOptionTitles,
+          options: !options ? vote.options : insertedOptionIDs,
           caseNumber: !Number.isFinite(caseNumber)
             ? vote.caseNumber
             : caseNumber,
@@ -606,7 +543,7 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
   const group = req.body.group;
   const voteId = req.body.voteId;
   const user = await User.findById(req.ntnuiNo);
-  const optionIDs: string[] = req.body.optionIDs;
+  let optionIDs: string[] = req.body.optionIDs;
 
   if (user) {
     if (user.groups.some((membership) => membership.groupSlug == group)) {
@@ -622,21 +559,12 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
             .status(400)
             .json({ message: "Options is not on correct format" });
         }
+      } else {
+        return res.status(400).json({ message: "No vote provided" });
       }
 
-      for (const optionID of optionIDs) {
-        if (!Types.ObjectId.isValid(optionID)) {
-          return res
-            .status(400)
-            .json({ message: "No option with the given ID found" });
-        }
-        const option = await Option.findById(optionID);
-        if (!option) {
-          return res
-            .status(400)
-            .json({ message: "No option with the given ID found " });
-        }
-      }
+      // Remove duplicates (maximum one vote per option)
+      optionIDs = [...new Set(optionIDs)];
 
       const vote = await Votation.findById(voteId);
       const assembly = await Assembly.findById(group);
@@ -677,17 +605,13 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
           .json({ message: "You can not vote on this votation" });
       }
 
-      const participants: number[] = assembly.participants;
-
-      if (!participants.includes(user._id)) {
+      if (!assembly.participants.includes(user._id)) {
         return res
           .status(400)
           .json({ message: "This user is not a part of the assembly" });
       }
 
-      const voted: number[] = vote.voted;
-
-      if (voted.indexOf(user._id) !== -1) {
+      if (vote.voted.includes(user._id)) {
         return res
           .status(400)
           .json({ message: "This user have already voted" });
@@ -698,19 +622,16 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
           },
         });
 
-        for (const optionID of optionIDs) {
-          await Option.findByIdAndUpdate(optionID, {
-            $inc: {
-              voteCount: 1,
-            },
-          });
-        }
+        await Option.updateMany(
+          { _id: { $in: optionIDs } },
+          { $inc: { voteCount: 1 } }
+        );
       }
 
       // Notify organizers of new vote
       notifyOrganizers(group, JSON.stringify({ voteSubmitted: 1 }));
 
-      return res.status(200).json({ message: "Successfully submited vote" });
+      return res.status(200).json({ message: "Successfully submitted vote" });
     }
   }
 
