@@ -52,8 +52,4 @@ organizerWss.on("connection", function connection(ws, req) {
   ws.on("pong", () => {
     // The client responded to the ping, so the connection is still active.
   });
-
-  ws.on("close", () => {
-    removeOrganizerConnectionByCookie(req);
-  });
 });

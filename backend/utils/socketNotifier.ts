@@ -16,6 +16,8 @@ export const organizerConnections = new Map<string, Map<number, WebSocket>>();
 // Store all active participant connections, for access when sending messages about assembly.
 export const lobbyConnections = new Map<number, WebSocket>();
 
+export const waitingForPongLobby = new Map<number, boolean>();
+
 const sendPing = (ws: WebSocket) => {
   if (ws.readyState === WebSocket.OPEN) {
     ws.ping();
@@ -24,7 +26,14 @@ const sendPing = (ws: WebSocket) => {
 
 // Send ping to all participants to check if they are still connected and prevent the connection from closing.
 export const startHeartbeatInterval = setInterval(() => {
-  lobbyConnections.forEach((ws: WebSocket) => {
+  lobbyConnections.forEach((ws: WebSocket, userID: number) => {
+    // If the participant has not responded to the last ping, close and remove the connection.
+    if (waitingForPongLobby.get(userID) === true) {
+      lobbyConnections.delete(userID);
+      ws.close();
+      return;
+    }
+    waitingForPongLobby.set(userID, true);
     sendPing(ws);
   });
 
@@ -48,6 +57,7 @@ export const storeLobbyConnectionByCookie = (
     }
     // Store socket connection on NTNUI ID.
     lobbyConnections.set(ntnuiNo, ws);
+    console.log("User " + ntnuiNo + " connected to lobby");
   }
 };
 

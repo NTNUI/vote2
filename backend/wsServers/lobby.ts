@@ -1,8 +1,9 @@
 import { WebSocketServer } from "ws";
 import {
-  removeLobbyConnectionByCookie,
   storeLobbyConnectionByCookie,
+  waitingForPongLobby,
 } from "../utils/socketNotifier";
+import { NTNUINoFromRequest } from "../utils/wsCookieRetriever";
 
 export const lobbyWss = new WebSocketServer({ noServer: true });
 
@@ -12,9 +13,6 @@ lobbyWss.on("connection", function connection(ws, req) {
 
   ws.on("pong", () => {
     // The client responded to the ping, so the connection is still active.
-  });
-
-  ws.on("close", () => {
-    removeLobbyConnectionByCookie(req);
+    waitingForPongLobby.set(NTNUINoFromRequest(req) || 0, false);
   });
 });
