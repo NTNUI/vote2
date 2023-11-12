@@ -5,18 +5,18 @@ import { NTNUINoFromRequest } from "./wsCookieRetriever";
 /*
  * This file contains functions for storing connections and notifying users connected to the WebSocket servers.
  * Because the connections are stored in arrays/local data structures, the service has to run on a single instance, as the connections cannot be shared between instances.
- * For making it possible to run multiple instances, this part can be rewritten using for example a redis or mongoDB database.
+ * For making it possible to run multiple instances, this part can be rewritten using for example a Redis or the MongoDB database.
  * However, this is not necessary for the current use case, as the one instance should be able to handle 350 concurrent connections on Azure basic plan. And thousands on the standard plan.
  * https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits
  */
 
 // Store all active organizer connections, the connections are stored by their respective groupSlug.
 // This makes it possible to send messages to all logged in organizers of a group.
-export const organizerConnections = new Map<string, Map<number, WebSocket>>();
-// Store all active participant connections, for access when sending messages about assembly.
+// An organizer can be logged in on multiple devices, and multiple organizers can receive events from the same group.
+export const organizerConnections = new Map<string, WebSocket[]>();
+// Store all active lobby connections, for access when sending messages to assembly participants.
+// Maximum one lobby connection per user.
 export const lobbyConnections = new Map<number, WebSocket>();
-
-export const waitingForPongLobby = new Map<number, boolean>();
 
 const sendPing = (ws: WebSocket) => {
   if (ws.readyState === WebSocket.OPEN) {
@@ -27,18 +27,21 @@ const sendPing = (ws: WebSocket) => {
 // Send ping to all participants to check if they are still connected and prevent the connection from closing.
 export const startHeartbeatInterval = setInterval(() => {
   lobbyConnections.forEach((ws: WebSocket, userID: number) => {
-    // If the participant has not responded to the last ping, close and remove the connection.
-    if (waitingForPongLobby.get(userID) === true) {
+    // Remove connection if it is closed by the client.
+    if (ws.readyState === WebSocket.CLOSED) {
       lobbyConnections.delete(userID);
-      ws.close();
       return;
     }
-    waitingForPongLobby.set(userID, true);
     sendPing(ws);
   });
 
   organizerConnections.forEach((socketList) => {
     socketList.forEach((ws: WebSocket) => {
+      // Remove connection if it is closed by the client.
+      if (ws.readyState === WebSocket.CLOSED) {
+        socketList.splice(socketList.indexOf(ws), 1);
+        return;
+      }
       sendPing(ws);
     });
   });
@@ -68,39 +71,11 @@ export const removeLobbyConnectionByCookie = (req: IncomingMessage) => {
   }
 };
 
-export const removeOrganizerConnectionByCookie = (req: IncomingMessage) => {
-  const ntnuiNo = NTNUINoFromRequest(req);
-  if (ntnuiNo !== null) {
-    for (const groupSlug of organizerConnections.keys()) {
-      for (const ntnui_no of organizerConnections.get(groupSlug)?.keys() ||
-        []) {
-        if (ntnui_no === ntnuiNo) {
-          try {
-            organizerConnections.get(groupSlug)?.delete(ntnui_no);
-          } catch (e) {
-            console.error(
-              "Tried to delete connection that did not exist. " + e
-            );
-          }
-          console.log(
-            "Organizer " + ntnui_no + " unsubscribed from group " + groupSlug
-          );
-          return;
-        }
-      }
-    }
-  }
-};
-
-export const storeOrganizerConnectionByNTNUINo = (
-  ntnui_no: number,
-  groupSlug: string,
-  ws: WebSocket
-) => {
+export const storeOrganizerConnection = (groupSlug: string, ws: WebSocket) => {
   if (!organizerConnections.get(groupSlug)) {
-    organizerConnections.set(groupSlug, new Map<number, WebSocket>());
+    organizerConnections.set(groupSlug, [ws]);
   }
-  organizerConnections.get(groupSlug)?.set(ntnui_no, ws);
+  organizerConnections.get(groupSlug)?.push(ws);
 };
 
 export const notifyOneParticipant = (ntnui_no: number, message: string) => {
@@ -110,23 +85,16 @@ export const notifyOneParticipant = (ntnui_no: number, message: string) => {
     console.log(
       "Could not notify user " +
         ntnui_no +
-        " (disconnected). Is there a problem with the socket URL? (Ignore if testing / dev has restarted)"
+        " (disconnected). Is there a problem with the socket URL? (Ignore if headless testing / dev has restarted and wiped the connections)"
     );
   }
 };
 
 export const notifyOrganizers = (groupSlug: string, message: string) => {
-  for (const ntnui_no of organizerConnections.get(groupSlug)?.keys() || []) {
-    console.log("Sending message to organizer " + ntnui_no);
-    const socket = organizerConnections.get(groupSlug)?.get(ntnui_no);
-    if (socket) {
-      try {
-        socket.send(message);
-      } catch (e) {
-        console.error(
-          "Error when sending message to organizer " + ntnui_no + ": " + e
-        );
-      }
-    }
+  const connections = organizerConnections.get(groupSlug);
+  if (connections) {
+    connections.forEach((connection) => {
+      connection.send(message);
+    });
   }
 };

@@ -141,7 +141,7 @@ export function AssemblyLobby() {
       {kickedOut ? (
         <WaitingRoom
           message={
-            "You have logged in on another device, or you are kicked from this assembly."
+            "You have logged in on another device/tab, this tab is therefore disconnected."
           }
         />
       ) : checkedIn && groupSlug && voted ? (
