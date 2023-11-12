@@ -28,6 +28,14 @@ export const setupInterceptors = () => {
       return response;
     },
     function (error) {
+      // Retry max 3 times
+      if (error.config.retryCount >= 2) {
+        return Promise.reject(error);
+      }
+      error.config.retryCount = error.config.retryCount
+        ? error.config.retryCount + 1
+        : 1;
+
       return (
         // Update the Access Token, this request is not intercepted (avoiding recursion, and return an error if it fails)
         refreshAccessToken()
