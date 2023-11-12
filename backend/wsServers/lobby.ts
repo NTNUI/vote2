@@ -1,6 +1,5 @@
 import { WebSocketServer } from "ws";
 import { storeLobbyConnectionByCookie } from "../utils/socketNotifier";
-import { NTNUINoFromRequest } from "../utils/wsCookieRetriever";
 
 export const lobbyWss = new WebSocketServer({ noServer: true });
 
