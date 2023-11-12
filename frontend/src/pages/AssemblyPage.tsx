@@ -6,7 +6,7 @@ import { WaitingRoom } from "../components/WaitingRoom";
 import { VotationBox } from "../components/VotationBox";
 import { isUserInAssembly } from "../services/assembly";
 import { checkedInState, checkedInType } from "../utils/Context";
-import { Box, Image, Text } from "@mantine/core";
+import { Box, Image, Loader, Text } from "@mantine/core";
 import Arrow from "../assets/Arrow.svg";
 import { getCurrentVotationByGroup } from "../services/votation";
 import { LimitedVoteType } from "../types/votes";
@@ -15,6 +15,7 @@ import { NotFound } from "./NotFound";
 
 export function AssemblyLobby() {
   let navigate = useNavigate();
+  const [isLoading, setLoading] = useState<boolean>(true);
   const { groupSlug } = useParams() as { groupSlug: string };
   const [groupName, setGroupName] = useState<string | undefined>(undefined);
   const [groupNotFound, setGroupNotFound] = useState<boolean>(false);
@@ -28,7 +29,7 @@ export function AssemblyLobby() {
   const { lastMessage, getWebSocket } = useWebSocket(
     import.meta.env.VITE_SOCKET_URL + "/lobby",
     {
-      //Will attempt to reconnect on all close events, such as server shutting down
+      // Will attempt to reconnect on all close events, such as server shutting down
       shouldReconnect: () => !kickedOut,
       // Try to reconnect 300 times before giving up.
       // Also possible to change interval (default is 5000ms)
@@ -54,6 +55,7 @@ export function AssemblyLobby() {
       } else {
         setCheckedIn(false);
       }
+      setLoading(false);
     };
     const getGroupName = async () => {
       const userData = await getUserData();
@@ -112,6 +114,8 @@ export function AssemblyLobby() {
   return groupNotFound ? (
     // Render 404 not found component if group is not found
     <NotFound />
+  ) : isLoading ? (
+    <Loader />
   ) : (
     <>
       {!checkedIn && (

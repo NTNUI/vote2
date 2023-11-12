@@ -22,7 +22,7 @@ export function QrCode() {
   }, []);
 
   return !QRData ? (
-    <Loader></Loader>
+    <Loader />
   ) : (
     <QRCodeSVG
       bgColor="#ffffff"
