@@ -1,5 +1,6 @@
 import axios from "axios";
 import { AssemblyType } from "../types/assembly";
+import { axiosNotIntercepted } from "./axiosIntercept";
 
 export const createAssembly = async (group: string) => {
   return axios.post("/assembly/create", {
@@ -8,7 +9,7 @@ export const createAssembly = async (group: string) => {
 };
 
 export const isUserInAssembly = async (groupSlug: string): Promise<boolean> => {
-  const res = await axios.post("/assembly/user/includes", {
+  const res = await axiosNotIntercepted.post("/assembly/user/includes", {
     groupSlug: groupSlug,
   });
   if (res.status == 200) {
