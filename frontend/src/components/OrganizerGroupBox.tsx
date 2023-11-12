@@ -108,7 +108,6 @@ export function OrganizerGroupBox({
                 className={
                   breakMedium ? classes.buttonStyle : classes.smallButtonStyle
                 }
-                color="gray"
                 onClick={() => handleEditAssemblyClick(group)}
                 data-testid={editAssemblyTestID}
               >
@@ -120,7 +119,6 @@ export function OrganizerGroupBox({
               className={
                 breakMedium ? classes.buttonStyle : classes.smallButtonStyle
               }
-              color="gray"
               onClick={() => handleEditAssemblyClick(group)}
               data-testid={editAssemblyTestID}
             >

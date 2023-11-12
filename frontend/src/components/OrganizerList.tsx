@@ -72,6 +72,3 @@ export function OrganizerList() {
     </>
   );
 }
-function then(arg0: () => void) {
-  throw new Error("Function not implemented.");
-}
