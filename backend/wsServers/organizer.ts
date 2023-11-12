@@ -1,7 +1,7 @@
 import { WebSocketServer } from "ws";
 import { NTNUINoFromRequest } from "../utils/wsCookieRetriever";
 import { User } from "../models/user";
-import { storeOrganizerConnectionByNTNUINo } from "../utils/socketNotifier";
+import { storeOrganizerConnection } from "../utils/socketNotifier";
 
 export const organizerWss = new WebSocketServer({ noServer: true });
 
@@ -28,7 +28,7 @@ organizerWss.on("connection", function connection(ws, req) {
               membership.organizer && membership.groupSlug == groupSlug
           )
         ) {
-          storeOrganizerConnectionByNTNUINo(ntnuiNo, groupSlug, ws);
+          storeOrganizerConnection(groupSlug, ws);
           console.log(
             "Organizer " + ntnuiNo + " are subscribed to group " + groupSlug
           );
@@ -44,5 +44,10 @@ organizerWss.on("connection", function connection(ws, req) {
       // User not logged in / invalid cookie
       ws.close();
     }
+  });
+
+  ws.on("pong", () => {
+    // The client responded to the ping, so the connection is still active.
+    // Connections are deleted when the assembly is deleted or the organizer closes the connection/tab.
   });
 });

@@ -13,6 +13,7 @@ import votationRoutes from "./routes/votation";
 import { parse } from "url";
 import { lobbyWss } from "./wsServers/lobby";
 import { organizerWss } from "./wsServers/organizer";
+import { startHeartbeatInterval } from "./utils/socketNotifier";
 
 dotenv.config();
 
@@ -62,6 +63,12 @@ server.on("upgrade", function upgrade(request, socket, head) {
     socket.destroy();
   }
 });
+
+// Start sending pings/Heartbeat to ws-connections to keep connections alive.
+// Not started when testing, as Jest will not stop properly if the interval is running.
+if (process.env.NODE_ENV !== "test") {
+  startHeartbeatInterval;
+}
 
 try {
   // Jest will start app itself when testing, and not run on port 3000 to avoid collisions.

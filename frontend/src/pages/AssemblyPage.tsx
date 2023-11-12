@@ -25,8 +25,15 @@ export function AssemblyLobby() {
     LimitedVoteType | undefined
   >(undefined);
   const [voted, setVoted] = useState<boolean>(false);
-  const { lastMessage } = useWebSocket(
-    import.meta.env.VITE_SOCKET_URL + "/lobby"
+  const { lastMessage, getWebSocket } = useWebSocket(
+    import.meta.env.VITE_SOCKET_URL + "/lobby",
+    {
+      //Will attempt to reconnect on all close events, such as server shutting down
+      shouldReconnect: () => !kickedOut,
+      // Try to reconnect 300 times before giving up.
+      // Also possible to change interval (default is 5000ms)
+      reconnectAttempts: 300,
+    }
   );
   const { checkedIn, setCheckedIn } = useContext(
     checkedInState
@@ -72,6 +79,7 @@ export function AssemblyLobby() {
       // User is is removed from current lobby if logged in on another device.
       if (decodedMessage.status == "removed") {
         setKickedOut(true);
+        getWebSocket()?.close();
       }
       // Redirect only if user is checked in on the right group.
       if (decodedMessage.group == groupSlug) {
@@ -133,7 +141,7 @@ export function AssemblyLobby() {
       {kickedOut ? (
         <WaitingRoom
           message={
-            "You have logged in on another device, or you are kicked from this assembly."
+            "You have logged in on another device/tab, this tab is therefore disconnected."
           }
         />
       ) : checkedIn && groupSlug && voted ? (
