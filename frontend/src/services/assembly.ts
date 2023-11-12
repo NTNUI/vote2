@@ -11,10 +11,7 @@ export const isUserInAssembly = async (groupSlug: string): Promise<boolean> => {
   const res = await axios.post("/assembly/user/includes", {
     groupSlug: groupSlug,
   });
-  if (res.status == 200) {
-    return true;
-  }
-  return false;
+  return res.data.checkedIn;
 };
 
 export const activateAssembly = async (group: string, isActive: boolean) => {

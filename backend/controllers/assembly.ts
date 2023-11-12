@@ -170,6 +170,7 @@ export async function isUserInAssembly(req: RequestWithNtnuiNo, res: Response) {
   }
   const groupSlug = req.body.groupSlug;
   const user = await User.findById(req.ntnuiNo);
+  let checkedIn = false;
 
   if (user) {
     if (user.groups.some((membership) => membership.groupSlug == groupSlug)) {
@@ -182,14 +183,12 @@ export async function isUserInAssembly(req: RequestWithNtnuiNo, res: Response) {
       }
 
       if (assembly.participants.includes(Number(req.ntnuiNo))) {
-        return res
-          .status(200)
-          .json({ status: "ok", info: "User is already checked in" });
-      } else {
-        return res
-          .status(401)
-          .json({ status: "not checked-in", info: "User is not checked in" });
+        checkedIn = true;
       }
+
+      return res
+        .status(200)
+        .json({ checkedIn: checkedIn, assembly: assembly._id });
     }
   }
   return res.status(401).json({ message: "Not authorized" });
