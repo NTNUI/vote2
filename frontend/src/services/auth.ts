@@ -1,8 +1,7 @@
-import axios from "axios";
 import { axiosNotIntercepted } from "./axiosIntercept";
 
 export const login = (phone_number: string, password: string) => {
-  return axios.post("/auth/login", {
+  return axiosNotIntercepted.post("/auth/login", {
     phone_number: phone_number,
     password: password,
   });
