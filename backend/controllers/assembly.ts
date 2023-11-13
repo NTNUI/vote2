@@ -4,7 +4,6 @@ import { User } from "../models/user";
 import { Votation, Option } from "../models/vote";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { AssemblyResponseType } from "../types/assembly";
-import { organizerConnections } from "../utils/socketNotifier";
 
 export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -112,8 +111,7 @@ export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
       });
 
       await Assembly.deleteOne({ _id: assembly._id });
-      // Clean up websocket connections for this assembly
-      organizerConnections.delete(group);
+
       return res.status(200).json({ message: "Assembly successfully deleted" });
     }
   }
