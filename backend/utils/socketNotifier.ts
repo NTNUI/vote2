@@ -13,10 +13,12 @@ import { NTNUINoFromRequest } from "./wsCookieRetriever";
 // Store all active organizer connections, the connections are stored by their respective groupSlug.
 // This makes it possible to send messages to all logged in organizers of a group.
 // An organizer can be logged in on multiple devices, and multiple organizers can receive events from the same group.
-export const organizerConnections = new Map<string, WebSocket[]>();
+const organizerConnections = new Map<string, WebSocket[]>();
 // Store all active lobby connections, for access when sending messages to assembly participants.
 // Maximum one lobby connection per user.
-export const lobbyConnections = new Map<number, WebSocket>();
+const lobbyConnections = new Map<number, WebSocket>();
+
+let heartBeatInterval: NodeJS.Timeout | undefined;
 
 const sendPing = (ws: WebSocket) => {
   if (ws.readyState === WebSocket.OPEN) {
@@ -25,27 +27,39 @@ const sendPing = (ws: WebSocket) => {
 };
 
 // Send ping to all participants to check if they are still connected and prevent the connection from closing.
-export const startHeartbeatInterval = setInterval(() => {
-  lobbyConnections.forEach((ws: WebSocket, userID: number) => {
-    // Remove connection if it is closed by the client.
-    if (ws.readyState === WebSocket.CLOSED) {
-      lobbyConnections.delete(userID);
-      return;
-    }
-    sendPing(ws);
-  });
-
-  organizerConnections.forEach((socketList) => {
-    socketList.forEach((ws: WebSocket) => {
+const startHeartbeatInterval = () => {
+  heartBeatInterval = setInterval(() => {
+    lobbyConnections.forEach((ws: WebSocket, userID: number) => {
       // Remove connection if it is closed by the client.
       if (ws.readyState === WebSocket.CLOSED) {
-        socketList.splice(socketList.indexOf(ws), 1);
+        lobbyConnections.delete(userID);
         return;
       }
       sendPing(ws);
     });
-  });
-}, 30000); // 30 seconds
+
+    organizerConnections.forEach((socketList, key) => {
+      socketList.forEach((ws: WebSocket) => {
+        // Remove connection if it is closed by the client.
+        if (ws.readyState === WebSocket.CLOSED) {
+          socketList.splice(socketList.indexOf(ws), 1);
+          if (socketList.length === 0) {
+            // Remove map of group if there are no more connections for that group.
+            organizerConnections.delete(key);
+          }
+          return;
+        }
+        sendPing(ws);
+      });
+    });
+
+    // Stop sending pings if there are no connections.
+    if (organizerConnections.size === 0 && lobbyConnections.size === 0) {
+      clearInterval(heartBeatInterval);
+      heartBeatInterval = undefined;
+    }
+  }, 30000); // 30 seconds
+};
 
 export const storeLobbyConnectionByCookie = (
   ws: WebSocket,
@@ -61,13 +75,11 @@ export const storeLobbyConnectionByCookie = (
     // Store socket connection on NTNUI ID.
     lobbyConnections.set(ntnuiNo, ws);
     console.log("User " + ntnuiNo + " connected to lobby");
-  }
-};
 
-export const removeLobbyConnectionByCookie = (req: IncomingMessage) => {
-  const ntnuiNo = NTNUINoFromRequest(req);
-  if (ntnuiNo !== null) {
-    lobbyConnections.delete(ntnuiNo);
+    // Start sending pings when a new connection appears if it is not already doing so.
+    if (!heartBeatInterval) {
+      startHeartbeatInterval();
+    }
   }
 };
 
@@ -76,6 +88,11 @@ export const storeOrganizerConnection = (groupSlug: string, ws: WebSocket) => {
     organizerConnections.set(groupSlug, [ws]);
   }
   organizerConnections.get(groupSlug)?.push(ws);
+
+  if (!heartBeatInterval) {
+    // Start sending pings when a new connection appears if it is not already doing so.
+    startHeartbeatInterval();
+  }
 };
 
 export const notifyOneParticipant = (ntnui_no: number, message: string) => {
