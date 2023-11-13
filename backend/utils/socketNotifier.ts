@@ -13,12 +13,12 @@ import { NTNUINoFromRequest } from "./wsCookieRetriever";
 // Store all active organizer connections, the connections are stored by their respective groupSlug.
 // This makes it possible to send messages to all logged in organizers of a group.
 // An organizer can be logged in on multiple devices, and multiple organizers can receive events from the same group.
-export const organizerConnections = new Map<string, WebSocket[]>();
+const organizerConnections = new Map<string, WebSocket[]>();
 // Store all active lobby connections, for access when sending messages to assembly participants.
 // Maximum one lobby connection per user.
-export const lobbyConnections = new Map<number, WebSocket>();
+const lobbyConnections = new Map<number, WebSocket>();
 
-export let heartBeatInterval: NodeJS.Timeout | undefined;
+let heartBeatInterval: NodeJS.Timeout | undefined;
 
 const sendPing = (ws: WebSocket) => {
   if (ws.readyState === WebSocket.OPEN) {
@@ -27,7 +27,7 @@ const sendPing = (ws: WebSocket) => {
 };
 
 // Send ping to all participants to check if they are still connected and prevent the connection from closing.
-export const startHeartbeatInterval = () => {
+const startHeartbeatInterval = () => {
   heartBeatInterval = setInterval(() => {
     lobbyConnections.forEach((ws: WebSocket, userID: number) => {
       // Remove connection if it is closed by the client.
@@ -80,13 +80,6 @@ export const storeLobbyConnectionByCookie = (
     if (!heartBeatInterval) {
       startHeartbeatInterval();
     }
-  }
-};
-
-export const removeLobbyConnectionByCookie = (req: IncomingMessage) => {
-  const ntnuiNo = NTNUINoFromRequest(req);
-  if (ntnuiNo !== null) {
-    lobbyConnections.delete(ntnuiNo);
   }
 };
 
