@@ -25,27 +25,29 @@ const sendPing = (ws: WebSocket) => {
 };
 
 // Send ping to all participants to check if they are still connected and prevent the connection from closing.
-export const startHeartbeatInterval = setInterval(() => {
-  lobbyConnections.forEach((ws: WebSocket, userID: number) => {
-    // Remove connection if it is closed by the client.
-    if (ws.readyState === WebSocket.CLOSED) {
-      lobbyConnections.delete(userID);
-      return;
-    }
-    sendPing(ws);
-  });
-
-  organizerConnections.forEach((socketList) => {
-    socketList.forEach((ws: WebSocket) => {
+export const startHeartbeatInterval = () => {
+  return setInterval(() => {
+    lobbyConnections.forEach((ws: WebSocket, userID: number) => {
       // Remove connection if it is closed by the client.
       if (ws.readyState === WebSocket.CLOSED) {
-        socketList.splice(socketList.indexOf(ws), 1);
+        lobbyConnections.delete(userID);
         return;
       }
       sendPing(ws);
     });
-  });
-}, 30000); // 30 seconds
+
+    organizerConnections.forEach((socketList) => {
+      socketList.forEach((ws: WebSocket) => {
+        // Remove connection if it is closed by the client.
+        if (ws.readyState === WebSocket.CLOSED) {
+          socketList.splice(socketList.indexOf(ws), 1);
+          return;
+        }
+        sendPing(ws);
+      });
+    });
+  }, 30000); // 30 seconds
+};
 
 export const storeLobbyConnectionByCookie = (
   ws: WebSocket,
