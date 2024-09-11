@@ -7,7 +7,7 @@
 Here is a working example:
 
 ```
-COMPOSE_PROJECT_NAME="NTNUI-Vote"
+COMPOSE_PROJECT_NAME="ntnui-vote"
 BACKEND_PORT=3000
 # Database
 DB_URI = "mongodb://devUser:topSecret@localhost:27017/vote?authSource=admin"
