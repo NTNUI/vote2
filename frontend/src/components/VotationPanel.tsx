@@ -7,6 +7,7 @@ import {
   Box,
   Flex,
   NumberInput,
+  Menu,
 } from "@mantine/core";
 import {
   activateVotation,
@@ -22,6 +23,7 @@ import { useStyles } from "../styles/EditAssemblyStyles";
 import { VoteType } from "../types/votes";
 import { getNumberOfParticipantsInAssembly } from "../services/assembly";
 import { showNotification } from "@mantine/notifications";
+import { getGroups } from "../services/groups";
 
 export interface CaseType {
   caseNumber: number;
@@ -108,6 +110,20 @@ function VotationPanel({
     setEditable(false);
     setIsChanged(!isChanged);
   }
+
+  const handleImportGroupOptions = async (category: string) => {
+    const groups = await getGroups(category);
+    if (Array.isArray(groups)) {
+      const groupNames = groups.map((group) => group.name);
+
+      const newGroupNames = groupNames.filter(
+        (name) => !options.includes(name)
+      );
+      setOptions([...options, ...newGroupNames]);
+
+      form.setFieldValue("options", [...form.values.options, ...newGroupNames]);
+    }
+  };
 
   async function activateVote(votation: VoteType) {
     if (!votation.isFinished) {
@@ -229,6 +245,33 @@ function VotationPanel({
               }}
               {...form.getInputProps("options")}
             />
+            <Menu>
+              <Menu.Target>
+                <Button
+                  style={{
+                    display: "flex",
+                    justifyContent: "left",
+                    marginTop: "10px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <Text>Import options</Text>
+                </Button>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item
+                  onClick={() => handleImportGroupOptions("committee")}
+                >
+                  Import committees
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() => handleImportGroupOptions("sports_group")}
+                >
+                  Import sports groups
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
             <NumberInput
               data-testid="maxOptionsInput"
               withAsterisk

@@ -13,6 +13,7 @@ import votationRoutes from "./routes/votation";
 import { parse } from "url";
 import { lobbyWss } from "./wsServers/lobby";
 import { organizerWss } from "./wsServers/organizer";
+import groupRoutes from "./routes/groups";
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use("/user", userRoutes);
 app.use("/assembly", assemblyRoutes);
 app.use("/qr", qrRoutes);
 app.use("/votation", votationRoutes);
+app.use("/groups", groupRoutes);
 
 // WebSocket routes
 server.on("upgrade", function upgrade(request, socket, head) {
