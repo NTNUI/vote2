@@ -12,8 +12,8 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: '${appName}-plan'
   location: location
   sku: {
-    name: 'S1'
-    tier: 'Standard'
+    name: 'P0v3'
+    tier: 'Premium0V3'
   }
   properties: {
     reserved: true
