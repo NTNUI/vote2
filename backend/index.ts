@@ -14,11 +14,15 @@ import { parse } from "url";
 import { lobbyWss } from "./wsServers/lobby";
 import { organizerWss } from "./wsServers/organizer";
 import groupRoutes from "./routes/groups";
+import { swaggerOptions } from "./utils/swagger";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 dotenv.config();
 
 const app: Application = express();
 const server = createServer(app);
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
 app.use(
   cors({
@@ -47,6 +51,8 @@ app.use("/assembly", assemblyRoutes);
 app.use("/qr", qrRoutes);
 app.use("/votation", votationRoutes);
 app.use("/groups", groupRoutes);
+
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // WebSocket routes
 server.on("upgrade", function upgrade(request, socket, head) {

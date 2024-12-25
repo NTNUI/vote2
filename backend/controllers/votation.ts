@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { Types } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 import { Assembly } from "../models/assembly";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
@@ -488,7 +488,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
 
       await Option.deleteMany({ _id: { $in: vote.options } });
 
-      let insertedOptionIDs: string[] = [];
+      let insertedOptionIDs: ObjectId[] = [];
       if (options) {
         if (!Array.isArray(options)) {
           return res
@@ -503,7 +503,9 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
         )) as OptionType[];
 
         // Extract the _id values from the inserted documents
-        insertedOptionIDs = newOptions.map((option) => option._id) as string[];
+        insertedOptionIDs = newOptions.map(
+          (option) => option._id
+        ) as ObjectId[];
       }
 
       await Votation.findByIdAndUpdate(voteId, {
