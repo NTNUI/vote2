@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Group } from "../types/group";
 
 export const getGroups = async (category?: string): Promise<Group[]> => {
   try {

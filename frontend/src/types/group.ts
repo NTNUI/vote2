@@ -1,4 +1,4 @@
-interface Group {
+export interface Group {
   group_id: number;
   name: string;
   name_english: string;
