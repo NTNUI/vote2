@@ -33,12 +33,28 @@ assemblyRoutes.post(
   getNumberOfParticipantsInAssembly
 );
 
-assemblyRoutes.post("/organizer", authorization, addExternalOrganizerToAssembly);
+assemblyRoutes.post(
+  "/organizer",
+  authorization,
+  addExternalOrganizerToAssembly
+);
 
-assemblyRoutes.delete("/organizer", authorization, removeExternalOrganizerFromAssembly);
+assemblyRoutes.delete(
+  "/organizer",
+  authorization,
+  removeExternalOrganizerFromAssembly
+);
 
-assemblyRoutes.post("/organizers", authorization, getExternalOrganizersInAssembly);
+assemblyRoutes.post(
+  "/organizers",
+  authorization,
+  getExternalOrganizersInAssembly
+);
 
-assemblyRoutes.post("/group/members/search", authorization, searchForGroupMember);
+assemblyRoutes.post(
+  "/group/members/search",
+  authorization,
+  searchForGroupMember
+);
 
 export default assemblyRoutes;
