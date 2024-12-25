@@ -21,7 +21,7 @@ import {
 import { getVotations } from "../services/votation";
 import { AssemblyType } from "../types/assembly";
 import VotationPanel from "./VotationPanel";
-import { OptionType, VoteType } from "../types/votes";
+import { VoteType } from "../types/votes";
 import { Results } from "./Results";
 import { useMediaQuery } from "@mantine/hooks";
 import useWebSocket from "react-use-websocket";
