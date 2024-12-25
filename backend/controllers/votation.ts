@@ -173,42 +173,33 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
 
         // Insert the array of Options and create a new Votation
         try {
-          await Option.insertMany(
-            newOptions,
-            async (error: any, options: OptionType[]) => {
-              if (error) {
-                console.error(error);
-                return res.status(500).json({
-                  message: "Error while creating options",
-                });
-              } else {
-                // Extract the _id values from the inserted documents
-                const insertedIDs: OptionType[] = options.map(
-                  (option: OptionType) => option._id
-                );
+          // Insert the array of options and create a new votation
+          const options: OptionType[] = await Option.insertMany(newOptions);
 
-                const newVotation = await Votation.create({
-                  title: title,
-                  caseNumber: caseNumber,
-                  isFinished: false,
-                  options: insertedIDs,
-                  voteText: voteText,
-                  maximumOptions: maximumOptions,
-                });
+          // Extract the _id values from the inserted documents
+          const insertedIDs = options.map((option) => option._id);
 
-                await Assembly.findByIdAndUpdate(group, {
-                  $push: {
-                    votes: newVotation._id,
-                  },
-                });
+          // Create the new votation
+          const newVotation = await Votation.create({
+            title: title,
+            caseNumber: caseNumber,
+            isFinished: false,
+            options: insertedIDs,
+            voteText: voteText,
+            maximumOptions: maximumOptions,
+          });
 
-                return res.status(200).json({
-                  message: "Votation successfully created",
-                  vote_id: newVotation._id,
-                });
-              }
-            }
-          );
+          // Update the assembly with the new votation ID
+          await Assembly.findByIdAndUpdate(group, {
+            $push: {
+              votes: newVotation._id,
+            },
+          });
+
+          return res.status(200).json({
+            message: "Votation successfully created",
+            vote_id: newVotation._id,
+          });
         } catch (error) {
           console.error(error);
           return res.status(500).json({
@@ -497,7 +488,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
 
       await Option.deleteMany({ _id: { $in: vote.options } });
 
-      let insertedOptionIDs: OptionType[] = [];
+      let insertedOptionIDs: string[] = [];
       if (options) {
         if (!Array.isArray(options)) {
           return res
@@ -505,14 +496,14 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
             .json({ message: "Options is not on correct format" });
         }
 
-        const newOptions = await Option.insertMany(
+        const newOptions = (await Option.insertMany(
           options.map((title) => ({
             title: title,
           }))
-        );
+        )) as OptionType[];
 
         // Extract the _id values from the inserted documents
-        insertedOptionIDs = newOptions.map((option: OptionType) => option._id);
+        insertedOptionIDs = newOptions.map((option) => option._id) as string[];
       }
 
       await Votation.findByIdAndUpdate(voteId, {

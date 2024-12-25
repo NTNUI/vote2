@@ -8,6 +8,12 @@ import {
   setAssemblyStatus,
 } from "../controllers/assembly";
 import authorization from "../utils/authorizationMiddleware";
+import {
+  addExternalOrganizerToAssembly,
+  getExternalOrganizersInAssembly,
+  removeExternalOrganizerFromAssembly,
+  searchForGroupMember,
+} from "../controllers/assemblyOrganizer";
 
 const assemblyRoutes = Router();
 
@@ -25,6 +31,30 @@ assemblyRoutes.post(
   "/participants",
   authorization,
   getNumberOfParticipantsInAssembly
+);
+
+assemblyRoutes.post(
+  "/organizer",
+  authorization,
+  addExternalOrganizerToAssembly
+);
+
+assemblyRoutes.delete(
+  "/organizer",
+  authorization,
+  removeExternalOrganizerFromAssembly
+);
+
+assemblyRoutes.post(
+  "/organizers",
+  authorization,
+  getExternalOrganizersInAssembly
+);
+
+assemblyRoutes.post(
+  "/group/members/search",
+  authorization,
+  searchForGroupMember
 );
 
 export default assemblyRoutes;

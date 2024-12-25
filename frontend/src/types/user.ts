@@ -25,3 +25,9 @@ export type UserDataResponseType = {
   groups: UserDataGroupType[];
   isOrganizer: boolean;
 };
+
+export type UserSearchType = {
+  first_name: string;
+  last_name: string;
+  ntnui_no: number;
+}[];

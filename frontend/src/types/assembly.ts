@@ -8,3 +8,9 @@ export type AssemblyType = {
   participants: number[];
   createdBy: number | null;
 };
+
+export type ExtraOrganizerType = {
+  ntnui_no: number;
+  assembly_id: string;
+  name: string;
+};
