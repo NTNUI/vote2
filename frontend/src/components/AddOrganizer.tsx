@@ -1,11 +1,5 @@
 import { useDebouncedValue } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import {
-  addExternalOrganizerToAssembly,
-  getExternalAssemblyOrganizers,
-  removeExternalOrganizerFromAssembly,
-  searchForGroupMember,
-} from "../services/assembly";
 import { ExtraOrganizerType } from "../types/assembly";
 import {
   Button,
@@ -17,15 +11,20 @@ import {
   Group,
   Divider,
 } from "@mantine/core";
+import {
+  addExternalOrganizerToAssembly,
+  getExternalAssemblyOrganizers,
+  removeExternalOrganizerFromAssembly,
+  searchForGroupMember,
+} from "../services/organizer";
+import { UserSearchType } from "../types/user";
 
 export function AddOrganizerButtonModal(state: { groupSlug: string }) {
   const [openAddOrganizerModal, setOpenAddOrganizerModal] = useState(false);
   const [extraOrganizers, setExtraOrganizers] = useState<ExtraOrganizerType[]>(
     []
   );
-  const [searchResult, setSearchResult] = useState<
-    { first_name: string; last_name: string; ntnui_no: number }[]
-  >([]);
+  const [searchResult, setSearchResult] = useState<UserSearchType>([]);
   const [userSearch, setUserSearch] = useState<string>("");
   const [debouncedSearch] = useDebouncedValue(userSearch, 200);
 
