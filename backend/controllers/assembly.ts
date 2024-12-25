@@ -4,6 +4,7 @@ import { User } from "../models/user";
 import { Votation, Option } from "../models/vote";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { AssemblyResponseType } from "../types/assembly";
+import { Organizer } from "../models/organizer";
 
 export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
@@ -109,6 +110,8 @@ export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
         }
         await Votation.findByIdAndDelete(vote);
       });
+
+      await Organizer.deleteMany({ assembly_id: assembly._id });
 
       await Assembly.deleteOne({ _id: assembly._id });
 

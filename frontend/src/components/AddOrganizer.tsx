@@ -41,7 +41,6 @@ export function AddOrganizerButtonModal(state: { groupSlug: string }) {
   }, [debouncedSearch]);
 
   const fetchOrganizers = async () => {
-    console.log("Fetching organizers");
     const organizers = await getExternalAssemblyOrganizers(state.groupSlug);
     setExtraOrganizers(organizers);
   };
@@ -78,7 +77,10 @@ export function AddOrganizerButtonModal(state: { groupSlug: string }) {
         <Text mb={5} fw={600} ta={"center"}>
           Add organizer
         </Text>
-        <Text ta={"center"}>The user need to be a member of the group.</Text>
+        <Text ta={"center"}>The user must to be a member of the group.</Text>
+        <Text ta={"center"}>
+          To get access, the user might need to log out and log in again.
+        </Text>
 
         <Flex direction="row" align="center" justify="center">
           <Box
