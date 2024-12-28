@@ -4,7 +4,7 @@ import { getGroups } from "../controllers/group";
 const groupRoutes = Router();
 
 /**
- * @swagger
+ * @openapi
  * /groups:
  *   post:
  *     summary: Fetch groups based on a category

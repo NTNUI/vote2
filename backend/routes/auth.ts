@@ -4,7 +4,7 @@ import { login, logout, refreshAccessToken } from "../controllers/auth";
 const authRoutes = Router();
 
 /**
- * @swagger
+ * @openapi
  * /auth/login:
  *   post:
  *     summary: Login
@@ -35,7 +35,7 @@ const authRoutes = Router();
 authRoutes.post("/login", login);
 
 /**
- * @swagger
+ * @openapi
  * /auth/logout:
  *   get:
  *     summary: Logout
@@ -48,7 +48,7 @@ authRoutes.post("/login", login);
 authRoutes.get("/logout", logout);
 
 /**
- * @swagger
+ * @openapi
  * /auth/token/refresh:
  *   get:
  *     summary: Refresh access token

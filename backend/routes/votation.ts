@@ -14,7 +14,7 @@ import authorization from "../utils/authorizationMiddleware";
 const votationRoutes = Router();
 
 /**
- * @swagger
+ * @openapi
  * /allvotations:
  *   post:
  *     summary: Retrieve all votations for a group
@@ -40,7 +40,7 @@ const votationRoutes = Router();
 votationRoutes.post("/allvotations", authorization, getAllVotations);
 
 /**
- * @swagger
+ * @openapi
  * /currentvotation:
  *   post:
  *     summary: Retrieve the current active votation
@@ -66,7 +66,7 @@ votationRoutes.post("/allvotations", authorization, getAllVotations);
 votationRoutes.post("/currentvotation", authorization, getCurrentVotation);
 
 /**
- * @swagger
+ * @openapi
  * /create:
  *   post:
  *     summary: Create a new votation
@@ -107,7 +107,7 @@ votationRoutes.post("/currentvotation", authorization, getCurrentVotation);
 votationRoutes.post("/create", authorization, createVotation);
 
 /**
- * @swagger
+ * @openapi
  * /activate:
  *   put:
  *     summary: Activate a votation
@@ -136,7 +136,7 @@ votationRoutes.post("/create", authorization, createVotation);
 votationRoutes.put("/activate", authorization, activateVotationStatus);
 
 /**
- * @swagger
+ * @openapi
  * /deactivate:
  *   put:
  *     summary: Deactivate a votation
@@ -164,7 +164,7 @@ votationRoutes.put("/activate", authorization, activateVotationStatus);
 votationRoutes.put("/deactivate", authorization, deactivateVotationStatus);
 
 /**
- * @swagger
+ * @openapi
  * /:
  *   delete:
  *     summary: Delete a votation
@@ -193,7 +193,7 @@ votationRoutes.put("/deactivate", authorization, deactivateVotationStatus);
 votationRoutes.delete("/", authorization, deleteVotation);
 
 /**
- * @swagger
+ * @openapi
  * /:
  *   put:
  *     summary: Edit a votation
@@ -230,7 +230,7 @@ votationRoutes.delete("/", authorization, deleteVotation);
 votationRoutes.put("/", authorization, editVotation);
 
 /**
- * @swagger
+ * @openapi
  * /submit:
  *   post:
  *     summary: Submit a vote for a votation

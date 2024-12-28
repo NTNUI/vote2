@@ -5,7 +5,7 @@ import authorization from "../utils/authorizationMiddleware";
 const qrRoutes = Router();
 
 /**
- * @swagger
+ * @openapi
  * /qr:
  *   get:
  *     summary: Retrieve QR data for the user
@@ -29,7 +29,7 @@ const qrRoutes = Router();
 qrRoutes.get("/", authorization, getQRData);
 
 /**
- * @swagger
+ * @openapi
  * /qr/checkin:
  *   post:
  *     summary: Check-in or check-out a user for an assembly

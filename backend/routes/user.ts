@@ -5,7 +5,7 @@ import authorization from "../utils/authorizationMiddleware";
 const userRoutes = Router();
 
 /**
- * @swagger
+ * @openapi
  * /userData:
  *   get:
  *     summary: Retrieve user data

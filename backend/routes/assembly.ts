@@ -18,7 +18,7 @@ import {
 const assemblyRoutes = Router();
 
 /**
- * @swagger
+ * @openapi
  * /assembly/create:
  *   post:
  *     summary: Create a new assembly
@@ -46,7 +46,7 @@ const assemblyRoutes = Router();
 assemblyRoutes.post("/create", authorization, createAssembly);
 
 /**
- * @swagger
+ * @openapi
  * /assembly/activation:
  *   put:
  *     summary: Activate or deactivate an assembly
@@ -78,7 +78,7 @@ assemblyRoutes.post("/create", authorization, createAssembly);
 assemblyRoutes.put("/activation", authorization, setAssemblyStatus);
 
 /**
- * @swagger
+ * @openapi
  * /assembly/delete:
  *   delete:
  *     summary: Delete an assembly
@@ -106,7 +106,7 @@ assemblyRoutes.put("/activation", authorization, setAssemblyStatus);
 assemblyRoutes.delete("/", authorization, deleteAssembly);
 
 /**
- * @swagger
+ * @openapi
  * /assembly:
  *   post:
  *     summary: Get assembly by name
@@ -134,7 +134,7 @@ assemblyRoutes.delete("/", authorization, deleteAssembly);
 assemblyRoutes.post("/", authorization, getAssemblyByName);
 
 /**
- * @swagger
+ * @openapi
  * /assembly/user/includes:
  *   post:
  *     summary: Check if user is in assembly
@@ -162,7 +162,7 @@ assemblyRoutes.post("/", authorization, getAssemblyByName);
 assemblyRoutes.post("/user/includes", authorization, isUserInAssembly);
 
 /**
- * @swagger
+ * @openapi
  * /assembly/participants:
  *   post:
  *     summary: Get number of participants in assembly
@@ -194,7 +194,7 @@ assemblyRoutes.post(
 );
 
 /**
- * @swagger
+ * @openapi
  * /assembly/organizer:
  *   post:
  *     summary: Add an organizer to an assembly
@@ -236,7 +236,7 @@ assemblyRoutes.post(
 );
 
 /**
- * @swagger
+ * @openapi
  * /assembly/organizer:
  *   delete:
  *     summary: Remove an organizer from an assembly
@@ -273,7 +273,7 @@ assemblyRoutes.delete(
 );
 
 /**
- * @swagger
+ * @openapi
  * /assembly/organizers:
  *   post:
  *     summary: Get all organizers in an assembly
@@ -305,7 +305,7 @@ assemblyRoutes.post(
 );
 
 /**
- * @swagger
+ * @openapi
  * /assembly/group/members/search:
  *   post:
  *     summary: Search for group members
