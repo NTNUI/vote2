@@ -43,7 +43,7 @@ export function createAssemblyTest(groupSlug: string) {
       .post("/assembly/create")
       .set("Cookie", cookies)
       .send({
-        group: groupSlug,
+        groupSlug: groupSlug,
       })
       .then((response) => {
         expect(response.statusCode).toBe(200);
@@ -59,7 +59,7 @@ export function activateAssemblyTest(groupSlug: string) {
       .put("/assembly/activation")
       .set("Cookie", cookies)
       .send({
-        group: groupSlug,
+        groupSlug: groupSlug,
         isActive: true,
       })
       .then((response) => {
@@ -76,7 +76,7 @@ export function deactivateAssemblyTest(groupSlug: string) {
       .put("/assembly/activation")
       .set("Cookie", cookies)
       .send({
-        group: groupSlug,
+        groupSlug: groupSlug,
         isActive: false,
       })
       .then((response) => {
@@ -93,7 +93,7 @@ export function deleteAssemblyTest(groupSlug: string) {
       .delete("/assembly/")
       .set("Cookie", cookies)
       .send({
-        group: groupSlug,
+        groupSlug: groupSlug,
       })
       .then((response) => {
         expect(response.statusCode).toBe(200);

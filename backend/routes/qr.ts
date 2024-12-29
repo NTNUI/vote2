@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { assemblyCheckin, getQRData } from "../controllers/qr";
 import authorization from "../utils/authorizationMiddleware";
+import { isOrganizer } from "../utils/permissionMiddleware";
 
 const qrRoutes = Router();
 
@@ -42,10 +43,10 @@ qrRoutes.get("/", authorization, getQRData);
  *           schema:
  *             type: object
  *             required:
- *               - group
+ *               - groupSlug
  *               - QRData
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group slug for the assembly
  *                 example: "sprint"
@@ -61,6 +62,6 @@ qrRoutes.get("/", authorization, getQRData);
  *       401:
  *         description: Unauthorized
  */
-qrRoutes.post("/checkin", authorization, assemblyCheckin);
+qrRoutes.post("/checkin", authorization, isOrganizer, assemblyCheckin);
 
 export default qrRoutes;

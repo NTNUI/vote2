@@ -75,7 +75,9 @@ try {
   // Jest will start app itself when testing, and not run on port 3000 to avoid collisions.
   if (process.env.NODE_ENV !== "test") {
     server.listen(port, (): void => {
-      console.log(`Server is running on port ${port}`);
+      console.log(
+        `Server is running at \u001b]8;;http://localhost:${port}\u001b\\http://localhost:${port}\u001b]8;;\u001b\\`
+      );
     });
   }
 } catch (error) {

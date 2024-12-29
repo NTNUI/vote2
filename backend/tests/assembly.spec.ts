@@ -19,7 +19,7 @@ describe("API test: Test assembly cannot be accessed without authorization", () 
     request(app)
       .post("/assembly/")
       .send({
-        group: "turn",
+        groupSlug: "turn",
       })
       .then((response) => {
         expect(response.statusCode).toBe(401);
@@ -31,7 +31,7 @@ describe("API test: Test assembly cannot be accessed without authorization", () 
     request(app)
       .put("/assembly/activation")
       .send({
-        group: "turn",
+        groupSlug: "turn",
         isActive: false,
       })
       .then((response) => {
@@ -44,7 +44,7 @@ describe("API test: Test assembly cannot be accessed without authorization", () 
     request(app)
       .delete("/assembly/")
       .send({
-        group: "turn",
+        groupSlug: "turn",
       })
       .then((response) => {
         expect(response.statusCode).toBe(401);
@@ -62,7 +62,7 @@ describe("API test: check that one is limited when an assembly has not been crea
       .delete("/assembly/")
       .set("Cookie", cookies)
       .send({
-        group: "turn",
+        groupSlug: "turn",
       })
       .then((response) => {
         expect(response.statusCode).toBe(400);
@@ -78,7 +78,7 @@ describe("API test: check that one is limited when an assembly has not been crea
       .put("/assembly/activation")
       .set("Cookie", cookies)
       .send({
-        group: "turn",
+        groupSlug: "turn",
         isActive: true,
       })
       .then((response) => {
@@ -95,7 +95,7 @@ describe("API test: check that one is limited when an assembly has not been crea
       .put("/assembly/activation")
       .set("Cookie", cookies)
       .send({
-        group: "turn",
+        groupSlug: "turn",
         isActive: false,
       })
       .then((response) => {
@@ -119,7 +119,7 @@ describe("API test: check that one cannot delete an assembly that is still activ
       .delete("/assembly/")
       .set("Cookie", cookies)
       .send({
-        group: testGroupSlug,
+        groupSlug: testGroupSlug,
       })
       .then((response) => {
         expect(response.statusCode).toBe(400);
@@ -145,9 +145,9 @@ describe("API test: Test to edit assembly where user is not an organizer", () =>
         group: "triatlon",
       })
       .then((response) => {
-        expect(response.statusCode).toBe(401);
+        expect(response.statusCode).toBe(403);
         expect(response.body["message"]).toBe(
-          "You are not authorized to create this assembly"
+          "You need to be an organizer to perform this action"
         );
         done();
       });
@@ -162,9 +162,9 @@ describe("API test: Test to edit assembly where user is not an organizer", () =>
         isActive: "true",
       })
       .then((response) => {
-        expect(response.statusCode).toBe(401);
+        expect(response.statusCode).toBe(403);
         expect(response.body["message"]).toBe(
-          "You are not authorized to change activation for this assembly"
+          "You need to be an organizer to perform this action"
         );
         done();
       });
@@ -178,9 +178,9 @@ describe("API test: Test to edit assembly where user is not an organizer", () =>
         group: "triatlon",
       })
       .then((response) => {
-        expect(response.statusCode).toBe(401);
+        expect(response.statusCode).toBe(403);
         expect(response.body["message"]).toBe(
-          "You are not authorized to delete this assembly"
+          "You need to be an organizer to perform this action"
         );
         done();
       });

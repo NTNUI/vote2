@@ -14,7 +14,7 @@ describe("API test userdata", () => {
 
   test("GET/ Get userdata: should return userdata and statuscode 200", (done) => {
     request(app)
-      .get("/user/userdata")
+      .get("/user")
       .set("Cookie", cookies)
       .expect(200)
       .end((err, res) => {
@@ -28,7 +28,7 @@ describe("API test userdata", () => {
 
   test("GET/ Get userdata without cookies: should return statuscode 401", (done) => {
     request(app)
-      .get("/user/userdata")
+      .get("/user")
       .expect(401)
       .end((err) => {
         if (err) return done(err);
