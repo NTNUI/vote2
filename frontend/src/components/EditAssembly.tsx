@@ -7,6 +7,7 @@ import {
   Image,
   Loader,
   Modal,
+  SimpleGrid,
   Text,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
@@ -217,97 +218,113 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             </Text>
             <Text>Logged in participants: {participants}</Text>
             <Text>Submitted votes on current votation: {submittedVotes}</Text>
-            {assembly.isActive ? (
-              <Button
-                color={"red"}
-                onClick={() => endAssembly(group.groupSlug)}
-                m={10}
-              >
-                Stop assembly
-              </Button>
-            ) : (
-              <Button
-                color={"green"}
-                onClick={() => startAssembly(group.groupSlug)}
-                m={10}
-              >
-                Start Assembly
-              </Button>
-            )}
-            {!assembly.isActive && (
-              <>
+
+            <Flex
+              justify={"center"}
+              wrap="wrap"
+              rowGap={"0.5rem"}
+              columnGap={"0.5rem"}
+              maw={450}
+            >
+              {assembly.isActive ? (
                 <Button
                   color={"red"}
-                  onClick={() => setOpenModal(true)}
+                  onClick={() => endAssembly(group.groupSlug)}
                   m={10}
-                  data-testid="open-delete-modal"
                 >
-                  Delete assembly
+                  Stop assembly
                 </Button>
-                <Modal
-                  opened={openModal}
-                  onClose={() => setOpenModal(false)}
-                  size="lg"
-                  centered
-                  withCloseButton={false}
-                  transition="fade"
-                  transitionDuration={200}
-                  exitTransitionDuration={200}
-                  // Styling is done like this to overwrite Mantine styling, therefore global color variables is not used.
-                  styles={{
-                    modal: {
-                      backgroundColor: "#1b202c",
-                      color: "white",
-                      border: ".5px solid",
-                      borderRadius: 5,
-                      borderBottomRightRadius: 0,
-                      borderColor: "#f8f082",
-                    },
-                    title: {
-                      margin: "0 auto",
-                    },
-                  }}
+              ) : (
+                <Button
+                  color={"green"}
+                  onClick={() => startAssembly(group.groupSlug)}
+                  m={10}
                 >
-                  <Text mb={5} fw={600} ta={"center"}>
-                    Delete {group.groupName} assembly
-                  </Text>
-                  <Text ta={"center"}>
-                    Are you sure you want to delete this assembly?
-                  </Text>
-                  <Text ta={"center"}>All data will be lost!</Text>
-                  <Container
-                    sx={(theme) => ({
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-evenly",
-                    })}
+                  Start Assembly
+                </Button>
+              )}
+              {!assembly.isActive && (
+                <>
+                  <Button
+                    color={"red"}
+                    onClick={() => setOpenModal(true)}
+                    m={10}
+                    data-testid="open-delete-modal"
                   >
-                    <Button
-                      data-testid="delete-button"
-                      onClick={() => handleDeleteAssemblyClick(group.groupSlug)}
-                      color="red"
-                      mt="md"
+                    Delete assembly
+                  </Button>
+                  <Modal
+                    opened={openModal}
+                    onClose={() => setOpenModal(false)}
+                    size="lg"
+                    centered
+                    withCloseButton={false}
+                    transition="fade"
+                    transitionDuration={200}
+                    exitTransitionDuration={200}
+                    // Styling is done like this to overwrite Mantine styling, therefore global color variables is not used.
+                    styles={{
+                      modal: {
+                        backgroundColor: "#1b202c",
+                        color: "white",
+                        border: ".5px solid",
+                        borderRadius: 5,
+                        borderBottomRightRadius: 0,
+                        borderColor: "#f8f082",
+                      },
+                      title: {
+                        margin: "0 auto",
+                      },
+                    }}
+                  >
+                    <Text mb={5} fw={600} ta={"center"}>
+                      Delete {group.groupName} assembly
+                    </Text>
+                    <Text ta={"center"}>
+                      Are you sure you want to delete this assembly?
+                    </Text>
+                    <Text ta={"center"}>All data will be lost!</Text>
+                    <Container
+                      sx={(theme) => ({
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-evenly",
+                      })}
                     >
-                      Delete
-                    </Button>
-                    <Button mt="md" onClick={() => setOpenModal(false)}>
-                      Cancel
-                    </Button>
-                  </Container>
-                </Modal>
-              </>
-            )}
+                      <Button
+                        data-testid="delete-button"
+                        onClick={() =>
+                          handleDeleteAssemblyClick(group.groupSlug)
+                        }
+                        color="red"
+                        mt="md"
+                      >
+                        Delete
+                      </Button>
+                      <Button mt="md" onClick={() => setOpenModal(false)}>
+                        Cancel
+                      </Button>
+                    </Container>
+                  </Modal>
+                </>
+              )}
 
-            <br />
-            <AddOrganizerButtonModal groupSlug={group.groupSlug} />
+              {/* Only board members are able to search for members in the group
+                  Therefore extra board members are not able to add new organizers, 
+                  as they are not able to search for members in the group in order 
+                  to add organizers. */}
+              {!assembly.isExtraOrganizer && (
+                <AddOrganizerButtonModal groupSlug={group.groupSlug} />
+              )}
 
-            <Button
-              onClick={() => addCase()}
-              m={10}
-              data-testid="add-case-button"
-            >
-              Add votation
-            </Button>
+              <Button
+                onClick={() => addCase()}
+                m={10}
+                data-testid="add-case-button"
+              >
+                Add votation
+              </Button>
+            </Flex>
           </Container>
         </Container>
         <Container p={0} pt={"xs"} w={breakpoint ? "45%" : "95%"}>

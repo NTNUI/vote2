@@ -1,3 +1,4 @@
+import { Organizer } from "../models/organizer";
 import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "./request";
 import { Response, NextFunction } from "express";
@@ -20,6 +21,13 @@ export async function isOrganizer(
           membership.organizer && membership.groupSlug == groupSlug
       )
     ) {
+      return next();
+    }
+    const extraOrganizer = await Organizer.exists({
+      ntnui_no: req.ntnuiNo,
+      assembly_id: groupSlug,
+    });
+    if (extraOrganizer) {
       return next();
     }
     return res

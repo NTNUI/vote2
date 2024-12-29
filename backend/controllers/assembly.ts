@@ -92,6 +92,11 @@ export async function getAssemblyByName(
       .json({ message: "No assembly with the given ID found" });
   }
 
+  const isExtraOrganizer = await Organizer.exists({
+    ntnui_no: Number(req.ntnuiNo),
+    assembly_id: groupSlug,
+  });
+
   const vote = await Votation.findById(assembly.currentVotation);
 
   const assemblyResponse: AssemblyResponseType = {
@@ -101,6 +106,7 @@ export async function getAssemblyByName(
     isActive: assembly.isActive,
     participants: assembly.participants,
     createdBy: assembly.createdBy,
+    isExtraOrganizer: isExtraOrganizer ? true : false,
   };
 
   return res.status(200).json(assemblyResponse);

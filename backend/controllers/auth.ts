@@ -51,15 +51,6 @@ export async function login(req: Request, res: Response) {
       // User is automatically an organizer if they are part of the group board
       if (groupOrganizers().includes(membership.type)) {
         organizer = true;
-      } else {
-        // Check if user is added as an extra organizer for the given assembly
-        const extraOrganizer = await Organizer.exists({
-          ntnui_no: userProfile.data.ntnui_no,
-          assembly_id: membership.slug,
-        });
-        if (extraOrganizer) {
-          organizer = true;
-        }
       }
       groups.push({
         groupName: membership.group,

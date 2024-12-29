@@ -4,6 +4,7 @@ import { User } from "../models/user";
 import { UserDataGroupType, UserDataResponseType } from "../types/user";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { getNameById } from "../utils/user";
+import { Organizer } from "../models/organizer";
 
 export async function getUserData(
   req: RequestWithNtnuiNo,
@@ -30,13 +31,20 @@ export async function getUserData(
       if (membership.organizer) {
         userData.isOrganizer = true;
       }
+      const extraOrganizer = await Organizer.exists({
+        ntnui_no: req.ntnuiNo,
+        assembly_id: membership.groupSlug,
+      });
+      if (extraOrganizer) {
+        userData.isOrganizer = true;
+      }
 
       const assembly = await Assembly.findById(membership.groupSlug);
 
       userDataGroups.push({
         groupName: membership.groupName,
         groupSlug: membership.groupSlug,
-        organizer: membership.organizer,
+        organizer: membership.organizer || extraOrganizer ? true : false,
         hasAssembly: assembly ? true : false,
         hasActiveAssembly: assembly ? assembly.isActive : false,
         createdBy: assembly

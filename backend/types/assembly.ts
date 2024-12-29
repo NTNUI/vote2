@@ -17,4 +17,5 @@ export type AssemblyResponseType = {
   isActive: boolean;
   participants: number[];
   createdBy: number | null;
+  isExtraOrganizer: boolean;
 };

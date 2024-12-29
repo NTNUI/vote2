@@ -77,9 +77,6 @@ export function AddOrganizerButtonModal(state: { groupSlug: string }) {
           Add organizer
         </Text>
         <Text ta={"center"}>The user must to be a member of the group.</Text>
-        <Text ta={"center"}>
-          To get access, the user might need to log out and log in again.
-        </Text>
 
         <Flex direction="row" align="center" justify="center">
           <Box
