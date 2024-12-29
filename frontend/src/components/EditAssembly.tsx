@@ -7,7 +7,6 @@ import {
   Image,
   Loader,
   Modal,
-  SimpleGrid,
   Text,
 } from "@mantine/core";
 import { useEffect, useState } from "react";

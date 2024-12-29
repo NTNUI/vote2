@@ -3,7 +3,6 @@ import { getNtnuiToken, getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { User } from "../models/user";
 import { GroupType } from "../types/user";
 import { groupOrganizers } from "../utils/user";
-import { Organizer } from "../models/organizer";
 
 export async function login(req: Request, res: Response) {
   try {

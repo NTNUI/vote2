@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { User } from "../models/user";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { Organizer } from "../models/organizer";
 import { axiosClient } from "../utils/axiosClient";
