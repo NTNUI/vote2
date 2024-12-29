@@ -2,7 +2,7 @@ import axios from "axios";
 import { UserDataResponseType, UserSearchType } from "../types/user";
 
 export const getUserData = async (): Promise<UserDataResponseType> => {
-  return (await axios.get("/user/userData", { withCredentials: true })).data;
+  return (await axios.get("/user", { withCredentials: true })).data;
 };
 
 export const searchForGroupMember = async (
@@ -23,7 +23,7 @@ export const addExternalOrganizerToAssembly = async (
   name: string
 ) => {
   return axios.post("/assembly/organizer", {
-    group: group,
+    groupSlug: group,
     newOrganizer_ntnui_no: newOrganizer,
     newOrganizer_name: name,
   });
@@ -35,7 +35,7 @@ export const removeExternalOrganizerFromAssembly = async (
 ) => {
   return axios.delete("/assembly/organizer", {
     data: {
-      group: group,
+      groupSlug: group,
       organizer_ntnui_no: organizer,
     },
   });
