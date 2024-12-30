@@ -10,6 +10,7 @@ import {
   submitVote,
 } from "../controllers/votation";
 import authorization from "../utils/authorizationMiddleware";
+import { isMember, isOrganizer } from "../utils/permissionMiddleware";
 
 const votationRoutes = Router();
 
@@ -27,7 +28,7 @@ const votationRoutes = Router();
  *           schema:
  *             type: object
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group identifier
  *                 example: "group1"
@@ -37,7 +38,12 @@ const votationRoutes = Router();
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.post("/allvotations", authorization, getAllVotations);
+votationRoutes.post(
+  "/allvotations",
+  authorization,
+  isOrganizer,
+  getAllVotations
+);
 
 /**
  * @openapi
@@ -53,7 +59,7 @@ votationRoutes.post("/allvotations", authorization, getAllVotations);
  *           schema:
  *             type: object
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group identifier
  *                 example: "group1"
@@ -63,11 +69,16 @@ votationRoutes.post("/allvotations", authorization, getAllVotations);
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.post("/currentvotation", authorization, getCurrentVotation);
+votationRoutes.post(
+  "/currentvotation",
+  authorization,
+  isMember,
+  getCurrentVotation
+);
 
 /**
  * @openapi
- * /create:
+ * /:
  *   post:
  *     summary: Create a new votation
  *     tags:
@@ -79,7 +90,7 @@ votationRoutes.post("/currentvotation", authorization, getCurrentVotation);
  *           schema:
  *             type: object
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group identifier
  *                 example: "group1"
@@ -104,7 +115,7 @@ votationRoutes.post("/currentvotation", authorization, getCurrentVotation);
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.post("/create", authorization, createVotation);
+votationRoutes.post("/", authorization, isOrganizer, createVotation);
 
 /**
  * @openapi
@@ -120,7 +131,7 @@ votationRoutes.post("/create", authorization, createVotation);
  *           schema:
  *             type: object
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group identifier
  *                 example: "group1"
@@ -133,7 +144,12 @@ votationRoutes.post("/create", authorization, createVotation);
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.put("/activate", authorization, activateVotationStatus);
+votationRoutes.put(
+  "/activate",
+  authorization,
+  isOrganizer,
+  activateVotationStatus
+);
 
 /**
  * @openapi
@@ -143,7 +159,7 @@ votationRoutes.put("/activate", authorization, activateVotationStatus);
  *     tags:
  *       - Votation
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -151,7 +167,7 @@ votationRoutes.put("/activate", authorization, activateVotationStatus);
  *           schema:
  *             type: object
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group identifier
  *                 example: "group1"
@@ -161,7 +177,12 @@ votationRoutes.put("/activate", authorization, activateVotationStatus);
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.put("/deactivate", authorization, deactivateVotationStatus);
+votationRoutes.put(
+  "/deactivate",
+  authorization,
+  isOrganizer,
+  deactivateVotationStatus
+);
 
 /**
  * @openapi
@@ -177,7 +198,7 @@ votationRoutes.put("/deactivate", authorization, deactivateVotationStatus);
  *           schema:
  *             type: object
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group identifier
  *                 example: "group1"
@@ -190,7 +211,7 @@ votationRoutes.put("/deactivate", authorization, deactivateVotationStatus);
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.delete("/", authorization, deleteVotation);
+votationRoutes.delete("/", authorization, isOrganizer, deleteVotation);
 
 /**
  * @openapi
@@ -206,7 +227,7 @@ votationRoutes.delete("/", authorization, deleteVotation);
  *           schema:
  *             type: object
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group identifier
  *                 example: "group1"
@@ -227,7 +248,7 @@ votationRoutes.delete("/", authorization, deleteVotation);
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.put("/", authorization, editVotation);
+votationRoutes.put("/", authorization, isOrganizer, editVotation);
 
 /**
  * @openapi
@@ -237,7 +258,7 @@ votationRoutes.put("/", authorization, editVotation);
  *     tags:
  *       - Votation
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -245,7 +266,7 @@ votationRoutes.put("/", authorization, editVotation);
  *           schema:
  *             type: object
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group identifier
  *                 example: "group1"
@@ -263,6 +284,6 @@ votationRoutes.put("/", authorization, editVotation);
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.post("/submit", authorization, submitVote);
+votationRoutes.post("/submit", authorization, isMember, submitVote);
 
 export default votationRoutes;

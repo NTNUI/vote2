@@ -77,7 +77,7 @@ const assemblyByName = {
 };
 
 export const restHandlers = [
-  rest.get("http://localhost:3000/user/userData", (req, res, ctx) => {
+  rest.get("http://localhost:3000/user", (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(userData));
   }),
   rest.post("http://localhost:3000/votation/allVotations", (req, res, ctx) => {

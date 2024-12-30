@@ -6,19 +6,19 @@ const userRoutes = Router();
 
 /**
  * @openapi
- * /userData:
+ * /user:
  *   get:
  *     summary: Retrieve user data
  *     tags:
  *       - User
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Successfully retrieved user data
  *       401:
  *         description: Unauthorized
  */
-userRoutes.get("/userData", authorization, getUserData);
+userRoutes.get("/", authorization, getUserData);
 
 export default userRoutes;

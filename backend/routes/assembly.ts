@@ -14,6 +14,7 @@ import {
   removeExternalOrganizerFromAssembly,
   searchForGroupMember,
 } from "../controllers/assemblyOrganizer";
+import { isMember, isOrganizer } from "../utils/permissionMiddleware";
 
 const assemblyRoutes = Router();
 
@@ -31,9 +32,9 @@ const assemblyRoutes = Router();
  *           schema:
  *             type: object
  *             required:
- *               - group
+ *               - groupSlug
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: Group slug
  *                 example: "sprint"
@@ -43,7 +44,7 @@ const assemblyRoutes = Router();
  *       400:
  *         description: Invalid input
  */
-assemblyRoutes.post("/create", authorization, createAssembly);
+assemblyRoutes.post("/create", authorization, isOrganizer, createAssembly);
 
 /**
  * @openapi
@@ -59,10 +60,10 @@ assemblyRoutes.post("/create", authorization, createAssembly);
  *           schema:
  *             type: object
  *             required:
- *               - group
+ *               - groupSlug
  *               - isActive
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: Group slug
  *                 example: "sprint"
@@ -75,7 +76,12 @@ assemblyRoutes.post("/create", authorization, createAssembly);
  *       400:
  *         description: Invalid input
  */
-assemblyRoutes.put("/activation", authorization, setAssemblyStatus);
+assemblyRoutes.put(
+  "/activation",
+  authorization,
+  isOrganizer,
+  setAssemblyStatus
+);
 
 /**
  * @openapi
@@ -91,9 +97,9 @@ assemblyRoutes.put("/activation", authorization, setAssemblyStatus);
  *           schema:
  *             type: object
  *             required:
- *               - group
+ *               - groupSlug
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: Group slug
  *                 example: "sprint"
@@ -103,7 +109,7 @@ assemblyRoutes.put("/activation", authorization, setAssemblyStatus);
  *       400:
  *         description: Invalid input
  */
-assemblyRoutes.delete("/", authorization, deleteAssembly);
+assemblyRoutes.delete("/", authorization, isOrganizer, deleteAssembly);
 
 /**
  * @openapi
@@ -131,7 +137,7 @@ assemblyRoutes.delete("/", authorization, deleteAssembly);
  *       400:
  *         description: Invalid input
  */
-assemblyRoutes.post("/", authorization, getAssemblyByName);
+assemblyRoutes.post("/", authorization, isOrganizer, getAssemblyByName);
 
 /**
  * @openapi
@@ -159,7 +165,12 @@ assemblyRoutes.post("/", authorization, getAssemblyByName);
  *       400:
  *         description: Invalid input
  */
-assemblyRoutes.post("/user/includes", authorization, isUserInAssembly);
+assemblyRoutes.post(
+  "/user/includes",
+  authorization,
+  isMember,
+  isUserInAssembly
+);
 
 /**
  * @openapi
@@ -190,6 +201,7 @@ assemblyRoutes.post("/user/includes", authorization, isUserInAssembly);
 assemblyRoutes.post(
   "/participants",
   authorization,
+  isOrganizer,
   getNumberOfParticipantsInAssembly
 );
 
@@ -207,11 +219,11 @@ assemblyRoutes.post(
  *           schema:
  *             type: object
  *             required:
- *               - group
+ *               - groupSlug
  *               - newOrganizer_ntnui_no
  *               - newOrganizer_name
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group slug
  *                 example: "group1"
@@ -232,6 +244,7 @@ assemblyRoutes.post(
 assemblyRoutes.post(
   "/organizer",
   authorization,
+  isOrganizer,
   addExternalOrganizerToAssembly
 );
 
@@ -249,10 +262,10 @@ assemblyRoutes.post(
  *           schema:
  *             type: object
  *             required:
- *               - group
+ *               - groupSlug
  *               - organizer_ntnui_no
  *             properties:
- *               group:
+ *               groupSlug:
  *                 type: string
  *                 description: The group slug
  *                 example: "group1"
@@ -269,6 +282,7 @@ assemblyRoutes.post(
 assemblyRoutes.delete(
   "/organizer",
   authorization,
+  isOrganizer,
   removeExternalOrganizerFromAssembly
 );
 
@@ -301,6 +315,7 @@ assemblyRoutes.delete(
 assemblyRoutes.post(
   "/organizers",
   authorization,
+  isOrganizer,
   getExternalOrganizersInAssembly
 );
 
@@ -318,12 +333,17 @@ assemblyRoutes.post(
  *           schema:
  *             type: object
  *             required:
- *               - query
+ *               - search
+ *               - groupSlug
  *             properties:
- *               query:
+ *               search:
  *                 type: string
  *                 description: The search query
  *                 example: "John Doe"
+ *               groupSlug:
+ *                type: string
+ *                description: The group slug
+ *                example: "group1"
  *     responses:
  *       200:
  *         description: List of group members
@@ -333,6 +353,7 @@ assemblyRoutes.post(
 assemblyRoutes.post(
   "/group/members/search",
   authorization,
+  isOrganizer,
   searchForGroupMember
 );
 

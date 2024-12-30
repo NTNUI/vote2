@@ -3,7 +3,6 @@ import { getNtnuiToken, getNtnuiProfile, refreshNtnuiToken } from "ntnui-tools";
 import { User } from "../models/user";
 import { GroupType } from "../types/user";
 import { groupOrganizers } from "../utils/user";
-import { Organizer } from "../models/organizer";
 
 export async function login(req: Request, res: Response) {
   try {
@@ -51,15 +50,6 @@ export async function login(req: Request, res: Response) {
       // User is automatically an organizer if they are part of the group board
       if (groupOrganizers().includes(membership.type)) {
         organizer = true;
-      } else {
-        // Check if user is added as an extra organizer for the given assembly
-        const extraOrganizer = await Organizer.exists({
-          ntnui_no: userProfile.data.ntnui_no,
-          assembly_id: membership.slug,
-        });
-        if (extraOrganizer) {
-          organizer = true;
-        }
       }
       groups.push({
         groupName: membership.group,

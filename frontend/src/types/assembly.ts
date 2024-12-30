@@ -7,6 +7,7 @@ export type AssemblyType = {
   isActive: boolean;
   participants: number[];
   createdBy: number | null;
+  isExtraOrganizer: boolean;
 };
 
 export type ExtraOrganizerType = {

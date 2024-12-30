@@ -11,9 +11,9 @@ export const createVotation = async (
 ): Promise<{ message: string; vote_id: string }> => {
   const res = (
     await axios.post(
-      "/votation/create/",
+      "/votation",
       {
-        group: group,
+        groupSlug: group,
         title: title,
         caseNumber: caseNumber,
         voteText: voteText,
@@ -32,9 +32,9 @@ export const activateVotation = async (
   numberParticipants: number
 ) => {
   return axios.put(
-    "/votation/activate/",
+    "/votation/activate",
     {
-      group: group,
+      groupSlug: group,
       voteId: voteId,
       numberParticipants: numberParticipants,
     },
@@ -44,9 +44,9 @@ export const activateVotation = async (
 
 export const deactivateVotation = async (group: string, voteId: string) => {
   return axios.put(
-    "/votation/deactivate/",
+    "/votation/deactivate",
     {
-      group: group,
+      groupSlug: group,
       voteId: voteId,
     },
     { withCredentials: true }
@@ -54,9 +54,9 @@ export const deactivateVotation = async (group: string, voteId: string) => {
 };
 
 export const deleteVotation = async (group: string, voteId: string) => {
-  return axios.delete("/votation/", {
+  return axios.delete("/votation", {
     data: {
-      group: group,
+      groupSlug: group,
       voteId: voteId,
     },
   });
@@ -71,9 +71,9 @@ export const editVotation = async (
   options: string[]
 ): Promise<VoteType> => {
   return axios.put(
-    "/votation/",
+    "/votation",
     {
-      group: group,
+      groupSlug: group,
       voteId: voteId,
       title: title,
       caseNumber: caseNumber,
@@ -87,9 +87,9 @@ export const editVotation = async (
 export const getVotations = async (group: string): Promise<VoteType[]> => {
   return (
     await axios.post(
-      "/votation/allvotations/",
+      "/votation/allvotations",
       {
-        group: group,
+        groupSlug: group,
       },
       {
         withCredentials: true,
@@ -103,7 +103,7 @@ export const getCurrentVotationByGroup = async (
 ): Promise<LimitedVoteType> => {
   return (
     await axios.post("/votation/currentvotation", {
-      group: groupSlug,
+      groupSlug: groupSlug,
     })
   ).data;
 };
@@ -115,7 +115,7 @@ export const submitVote = async (
 ) => {
   return (
     await axios.post("/votation/submit", {
-      group: groupSlug,
+      groupSlug: groupSlug,
       voteId: voteId,
       optionIDs: optionId,
     })

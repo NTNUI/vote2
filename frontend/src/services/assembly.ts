@@ -3,7 +3,7 @@ import { AssemblyType } from "../types/assembly";
 
 export const createAssembly = async (group: string) => {
   return axios.post("/assembly/create", {
-    group: group,
+    groupSlug: group,
   });
 };
 
@@ -16,15 +16,15 @@ export const isUserInAssembly = async (groupSlug: string): Promise<boolean> => {
 
 export const activateAssembly = async (group: string, isActive: boolean) => {
   return axios.put("/assembly/activation", {
-    group: group,
+    groupSlug: group,
     isActive: isActive,
   });
 };
 
 export const deleteAssembly = async (group: string) => {
-  return axios.delete("/assembly/", {
+  return axios.delete("/assembly", {
     data: {
-      group: group,
+      groupSlug: group,
     },
   });
 };
@@ -33,7 +33,7 @@ export const getAssemblyByName = async (
   groupSlug: string
 ): Promise<AssemblyType> => {
   return (
-    await axios.post("/assembly/", {
+    await axios.post("/assembly", {
       groupSlug: groupSlug,
     })
   ).data;
