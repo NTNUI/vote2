@@ -17,6 +17,7 @@ import groupRoutes from "./routes/groups";
 import { swaggerOptions } from "./utils/swagger";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import logRoutes from "./routes/log";
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ app.use("/assembly", assemblyRoutes);
 app.use("/qr", qrRoutes);
 app.use("/votation", votationRoutes);
 app.use("/groups", groupRoutes);
+app.use("/logs", logRoutes);
 
 app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
