@@ -284,7 +284,7 @@ function VotationPanel({
             />
 
             <Button type="submit" mt={10} data-testid="submitButton">
-              Save current vote
+              Save
             </Button>
           </form>
         </Accordion.Panel>
