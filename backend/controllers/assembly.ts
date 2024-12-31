@@ -4,6 +4,7 @@ import { Votation, Option } from "../models/vote";
 import { RequestWithNtnuiNo } from "../utils/request";
 import { AssemblyResponseType } from "../types/assembly";
 import { Organizer } from "../models/organizer";
+import { Log } from "../models/log";
 
 export async function createAssembly(req: RequestWithNtnuiNo, res: Response) {
   const group = req.body.groupSlug;
@@ -75,6 +76,8 @@ export async function deleteAssembly(req: RequestWithNtnuiNo, res: Response) {
   await Organizer.deleteMany({ assembly_id: assembly._id });
 
   await Assembly.deleteOne({ _id: assembly._id });
+
+  await Log.deleteMany({ assembly_id: assembly._id });
 
   return res.status(200).json({ message: "Assembly successfully deleted" });
 }
