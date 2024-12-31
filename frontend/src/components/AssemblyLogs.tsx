@@ -7,26 +7,31 @@ import {
   Card,
   Divider,
   CopyButton,
+  Flex,
+  Loader,
+  Box,
 } from "@mantine/core";
 import { fetchAssemblyLogs } from "../services/log";
 import { LogType } from "../types/log";
-import { Clipboard } from "tabler-icons-react";
+import { Clipboard, Container } from "tabler-icons-react";
 
 export function AssemblyLogModal(state: { groupSlug: string }) {
   const [openAddOrganizerModal, setOpenAddOrganizerModal] = useState(false);
-  const [logs, setLogs] = useState<LogType[]>([]);
+  const [logs, setLogs] = useState<LogType[]>();
 
   const fetchLogs = async () => {
     const logs = await fetchAssemblyLogs(state.groupSlug);
     setLogs(logs);
   };
 
-  useEffect(() => {
-    fetchLogs();
-  }, []);
-
   return (
-    <Button onClick={() => setOpenAddOrganizerModal(true)} m={10}>
+    <Button
+      onClick={() => {
+        setOpenAddOrganizerModal(true);
+        fetchLogs();
+      }}
+      m={10}
+    >
       <Modal
         opened={openAddOrganizerModal}
         onClose={() => setOpenAddOrganizerModal(false)}
@@ -50,50 +55,63 @@ export function AssemblyLogModal(state: { groupSlug: string }) {
           },
         }}
       >
-        <Title mb={10}>Check-in/out logs</Title>
-        <CopyButton
-          value={logs
-            .map(
-              (log) =>
-                log.user.first_name +
-                " " +
-                log.user.last_name +
-                " - " +
-                log.action +
-                " at " +
-                new Date(log.createdAt).toLocaleTimeString()
-            )
-            .join("\n")}
-        >
-          {({ copied, copy }) => (
-            <Button
-              mb={10}
-              color={copied ? "teal" : "blue"}
-              onClick={copy}
-              leftIcon={<Clipboard />}
+        {!logs ? (
+          <Loader />
+        ) : (
+          <>
+            <Flex
+              direction="row"
+              align="center"
+              justify={"space-between"}
+              gap={10}
             >
-              Copy logs
-            </Button>
-          )}
-        </CopyButton>
-        <Card
-          shadow="xs"
-          radius="md"
-          mah={400}
-          mih={200}
-          color="dark"
-          sx={{ overflowY: "scroll" }}
-        >
-          {logs.map((log) => (
-            <>
-              <Text p={10} key={log._id}>
-                {log.user.first_name} {log.user.last_name} - {log.action} at{" "}
-                {new Date(log.createdAt).toLocaleTimeString()}
-              </Text>
-              <Divider />
-            </>
-          ))}
-        </Card>
+              <Title mb={10}>Check-in/out logs</Title>
+              <CopyButton
+                value={logs
+                  .map(
+                    (log) =>
+                      log.user.first_name +
+                      " " +
+                      log.user.last_name +
+                      " - " +
+                      log.action +
+                      " at " +
+                      new Date(log.createdAt).toLocaleTimeString()
+                  )
+                  .join("\n")}
+              >
+                {({ copied, copy }) => (
+                  <Button
+                    mb={10}
+                    color={copied ? "teal" : "blue"}
+                    onClick={copy}
+                    leftIcon={<Clipboard />}
+                  >
+                    Copy logs
+                  </Button>
+                )}
+              </CopyButton>
+            </Flex>
+            <Card
+              shadow="xs"
+              radius="md"
+              mah={400}
+              mih={200}
+              color="dark"
+              sx={{ overflowY: "scroll" }}
+            >
+              {logs.map((log) => (
+                <Box key={log._id}>
+                  <Text p={10}>
+                    {log.user.first_name} {log.user.last_name} - {log.action} at{" "}
+                    {new Date(log.createdAt).toLocaleTimeString()}
+                  </Text>
+                  <Divider />
+                </Box>
+              ))}
+            </Card>
+          </>
+        )}
       </Modal>
       Logs
     </Button>
