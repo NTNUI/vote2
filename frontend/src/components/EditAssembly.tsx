@@ -27,6 +27,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import useWebSocket from "react-use-websocket";
 import { showNotification } from "@mantine/notifications";
 import { AddOrganizerButtonModal } from "./AddOrganizer";
+import { AssemblyLogModal } from "./AssemblyLogs";
 
 export function EditAssembly(state: { group: UserDataGroupType }) {
   const breakpoint = useMediaQuery("(min-width: 1010px)");
@@ -218,13 +219,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
             <Text>Logged in participants: {participants}</Text>
             <Text>Submitted votes on current votation: {submittedVotes}</Text>
 
-            <Flex
-              justify={"center"}
-              wrap="wrap"
-              rowGap={"0.5rem"}
-              columnGap={"0.5rem"}
-              maw={450}
-            >
+            <Flex justify={"center"} wrap="wrap" rowGap={"0.5rem"} maw={450}>
               {assembly.isActive ? (
                 <Button
                   color={"red"}
@@ -284,11 +279,11 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     </Text>
                     <Text ta={"center"}>All data will be lost!</Text>
                     <Container
-                      sx={(theme) => ({
+                      sx={{
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "space-evenly",
-                      })}
+                      }}
                     >
                       <Button
                         data-testid="delete-button"
@@ -315,70 +310,90 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
               {!assembly.isExtraOrganizer && (
                 <AddOrganizerButtonModal groupSlug={group.groupSlug} />
               )}
-
-              <Button
-                onClick={() => addCase()}
-                m={10}
-                data-testid="add-case-button"
-              >
-                Add votation
-              </Button>
+              <AssemblyLogModal groupSlug={group.groupSlug} />
             </Flex>
           </Container>
         </Container>
         <Container p={0} pt={"xs"} w={breakpoint ? "45%" : "95%"}>
           {votations.length < 1 ? (
-            <Text data-testid="no-cases-warning">
-              There are currently no votations in this assembly.
-            </Text>
+            <>
+              <Text data-testid="no-cases-warning">
+                There are currently no votations in this assembly.
+              </Text>
+              <Button
+                m={10}
+                onClick={() => addCase()}
+                data-testid="add-case-button"
+              >
+                Add votation
+              </Button>
+            </>
           ) : (
-            <Accordion
-              sx={(theme) => ({
-                height: "fit-content",
-                backgroundColor: theme.colors.ntnui_background[0],
-                border: "solid",
-                borderColor: theme.colors.ntnui_yellow[0],
-                borderRadius: "5px",
-                borderBottomRightRadius: "0px",
-                borderBottomWidth: 0.5,
-                maxWidth: 780,
-              })}
-              multiple
-              value={accordionActiveTabs}
-              onChange={setAccordionActiveTabs}
-            >
-              {votations
-                .sort((a, b) => a.caseNumber - b.caseNumber)
-                .map((vote: VoteType) => {
-                  return vote.isFinished ? (
-                    <Results
-                      key={vote._id}
-                      votation={vote}
-                      addCase={(votationTemplate: VoteType) =>
-                        addCase(votationTemplate)
-                      }
-                    />
-                  ) : (
-                    <VotationPanel
-                      // Passing accordionActiveTabs to VotationPanel so it can provide it's ID to remain open when vote is submitted.
-                      accordionActiveTabs={accordionActiveTabs}
-                      setAccordionActiveTabs={(tabs: string[]) =>
-                        setAccordionActiveTabs(tabs)
-                      }
-                      key={vote._id}
-                      votation={vote}
-                      groupSlug={group.groupSlug}
-                      isChanged={isChanged}
-                      setIsChanged={setIsChanged}
-                      assemblyStatus={assembly.isActive}
-                      initEditable={vote.editable || false}
-                      addCase={(votationTemplate: VoteType) =>
-                        addCase(votationTemplate)
-                      }
-                    />
-                  );
+            <>
+              <Container
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  mb={10}
+                  mr={-15}
+                  onClick={() => addCase()}
+                  data-testid="add-case-button"
+                >
+                  Add votation
+                </Button>
+              </Container>
+              <Accordion
+                sx={(theme) => ({
+                  height: "fit-content",
+                  backgroundColor: theme.colors.ntnui_background[0],
+                  border: "solid",
+                  borderColor: theme.colors.ntnui_yellow[0],
+                  borderRadius: "5px",
+                  borderBottomRightRadius: "0px",
+                  borderBottomWidth: 0.5,
+                  maxWidth: 780,
                 })}
-            </Accordion>
+                multiple
+                value={accordionActiveTabs}
+                onChange={setAccordionActiveTabs}
+              >
+                {votations
+                  .sort((a, b) => a.caseNumber - b.caseNumber)
+                  .map((vote: VoteType) => {
+                    return vote.isFinished ? (
+                      <Results
+                        key={vote._id}
+                        votation={vote}
+                        addCase={(votationTemplate: VoteType) =>
+                          addCase(votationTemplate)
+                        }
+                      />
+                    ) : (
+                      <VotationPanel
+                        // Passing accordionActiveTabs to VotationPanel so it can provide it's ID to remain open when vote is submitted.
+                        accordionActiveTabs={accordionActiveTabs}
+                        setAccordionActiveTabs={(tabs: string[]) =>
+                          setAccordionActiveTabs(tabs)
+                        }
+                        key={vote._id}
+                        votation={vote}
+                        groupSlug={group.groupSlug}
+                        isChanged={isChanged}
+                        setIsChanged={setIsChanged}
+                        assemblyStatus={assembly.isActive}
+                        initEditable={vote.editable || false}
+                        addCase={(votationTemplate: VoteType) =>
+                          addCase(votationTemplate)
+                        }
+                      />
+                    );
+                  })}
+              </Accordion>
+            </>
           )}
         </Container>
       </Flex>
