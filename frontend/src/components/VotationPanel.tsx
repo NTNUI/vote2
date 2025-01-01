@@ -222,7 +222,6 @@ function VotationPanel({
             />
             <TextInput
               data-testid="descriptionEdit"
-              withAsterisk
               label="Description"
               className={classes.inputStyle}
               placeholder="Description"
