@@ -48,7 +48,7 @@ votationRoutes.get(
  * @openapi
  * /votation/{groupSlug}/current:
  *   get:
- *     summary: Retrieve the current votation for a group
+ *     summary: Retrieve the ongoing votation for a group if there is one
  *     tags:
  *       - Votation
  *     security:
