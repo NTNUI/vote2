@@ -21,6 +21,10 @@ const logSchema = new Schema<logType>(
   { collection: "logs", timestamps: { createdAt: true, updatedAt: false } }
 );
 
+// Add an index for `createdAt`,
+// as the CosmosDB (Azure) wont be able to sort the logs without it.
+logSchema.index({ createdAt: -1 });
+
 const Log = model<logType>("Log", logSchema);
 
 export { Log };
