@@ -11,12 +11,11 @@ export const createVotation = async (
 ): Promise<{ message: string; vote_id: string }> => {
   const res = (
     await axios.post(
-      "/votation",
+      `/votation/${group}`,
       {
-        groupSlug: group,
         title: title,
         caseNumber: caseNumber,
-        voteText: voteText,
+        description: voteText,
         options: options,
         maximumOptions: maximumOptions,
       },
@@ -31,10 +30,9 @@ export const activateVotation = async (
   voteId: string,
   numberParticipants: number
 ) => {
-  return axios.put(
-    "/votation/activate",
+  return axios.post(
+    `votation/${group}/activate`,
     {
-      groupSlug: group,
       voteId: voteId,
       numberParticipants: numberParticipants,
     },
@@ -43,8 +41,8 @@ export const activateVotation = async (
 };
 
 export const deactivateVotation = async (group: string, voteId: string) => {
-  return axios.put(
-    "/votation/deactivate",
+  return axios.post(
+    `votation/${group}/current/deactivate`,
     {
       groupSlug: group,
       voteId: voteId,
@@ -54,9 +52,8 @@ export const deactivateVotation = async (group: string, voteId: string) => {
 };
 
 export const deleteVotation = async (group: string, voteId: string) => {
-  return axios.delete("/votation", {
+  return axios.delete(`/votation/${group}`, {
     data: {
-      groupSlug: group,
       voteId: voteId,
     },
   });
@@ -71,13 +68,12 @@ export const editVotation = async (
   options: string[]
 ): Promise<VoteType> => {
   return axios.put(
-    "/votation",
+    `/votation/${group}`,
     {
-      groupSlug: group,
       voteId: voteId,
       title: title,
       caseNumber: caseNumber,
-      voteText: voteText,
+      description: voteText,
       options: options,
     },
     { withCredentials: true }
@@ -85,27 +81,13 @@ export const editVotation = async (
 };
 
 export const getVotations = async (group: string): Promise<VoteType[]> => {
-  return (
-    await axios.post(
-      "/votation/allvotations",
-      {
-        groupSlug: group,
-      },
-      {
-        withCredentials: true,
-      }
-    )
-  ).data;
+  return (await axios.get(`/votation/${group}/all`)).data;
 };
 
 export const getCurrentVotationByGroup = async (
   groupSlug: string
 ): Promise<LimitedVoteType> => {
-  return (
-    await axios.post("/votation/currentvotation", {
-      groupSlug: groupSlug,
-    })
-  ).data;
+  return (await axios.get(`/votation/${groupSlug}/current`)).data;
 };
 
 export const submitVote = async (
@@ -114,8 +96,7 @@ export const submitVote = async (
   optionId: string[]
 ) => {
   return (
-    await axios.post("/votation/submit", {
-      groupSlug: groupSlug,
+    await axios.post(`/votation/${groupSlug}/submit`, {
       voteId: voteId,
       optionIDs: optionId,
     })
