@@ -330,6 +330,6 @@ votationRoutes.put("/:groupSlug", authorization, isOrganizer, editVotation);
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.post(":groupSlug/submit", authorization, isMember, submitVote);
+votationRoutes.post("/:groupSlug/submit", authorization, isMember, submitVote);
 
 export default votationRoutes;
