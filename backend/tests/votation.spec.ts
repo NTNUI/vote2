@@ -35,7 +35,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       .send({
         caseNumber: 1.1,
         title: "Første votering",
-        voteText: "Bra?",
+        description: "Bra?",
         options: ["Yes", "No", "Blank"],
       })
       .then((response) => {
@@ -53,7 +53,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       .send({
         voteId: voteId,
         title: "Andre votering",
-        voteText: "Test",
+        description: "Test",
         options: ["Ja", "Nei", "Absolutely"],
       })
       .then((response) => {
@@ -68,7 +68,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       .post("/qr/checkin")
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
+        groupSlug: testGroupSlug,
         QRData: encrypt(JSON.stringify({ ntnuiNo: 1, timestamp: Date.now() })),
       })
       .then((response) => {
@@ -83,6 +83,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       .set("Cookie", cookies)
       .send({
         voteId: voteId,
+        numberParticipants: 1,
       })
       .then((response) => {
         expect(response.statusCode).toBe(200);
@@ -98,7 +99,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       .post("/qr/checkin")
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
+        groupSlug: testGroupSlug,
         QRData: encrypt(JSON.stringify({ ntnuiNo: 1, timestamp: Date.now() })),
       })
       .then((response) => {
@@ -109,7 +110,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("POST/ votation: get active votation", (done) => {
     request(app)
-      .post(`/votation/${testGroupSlug}/current`)
+      .get(`/votation/${testGroupSlug}/current`)
       .set("Cookie", cookies)
       .send()
       .then((response) => {
