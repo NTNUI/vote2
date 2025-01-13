@@ -14,7 +14,6 @@ import {
   notifyOneParticipant,
   notifyOrganizers,
 } from "../utils/socketNotifier";
-import { isNumberObject } from "util/types";
 
 export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
   const group = req.params.groupSlug;
