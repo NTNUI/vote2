@@ -79,7 +79,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("PUT/ votation: activate created votation", (done) => {
     request(app)
-      .put(`/votation/${testGroupSlug}/activate`)
+      .post(`/votation/${testGroupSlug}/activate`)
       .set("Cookie", cookies)
       .send({
         voteId: voteId,
@@ -136,7 +136,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("PUT/ votation: deactivate votation", (done) => {
     request(app)
-      .put(`/votation/${testGroupSlug}/current/deactivate`)
+      .post(`/votation/${testGroupSlug}/current/deactivate`)
       .set("Cookie", cookies)
       .send()
       .then((response) => {
