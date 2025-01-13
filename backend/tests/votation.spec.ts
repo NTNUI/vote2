@@ -30,10 +30,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("CREATE/ votation: create a new votation", (done) => {
     request(app)
-      .post("/votation")
+      .post(`/votation/${testGroupSlug}`)
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
         caseNumber: 1.1,
         title: "Første votering",
         voteText: "Bra?",
@@ -49,10 +48,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("PUT/ votation: edit created votation", (done) => {
     request(app)
-      .put("/votation")
+      .put(`/votation/${testGroupSlug}`)
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
         voteId: voteId,
         title: "Andre votering",
         voteText: "Test",
@@ -81,10 +79,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("PUT/ votation: activate created votation", (done) => {
     request(app)
-      .put("/votation/activate")
+      .put(`/votation/${testGroupSlug}/activate`)
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
         voteId: voteId,
       })
       .then((response) => {
@@ -112,11 +109,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("POST/ votation: get active votation", (done) => {
     request(app)
-      .post("/votation/currentvotation")
+      .post(`/votation/${testGroupSlug}/current`)
       .set("Cookie", cookies)
-      .send({
-        groupSlug: "sprint",
-      })
+      .send()
       .then((response) => {
         expect(response.statusCode).toBe(200);
         optionId = response.body.options[0]._id;
@@ -127,10 +122,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("POST/ votation: register vote", (done) => {
     request(app)
-      .post("/votation/submit")
+      .post(`/votation/${testGroupSlug}/submit`)
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
         optionIDs: [optionId],
         voteId: voteId,
       })
@@ -142,11 +136,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("PUT/ votation: deactivate votation", (done) => {
     request(app)
-      .put("/votation/deactivate")
+      .put(`/votation/${testGroupSlug}/current/deactivate`)
       .set("Cookie", cookies)
-      .send({
-        groupSlug: "sprint",
-      })
+      .send()
       .then((response) => {
         expect(response.statusCode).toBe(200);
         expect(response.body["message"]).toBe(
@@ -158,10 +150,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("DELETE/ votation: delete votation", (done) => {
     request(app)
-      .delete("/votation")
+      .delete(`/votation/${testGroupSlug}`)
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
         voteId: voteId,
       })
       .then((response) => {
