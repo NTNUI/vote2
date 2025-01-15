@@ -30,13 +30,12 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("CREATE/ votation: create a new votation", (done) => {
     request(app)
-      .post("/votation")
+      .post(`/votation/${testGroupSlug}`)
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
         caseNumber: 1.1,
         title: "Første votering",
-        voteText: "Bra?",
+        description: "Bra?",
         options: ["Yes", "No", "Blank"],
       })
       .then((response) => {
@@ -49,13 +48,12 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("PUT/ votation: edit created votation", (done) => {
     request(app)
-      .put("/votation")
+      .put(`/votation/${testGroupSlug}`)
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
         voteId: voteId,
         title: "Andre votering",
-        voteText: "Test",
+        description: "Test",
         options: ["Ja", "Nei", "Absolutely"],
       })
       .then((response) => {
@@ -70,7 +68,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       .post("/qr/checkin")
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
+        groupSlug: testGroupSlug,
         QRData: encrypt(JSON.stringify({ ntnuiNo: 1, timestamp: Date.now() })),
       })
       .then((response) => {
@@ -81,11 +79,11 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("PUT/ votation: activate created votation", (done) => {
     request(app)
-      .put("/votation/activate")
+      .post(`/votation/${testGroupSlug}/activate`)
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
         voteId: voteId,
+        numberParticipants: 1,
       })
       .then((response) => {
         expect(response.statusCode).toBe(200);
@@ -101,7 +99,7 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
       .post("/qr/checkin")
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
+        groupSlug: testGroupSlug,
         QRData: encrypt(JSON.stringify({ ntnuiNo: 1, timestamp: Date.now() })),
       })
       .then((response) => {
@@ -112,11 +110,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("POST/ votation: get active votation", (done) => {
     request(app)
-      .post("/votation/currentvotation")
+      .get(`/votation/${testGroupSlug}/current`)
       .set("Cookie", cookies)
-      .send({
-        groupSlug: "sprint",
-      })
+      .send()
       .then((response) => {
         expect(response.statusCode).toBe(200);
         optionId = response.body.options[0]._id;
@@ -127,10 +123,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("POST/ votation: register vote", (done) => {
     request(app)
-      .post("/votation/submit")
+      .post(`/votation/${testGroupSlug}/submit`)
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
         optionIDs: [optionId],
         voteId: voteId,
       })
@@ -142,11 +137,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("PUT/ votation: deactivate votation", (done) => {
     request(app)
-      .put("/votation/deactivate")
+      .post(`/votation/${testGroupSlug}/current/deactivate`)
       .set("Cookie", cookies)
-      .send({
-        groupSlug: "sprint",
-      })
+      .send()
       .then((response) => {
         expect(response.statusCode).toBe(200);
         expect(response.body["message"]).toBe(
@@ -158,10 +151,9 @@ describe("API test: test CRUD operations on a vote, also testing check-in of use
 
   test("DELETE/ votation: delete votation", (done) => {
     request(app)
-      .delete("/votation")
+      .delete(`/votation/${testGroupSlug}`)
       .set("Cookie", cookies)
       .send({
-        groupSlug: "sprint",
         voteId: voteId,
       })
       .then((response) => {

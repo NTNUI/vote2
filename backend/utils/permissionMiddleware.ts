@@ -53,7 +53,7 @@ export async function isMember(
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  const groupSlug = req.body.groupSlug;
+  const groupSlug = req.body.groupSlug || req.params.groupSlug;
   const user = await User.findById(req.ntnuiNo);
 
   if (user) {

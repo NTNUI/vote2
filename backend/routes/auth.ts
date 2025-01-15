@@ -23,11 +23,11 @@ const authRoutes = Router();
  *               phone_number:
  *                 type: string
  *                 description: The user's phone number
- *                 example: "+4799994444"
+ *                 example: "+4799999999"
  *               password:
  *                 type: string
  *                 description: The user's password
- *                 example: "SprintIsTheBest"
+ *                 example: "password"
  *     responses:
  *       200:
  *        description: The user was successfully logged in

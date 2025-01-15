@@ -16,7 +16,7 @@ import {
 } from "../utils/socketNotifier";
 
 export async function getAllVotations(req: RequestWithNtnuiNo, res: Response) {
-  const group = req.body.groupSlug;
+  const group = req.params.groupSlug;
 
   const assembly = await Assembly.findById(group);
   if (!assembly) {
@@ -64,7 +64,7 @@ export async function getCurrentVotation(
   req: RequestWithNtnuiNo,
   res: Response
 ) {
-  const group = req.body.groupSlug;
+  const group = req.params.groupSlug;
   const user = await User.findById(req.ntnuiNo);
 
   if (user) {
@@ -114,9 +114,9 @@ export async function getCurrentVotation(
 }
 
 export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
-  const group = req.body.groupSlug;
+  const group = req.params.groupSlug;
   const title = req.body.title;
-  const voteText = req.body.voteText || "";
+  const description = req.body.description || "";
   const caseNumber = req.body.caseNumber;
   const options: [] = req.body.options;
   const maximumOptions = req.body.maximumOptions || 1;
@@ -152,7 +152,7 @@ export async function createVotation(req: RequestWithNtnuiNo, res: Response) {
         caseNumber: caseNumber,
         isFinished: false,
         options: insertedIDs,
-        voteText: voteText,
+        voteText: description,
         maximumOptions: maximumOptions,
       });
 
@@ -180,22 +180,29 @@ export async function activateVotationStatus(
   req: RequestWithNtnuiNo,
   res: Response
 ) {
-  const group = req.body.groupSlug;
+  const group = req.params.groupSlug;
   const voteId = req.body.voteId;
+  const numberOfParticipants = req.body.numberParticipants;
 
   const vote = await Votation.findById(voteId);
   const assembly = await Assembly.findById(group);
-
-  if (!vote) {
-    return res
-      .status(400)
-      .json({ message: "No votation with the given ID found " });
-  }
 
   if (!assembly || !assembly.isActive) {
     return res
       .status(400)
       .json({ message: "No active assembly with the given group found " });
+  }
+
+  if (!assembly.votes.includes(voteId)) {
+    return res
+      .status(400)
+      .json({ message: "The given voteID is not a part of the assembly" });
+  }
+
+  if (!vote) {
+    return res
+      .status(400)
+      .json({ message: "No votation with the given ID found " });
   }
 
   if (vote.isFinished) {
@@ -208,6 +215,12 @@ export async function activateVotationStatus(
     return res
       .status(400)
       .json({ message: "Another votation is currently ongoing" });
+  }
+
+  if (!Number.isFinite(numberOfParticipants)) {
+    return res
+      .status(400)
+      .json({ message: "Invalid or missing 'numberOfParticipants'" });
   }
 
   await Assembly.findByIdAndUpdate(group, {
@@ -246,7 +259,7 @@ export async function activateVotationStatus(
   // This is used to store the number of logged in users when the votation was held.
   await Votation.findByIdAndUpdate(voteId, {
     $set: {
-      numberParticipants: req.body.numberParticipants,
+      numberParticipants: numberOfParticipants,
     },
   });
 
@@ -257,7 +270,7 @@ export async function deactivateVotationStatus(
   req: RequestWithNtnuiNo,
   res: Response
 ) {
-  const group = req.body.groupSlug;
+  const group = req.params.groupSlug;
   const assembly = await Assembly.findById(group);
 
   if (!assembly || !assembly.currentVotation) {
@@ -300,22 +313,28 @@ export async function deactivateVotationStatus(
 }
 
 export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
-  const group = req.body.groupSlug;
+  const group = req.params.groupSlug;
   const voteId = req.body.voteId;
 
   const vote = await Votation.findById(voteId);
   const assembly = await Assembly.findById(group);
 
-  if (!vote) {
-    return res
-      .status(400)
-      .json({ message: "No votation with the given ID found " });
-  }
-
   if (!assembly) {
     return res
       .status(400)
       .json({ message: "No assembly with the given ID found " });
+  }
+
+  if (!assembly.votes.includes(voteId)) {
+    return res
+      .status(400)
+      .json({ message: "The given voteID is not a part of the assembly" });
+  }
+
+  if (!vote) {
+    return res
+      .status(400)
+      .json({ message: "No votation with the given ID found " });
   }
 
   if (assembly.currentVotation) {
@@ -339,11 +358,11 @@ export async function deleteVotation(req: RequestWithNtnuiNo, res: Response) {
 }
 
 export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
-  const group = req.body.groupSlug;
+  const group = req.params.groupSlug;
   const voteId = req.body.voteId;
   const title = req.body.title;
   const caseNumber = req.body.caseNumber;
-  const voteText = req.body.voteText;
+  const description = req.body.description;
   const options: [] = req.body.options;
 
   const vote = await Votation.findById(voteId);
@@ -397,7 +416,7 @@ export async function editVotation(req: RequestWithNtnuiNo, res: Response) {
   await Votation.findByIdAndUpdate(voteId, {
     $set: {
       title: !title ? vote.title : title,
-      voteText: !voteText ? vote.voteText : voteText,
+      voteText: !description ? vote.voteText : description,
       options: !options ? vote.options : insertedOptionIDs,
       caseNumber: !Number.isFinite(caseNumber) ? vote.caseNumber : caseNumber,
     },
@@ -410,7 +429,7 @@ export async function submitVote(req: RequestWithNtnuiNo, res: Response) {
   if (!req.ntnuiNo) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  const group = req.body.groupSlug;
+  const group = req.params.groupSlug;
   const voteId = req.body.voteId;
   let optionIDs: string[] = req.body.optionIDs;
 

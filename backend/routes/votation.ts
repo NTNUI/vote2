@@ -16,30 +16,29 @@ const votationRoutes = Router();
 
 /**
  * @openapi
- * /allvotations:
- *   post:
+ * /votation/{groupSlug}/all:
+ *   get:
  *     summary: Retrieve all votations for a group
  *     tags:
  *       - Votation
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               groupSlug:
- *                 type: string
- *                 description: The group identifier
- *                 example: "group1"
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupSlug
+ *         required: true
+ *         description: The group identifier
+ *         schema:
+ *           type: string
+ *           example: "group1"
  *     responses:
  *       200:
  *         description: Successfully retrieved all votations
  *       401:
  *         description: Unauthorized
- */
-votationRoutes.post(
-  "/allvotations",
+ * */
+votationRoutes.get(
+  "/:groupSlug/all",
   authorization,
   isOrganizer,
   getAllVotations
@@ -47,30 +46,29 @@ votationRoutes.post(
 
 /**
  * @openapi
- * /currentvotation:
- *   post:
- *     summary: Retrieve the current active votation
+ * /votation/{groupSlug}/current:
+ *   get:
+ *     summary: Retrieve the ongoing votation for a group if there is one
  *     tags:
  *       - Votation
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               groupSlug:
- *                 type: string
- *                 description: The group identifier
- *                 example: "group1"
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupSlug
+ *         required: true
+ *         description: The group identifier
+ *         schema:
+ *           type: string
+ *           example: "group1"
  *     responses:
  *       200:
  *         description: Successfully retrieved the current votation
  *       401:
  *         description: Unauthorized
- */
-votationRoutes.post(
-  "/currentvotation",
+ * */
+votationRoutes.get(
+  "/:groupSlug/current",
   authorization,
   isMember,
   getCurrentVotation
@@ -78,11 +76,21 @@ votationRoutes.post(
 
 /**
  * @openapi
- * /:
+ * /votation/{groupSlug}:
  *   post:
  *     summary: Create a new votation
  *     tags:
  *       - Votation
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupSlug
+ *         required: true
+ *         description: The group identifier
+ *         schema:
+ *           type: string
+ *           example: "group1"
  *     requestBody:
  *       required: true
  *       content:
@@ -90,40 +98,53 @@ votationRoutes.post(
  *           schema:
  *             type: object
  *             properties:
- *               groupSlug:
- *                 type: string
- *                 description: The group identifier
- *                 example: "group1"
+ *               caseNumber:
+ *                type: number
+ *                description: The case number
+ *                example: "1.42"
  *               title:
  *                 type: string
  *                 description: Title of the votation
- *                 example: "Vote on new rules"
+ *                 example: "Votation 1"
+ *               description:
+ *                 type: string
+ *                 description: Description of the votation
+ *                 example: "This is a votation"
  *               options:
  *                 type: array
  *                 items:
  *                   type: string
  *                 description: Options for the votation
- *               caseNumber:
- *                 type: integer
- *                 description: Case number for the votation
+ *                 example: ["Option 1", "Option 2"]
  *               maximumOptions:
- *                 type: integer
- *                 description: Maximum number of options a user can vote for
+ *                type: number
+ *                description: Maximum number of options to select
+ *                example: 1
  *     responses:
  *       200:
- *         description: Successfully created a votation
+ *         description: Successfully created the votation
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.post("/", authorization, isOrganizer, createVotation);
+votationRoutes.post("/:groupSlug", authorization, isOrganizer, createVotation);
 
 /**
  * @openapi
- * /activate:
- *   put:
- *     summary: Activate a votation
+ * /votation/{groupSlug}/activate:
+ *   post:
+ *     summary: Activate a votation for a given assembly by the vote ID
  *     tags:
  *       - Votation
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupSlug
+ *         required: true
+ *         description: The group identifier
+ *         schema:
+ *           type: string
+ *           example: "group1"
  *     requestBody:
  *       required: true
  *       content:
@@ -131,21 +152,22 @@ votationRoutes.post("/", authorization, isOrganizer, createVotation);
  *           schema:
  *             type: object
  *             properties:
- *               groupSlug:
- *                 type: string
- *                 description: The group identifier
- *                 example: "group1"
  *               voteId:
  *                 type: string
  *                 description: ID of the votation to activate
+ *                 example: "vote1-ID"
+ *               numberParticipants:
+ *                 type: number
+ *                 description: Number of participants in the assembly
+ *                 example: 42
  *     responses:
  *       200:
  *         description: Successfully activated the votation
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.put(
-  "/activate",
+votationRoutes.post(
+  "/:groupSlug/activate",
   authorization,
   isOrganizer,
   activateVotationStatus
@@ -153,32 +175,29 @@ votationRoutes.put(
 
 /**
  * @openapi
- * /deactivate:
- *   put:
- *     summary: Deactivate a votation
+ * /votation/{groupSlug}/current/deactivate:
+ *   post:
+ *     summary: Deactivate the current ongoing votation for a given assembly
  *     tags:
  *       - Votation
  *     security:
  *       - cookieAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               groupSlug:
- *                 type: string
- *                 description: The group identifier
- *                 example: "group1"
+ *     parameters:
+ *       - in: path
+ *         name: groupSlug
+ *         required: true
+ *         description: The group identifier
+ *         schema:
+ *           type: string
+ *           example: "group1"
  *     responses:
  *       200:
  *         description: Successfully deactivated the votation
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.put(
-  "/deactivate",
+votationRoutes.post(
+  "/:groupSlug/current/deactivate",
   authorization,
   isOrganizer,
   deactivateVotationStatus
@@ -186,11 +205,21 @@ votationRoutes.put(
 
 /**
  * @openapi
- * /:
+ * /votation/{groupSlug}:
  *   delete:
  *     summary: Delete a votation
  *     tags:
  *       - Votation
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupSlug
+ *         required: true
+ *         description: The group identifier
+ *         schema:
+ *           type: string
+ *           example: "group1"
  *     requestBody:
  *       required: true
  *       content:
@@ -198,10 +227,6 @@ votationRoutes.put(
  *           schema:
  *             type: object
  *             properties:
- *               groupSlug:
- *                 type: string
- *                 description: The group identifier
- *                 example: "group1"
  *               voteId:
  *                 type: string
  *                 description: ID of the votation to delete
@@ -211,15 +236,30 @@ votationRoutes.put(
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.delete("/", authorization, isOrganizer, deleteVotation);
+votationRoutes.delete(
+  "/:groupSlug",
+  authorization,
+  isOrganizer,
+  deleteVotation
+);
 
 /**
  * @openapi
- * /:
+ * /votation/{groupSlug}:
  *   put:
  *     summary: Edit a votation
  *     tags:
  *       - Votation
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupSlug
+ *         required: true
+ *         description: The group identifier
+ *         schema:
+ *           type: string
+ *           example: "group1"
  *     requestBody:
  *       required: true
  *       content:
@@ -227,38 +267,48 @@ votationRoutes.delete("/", authorization, isOrganizer, deleteVotation);
  *           schema:
  *             type: object
  *             properties:
- *               groupSlug:
- *                 type: string
- *                 description: The group identifier
- *                 example: "group1"
  *               voteId:
  *                 type: string
  *                 description: ID of the votation to edit
  *               title:
  *                 type: string
- *                 description: New title for the votation
+ *                 description: Title of the votation
+ *               description:
+ *                 type: string
+ *                 description: Description of the votation
  *               options:
  *                 type: array
  *                 items:
  *                   type: string
- *                 description: New options for the votation
+ *                 description: Options for the votation
+ *               maximumOptions:
+ *                type: number
+ *                description: Maximum number of options to select
  *     responses:
  *       200:
  *         description: Successfully edited the votation
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.put("/", authorization, isOrganizer, editVotation);
+votationRoutes.put("/:groupSlug", authorization, isOrganizer, editVotation);
 
 /**
  * @openapi
- * /submit:
+ * /votation/{groupSlug}/submit:
  *   post:
- *     summary: Submit a vote for a votation
+ *     summary: Submit a vote for the current votation
  *     tags:
  *       - Votation
  *     security:
  *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupSlug
+ *         required: true
+ *         description: The group identifier
+ *         schema:
+ *           type: string
+ *           example: "group1"
  *     requestBody:
  *       required: true
  *       content:
@@ -266,24 +316,20 @@ votationRoutes.put("/", authorization, isOrganizer, editVotation);
  *           schema:
  *             type: object
  *             properties:
- *               groupSlug:
- *                 type: string
- *                 description: The group identifier
- *                 example: "group1"
  *               voteId:
  *                 type: string
- *                 description: ID of the votation to vote on
- *               optionIDs:
+ *                 description: ID of the votation
+ *               options:
  *                 type: array
  *                 items:
  *                   type: string
- *                 description: Selected option IDs
+ *                 description: Selected options
  *     responses:
  *       200:
  *         description: Successfully submitted the vote
  *       401:
  *         description: Unauthorized
  */
-votationRoutes.post("/submit", authorization, isMember, submitVote);
+votationRoutes.post("/:groupSlug/submit", authorization, isMember, submitVote);
 
 export default votationRoutes;
