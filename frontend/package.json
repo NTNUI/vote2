@@ -22,7 +22,7 @@
     "@tabler/icons-react": "^2.10.0",
     "@types/js-cookie": "^3.0.2",
     "@yudiel/react-qr-scanner": "^1.1.4",
-    "axios": "^1.7.7",
+    "axios": "^1.8.2",
     "js-cookie": "^3.0.1",
     "msw": "^1.2.1",
     "protected-route-react": "^1.0.1",
