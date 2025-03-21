@@ -1,4 +1,4 @@
-import { Image, Container, Text } from "@mantine/core";
+import { Image, Container, Text, Anchor } from "@mantine/core";
 import { LoginForm } from "../components/LoginForm";
 import logo from "../assets/ntnuiLogo.svg";
 import { useNavigate } from "react-router-dom";
@@ -23,10 +23,29 @@ export function Login() {
       <Text
         style={{ cursor: "pointer" }}
         mt={10}
-        size={"sm"}
+        size="sm"
+        c="white"
+        sx={{
+          "&:hover": {
+            textDecoration: "underline",
+          },
+        }}
         onClick={() => navigate("/faq")}
       >
         Questions about using Vote? Check out the FAQ
+      </Text>
+
+      <Text mt="sm" size="sm" c="white">
+        <Anchor
+          href="https://ntnui.slab.com/posts/ntnui-vote-how-to-zvrydrgc?shr=PB0gdHKZk8fxbs5AFpAqHsJH"
+          target="_blank"
+          rel="noopener noreferrer"
+          c="white"
+        >
+          Do you want to use Vote for your own group assembly?
+          <br />
+          Check out this guide
+        </Anchor>
       </Text>
     </>
   );
