@@ -30,19 +30,23 @@ export function Results({
         onChange={() => setIsOpen(!isOpen)}
         key={votation._id}
         value={String(votation._id)}
-        sx={(theme) => ({
-          borderColor: theme.colors.ntnui_yellow[0],
-          borderBottomLeftRadius: "2px",
-        })}
+        styles={{
+          item: {
+            borderColor: "var(--mantine-color-ntnui-yellow-0)",
+            borderBottomLeftRadius: "2px",
+          },
+        }}
       >
         <Accordion.Control
           onClick={() => setIsOpen(!isOpen)}
-          sx={(theme) => ({
-            color: "white",
-            "&:hover": {
-              backgroundColor: theme.colors.ntnui_background[0],
+          styles={{
+            control: {
+              color: "white",
+              "&:hover": {
+                backgroundColor: "var(--mantine-color-ntnui-background-0)",
+              },
             },
-          })}
+          }}
         >
           <Container
             style={{
@@ -62,51 +66,52 @@ export function Results({
           </Container>
         </Accordion.Control>
         <Accordion.Panel>
-          <Text weight={"bold"} color={"white"}>
+          <Text fw="bold" c="white">
             {votation.title}
           </Text>
-          <Text color={"white"}>{votation.voteText}</Text>
+          <Text c="white">{votation.voteText}</Text>
           <Card
             radius="md"
-            sx={(theme) => ({
-              backgroundColor: theme.colors.ntnui_background[0],
-            })}
+            styles={{
+              root: {
+                backgroundColor: "var(--mantine-color-ntnui-background-0)",
+              },
+            }}
           >
             {votation.options.map((option, index) => {
               return (
                 <Container key={index}>
-                  <Text ta={"left"} color={"white"} fw={"200"}>
+                  <Text ta="left" c="white" fw="200">
                     {option.title}
                   </Text>
-                  <Progress
-                    value={100 * (option.voteCount / votation.voted)}
-                    my="xs"
-                    size="xl"
-                    radius="md"
-                    h={"35px"}
-                    styles={{
-                      label: {
-                        color: "black",
+                  <div style={{ position: "relative" }}>
+                    <Text
+                      style={{
                         position: "absolute",
                         left: "1em",
-                      },
-                    }}
-                    color="#47b550"
-                    label={
-                      option.voteCount +
-                      "/" +
-                      votation.voted +
-                      " (" +
-                      Number(
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        zIndex: 1,
+                        color: "black",
+                      }}
+                    >
+                      {`${option.voteCount}/${votation.voted} (${Number(
                         100 * (option.voteCount / votation.voted || 0)
-                      ).toFixed(2) +
-                      "%)"
-                    }
-                  />
+                      ).toFixed(2)}%)`}
+                    </Text>
+                    <Progress
+                      value={100 * (option.voteCount / votation.voted)}
+                      my="xs"
+                      size="xl"
+                      radius="md"
+                      h="35px"
+                      color="#47b550"
+                    />
+                  </div>
                 </Container>
               );
             })}
-            <Text color={"white"}>
+            <Text c="white">
               {" "}
               {(votation.numberParticipants || 0) - votation.voted} of{" "}
               {votation.numberParticipants || 0} participants did not vote

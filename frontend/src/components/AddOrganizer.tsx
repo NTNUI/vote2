@@ -55,12 +55,9 @@ export function AddOrganizerButtonModal(state: { groupSlug: string }) {
         onClose={() => setOpenAddOrganizerModal(false)}
         size="lg"
         centered
-        transition="fade"
-        transitionDuration={200}
-        exitTransitionDuration={200}
-        // Styling is done like this to overwrite Mantine styling, therefore global color variables is not used.
+        transitionProps={{ duration: 200, exitDuration: 200 }}
         styles={{
-          modal: {
+          root: {
             backgroundColor: "#1b202c",
             color: "white",
             border: ".5px solid",
@@ -73,32 +70,32 @@ export function AddOrganizerButtonModal(state: { groupSlug: string }) {
           },
         }}
       >
-        <Text mb={5} fw={600} ta={"center"}>
+        <Text mb={5} fw={600} ta="center">
           Add organizer
         </Text>
-        <Text ta={"center"}>The user must to be a member of the group.</Text>
+        <Text ta="center">The user must to be a member of the group.</Text>
 
         <Flex direction="row" align="center" justify="center">
           <Box
             m={20}
-            sx={(theme) => ({
-              border: `1px solid ${theme.colors.gray[3]}`,
-              borderRadius: theme.radius.md,
-              padding: theme.spacing.md,
+            style={{
+              border: "1px solid var(--mantine-color-gray-3)",
+              borderRadius: "var(--mantine-radius-md)",
+              padding: "var(--mantine-spacing-md)",
               minWidth: 300,
-            })}
+            }}
           >
             {extraOrganizers.length < 1 ? (
-              <Text align="center">No extra organizers</Text>
+              <Text ta="center">No extra organizers</Text>
             ) : (
-              <Text mb={20} align="center">
+              <Text mb={20} ta="center">
                 Extra organizers:
               </Text>
             )}
             {extraOrganizers.map((organizer, index) => (
               <Box key={organizer.ntnui_no}>
-                <Group position="center" noWrap grow={true}>
-                  <Text sx={{ flex: 1 }}>{organizer.name}</Text>
+                <Group justify="center" wrap="nowrap" grow>
+                  <Text style={{ flex: 1 }}>{organizer.name}</Text>
                   <Button
                     maw={100}
                     onClick={() => {

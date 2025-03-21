@@ -1,34 +1,35 @@
-import { Tooltip, createStyles, Box } from "@mantine/core";
-import { forwardRef } from "react";
+import { Tooltip, Box, rem } from "@mantine/core";
+import { forwardRef, JSX } from "react";
 import { InfoCircle } from "tabler-icons-react";
+import { CSSProperties } from "react";
 
-const useStyles = createStyles(() => ({
+const tooltipStyles = {
   tooltip: {
-    margin: "0 0 0 2px",
-    textAlign: "center",
-    svg: {
+    margin: `0 0 0 ${rem(2)}`,
+    textAlign: "center" as const,
+    width: rem(250),
+    "& svg": {
       // Aligns info-icon with label
       display: "flex",
       alignContent: "center",
       justifyContent: "center",
     },
-  },
-}));
+  } as CSSProperties,
+};
 
 const NtnuiInfoTooltip = (label: JSX.Element) => {
-  const { classes } = useStyles();
   return (
     <Tooltip
       position="top"
-      className={classes.tooltip}
-      classNames={{ tooltip: classes.tooltip }}
+      styles={{
+        tooltip: tooltipStyles.tooltip,
+      }}
       color="dark"
-      width={250}
-      transition="pop"
       label={label}
       multiline
-      children={<ReferencedInfoCircle />}
-    />
+    >
+      <ReferencedInfoCircle />
+    </Tooltip>
   );
 };
 

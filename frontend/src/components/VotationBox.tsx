@@ -66,23 +66,23 @@ export function VotationBox(state: {
     <>
       <Box
         w={matches ? 400 : 280}
-        sx={() => ({
+        style={{
           border: "1px solid",
           padding: "20px 30px 10px 30px",
           borderColor: "white",
           borderRadius: 5,
           borderBottomRightRadius: 0,
-        })}
+        }}
       >
-        <Text fz={"lg"} fw={700} ta={"left"}>
+        <Text fz="lg" fw={700} ta="left">
           {currentVotation.title}
         </Text>
-        <Text fz={"md"} mb={10} ta={"left"}>
+        <Text fz="md" mb={10} ta="left">
           {currentVotation.voteText}
         </Text>
         {currentVotation.maximumOptions > 1 && (
           <>
-            <Text fz={"md"} mb={10} ta={"left"}>
+            <Text fz="md" mb={10} ta="left">
               You can choose up to {currentVotation.maximumOptions} options
             </Text>
           </>
@@ -99,14 +99,14 @@ export function VotationBox(state: {
             <Card
               withBorder
               className={classes.optionButton}
-              sx={
+              style={
                 chosenOption.includes(option._id)
-                  ? (theme) => ({
+                  ? {
                       backgroundColor: "white",
-                      color: theme.colors.ntnui_background[0],
+                      color: "var(--mantine-color-ntnui-background-0)",
                       borderColor: "white",
-                    })
-                  : () => ({})
+                    }
+                  : {}
               }
               w={matches ? 400 : 300}
               key={option.title}

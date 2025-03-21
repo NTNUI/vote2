@@ -54,13 +54,15 @@ export function OrganizerList() {
         </Text>
       </Box>
       <Text
-        fz={"xl"}
+        fz="xl"
         fw={500}
-        sx={() => ({
-          justifyContent: "center",
-          display: "flex",
-          justifySelf: "center",
-        })}
+        styles={{
+          root: {
+            justifyContent: "center",
+            display: "flex",
+            justifySelf: "center",
+          },
+        }}
         data-testid="organizer-list-page-title"
       >
         Manage group assemblies

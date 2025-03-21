@@ -28,7 +28,6 @@ export function QrCode() {
       bgColor="#ffffff"
       fgColor="#1b202c"
       imageSettings={{ src: logo, height: 15, width: 40, excavate: false }}
-      includeMargin={true}
       size={350}
       value={JSON.stringify({
         QRData: QRData,

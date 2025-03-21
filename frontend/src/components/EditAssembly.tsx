@@ -208,10 +208,10 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
       <Flex direction={breakpoint ? "row" : "column"} w={"80vw"} pt={120}>
         <Container miw={breakpoint ? 450 : 0}>
           <Container
-            sx={() => ({
+            style={{
               position: breakpoint ? "fixed" : "static",
               top: breakpoint ? "45vh" : "0",
-            })}
+            }}
           >
             <Text fz={"xl"} fw={500} data-testid="edit-assembly-banner">
               EDIT {group.groupName.toUpperCase()} ASSEMBLY
@@ -253,12 +253,9 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     size="lg"
                     centered
                     withCloseButton={false}
-                    transition="fade"
-                    transitionDuration={200}
-                    exitTransitionDuration={200}
-                    // Styling is done like this to overwrite Mantine styling, therefore global color variables is not used.
+                    transitionProps={{ duration: 200, exitDuration: 200 }}
                     styles={{
-                      modal: {
+                      root: {
                         backgroundColor: "#1b202c",
                         color: "white",
                         border: ".5px solid",
@@ -279,7 +276,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                     </Text>
                     <Text ta={"center"}>All data will be lost!</Text>
                     <Container
-                      sx={{
+                      style={{
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "space-evenly",
@@ -331,7 +328,7 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
           ) : (
             <>
               <Container
-                sx={{
+                style={{
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -347,16 +344,18 @@ export function EditAssembly(state: { group: UserDataGroupType }) {
                 </Button>
               </Container>
               <Accordion
-                sx={(theme) => ({
-                  height: "fit-content",
-                  backgroundColor: theme.colors.ntnui_background[0],
-                  border: "solid",
-                  borderColor: theme.colors.ntnui_yellow[0],
-                  borderRadius: "5px",
-                  borderBottomRightRadius: "0px",
-                  borderBottomWidth: 0.5,
-                  maxWidth: 780,
-                })}
+                styles={{
+                  root: {
+                    height: "fit-content",
+                    backgroundColor: "var(--mantine-color-ntnui-background-0)",
+                    border: "solid",
+                    borderColor: "var(--mantine-color-ntnui-yellow-0)",
+                    borderRadius: "5px",
+                    borderBottomRightRadius: "0px",
+                    borderBottomWidth: 0.5,
+                    maxWidth: 780,
+                  }
+                }}
                 multiple
                 value={accordionActiveTabs}
                 onChange={setAccordionActiveTabs}

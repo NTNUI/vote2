@@ -25,9 +25,11 @@ export function Login() {
         mt={10}
         size="sm"
         c="white"
-        sx={{
-          "&:hover": {
-            textDecoration: "underline",
+        styles={{
+          root: {
+            '&:hover': {
+              textDecoration: "underline",
+            },
           },
         }}
         onClick={() => navigate("/faq")}

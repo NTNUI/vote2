@@ -1,6 +1,6 @@
-import { createStyles } from "@mantine/core";
+import { MantineTheme } from "@mantine/core";
 
-export const useStyles = createStyles(() => ({
+export const useStyles = () => ({
   header: {
     position: "absolute",
     background: "none",
@@ -12,12 +12,13 @@ export const useStyles = createStyles(() => ({
     alignItems: "center",
     margin: "10px",
   },
+
   button: {
     cursor: "pointer",
     height: "100%",
+    
     "&:hover": {
-      backgroundColor: "",
       textDecoration: "underline",
     },
   },
-}));
+});

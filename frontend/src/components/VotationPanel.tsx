@@ -8,6 +8,8 @@ import {
   Flex,
   NumberInput,
   Menu,
+  rem,
+  ComboboxItem,
 } from "@mantine/core";
 import {
   activateVotation,
@@ -19,10 +21,10 @@ import {
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
-import { useStyles } from "../styles/EditAssemblyStyles";
+import { styles } from "../styles/EditAssemblyStyles";
 import { VoteType } from "../types/votes";
 import { getNumberOfParticipantsInAssembly } from "../services/assembly";
-import { showNotification } from "@mantine/notifications";
+import { notifications } from "@mantine/notifications";
 import { getGroups } from "../services/groups";
 
 export interface CaseType {
@@ -73,7 +75,7 @@ function VotationPanel({
       numberParticipants: votation.numberParticipants,
     },
   });
-  const { classes } = useStyles();
+
   const matches = useMediaQuery("(min-width: 400px)");
   const [defaultOptions] = useState<string[]>(["Yes", "No", "Blank"]);
   const [options, setOptions] = useState<string[]>(
@@ -134,9 +136,10 @@ function VotationPanel({
       ).catch(function (error) {
         if (error) {
           console.error(error);
-          showNotification({
+          notifications.show({
             title: "Error",
             message: error.response.data.message,
+            color: "red",
           });
         }
       });
@@ -153,9 +156,10 @@ function VotationPanel({
   async function deleteVote(votation: VoteType) {
     await deleteVotation(groupSlug, votation._id).catch(function (error) {
       console.error(error);
-      showNotification({
+      notifications.show({
         title: "Error",
         message: error.response.data.message,
+        color: "red",
       });
     });
     setIsChanged(!isChanged);
@@ -165,18 +169,22 @@ function VotationPanel({
     <Accordion.Item
       key={votation._id}
       value={String(votation._id)}
-      sx={(theme) => ({
-        borderColor: theme.colors.ntnui_yellow[0],
-        borderBottomLeftRadius: "2px",
-      })}
+      styles={{
+        item: {
+          borderColor: "var(--mantine-color-ntnui-yellow-0)",
+          borderBottomLeftRadius: rem(2),
+        },
+      }}
     >
       <Accordion.Control
-        sx={(theme) => ({
-          color: "white",
-          "&:hover": {
-            backgroundColor: theme.colors.ntnui_background[0],
+        styles={{
+          control: {
+            color: "white",
+            "&:hover": {
+              backgroundColor: "var(--mantine-color-ntnui-background-0)",
+            },
           },
-        })}
+        }}
       >
         <Text>
           Case{" "}
@@ -187,27 +195,29 @@ function VotationPanel({
       </Accordion.Control>
       {editable ? (
         <Accordion.Panel
-          sx={() => ({
-            color: "white",
-          })}
+          styles={{
+            content: {
+              color: "white",
+            },
+          }}
         >
-          <form
-            onSubmit={form.onSubmit(
-              (values) =>
-                form.getInputProps("options").value.length > 0 &&
-                handleSubmit(values, votation._id)
-            )}
+          <Box
+            component="form"
+            onSubmit={form.onSubmit((values) => {
+              if (form.getInputProps("options").value.length > 0) {
+                handleSubmit(values, votation._id);
+              }
+            })}
           >
             <NumberInput
               data-testid="caseNumberInput"
-              type="number"
-              precision={2}
+              hideControls
               min={0}
               step={0.01}
               required
               withAsterisk
               label="Case number"
-              className={classes.inputStyle}
+              styles={{ root: styles.inputStyle }}
               placeholder="Case number"
               {...form.getInputProps("caseNumber")}
             />
@@ -216,174 +226,177 @@ function VotationPanel({
               withAsterisk
               required
               label="Title"
-              className={classes.inputStyle}
+              styles={{ root: styles.inputStyle }}
               placeholder="Title"
               {...form.getInputProps("title")}
             />
             <TextInput
               data-testid="descriptionEdit"
               label="Description"
-              className={classes.inputStyle}
+              styles={{ root: styles.inputStyle }}
               placeholder="Description"
               {...form.getInputProps("voteText")}
             />
             <MultiSelect
               data-testid="multiselectOptions"
               label="Options"
-              className={classes.inputStyle}
-              data={[...new Set(options.concat(defaultOptions))]}
+              styles={{ root: styles.inputStyle }}
+              data={[...new Set(options.concat(defaultOptions))].map((option) => ({
+                value: option,
+                label: option,
+              }))}
               placeholder="Select items"
               searchable
               required
-              creatable
-              getCreateLabel={(query) => `+ Create ${query}`}
-              onCreate={(query) => {
-                setOptions([...options, query]);
-                return query;
+              comboboxProps={{
+                onOptionSubmit: (val: string) => {
+                  const item = { value: val, label: val };
+                  setOptions([...options, val]);
+                  const currentValues = form.getInputProps("options").value || [];
+                  form.setFieldValue("options", [...currentValues, val]);
+                },
               }}
               {...form.getInputProps("options")}
             />
             <Menu>
               <Menu.Target>
                 <Button
-                  style={{
-                    display: "flex",
-                    justifyContent: "left",
-                    marginTop: "10px",
-                    marginBottom: "10px",
+                  variant="filled"
+                  mt="md"
+                  styles={{
+                    root: {
+                      backgroundColor: "var(--mantine-color-ntnui-blue-0)",
+                      "&:hover": {
+                        backgroundColor: "var(--mantine-color-ntnui-blue-1)",
+                      },
+                    },
                   }}
                 >
-                  <Text>Import options</Text>
+                  Import group options
                 </Button>
               </Menu.Target>
-
               <Menu.Dropdown>
-                <Menu.Item
-                  onClick={() => handleImportGroupOptions("committee")}
-                >
-                  Import committees
+                <Menu.Item onClick={() => handleImportGroupOptions("groups")}>
+                  Groups
                 </Menu.Item>
-                <Menu.Item
-                  onClick={() => handleImportGroupOptions("sports_group")}
-                >
-                  Import sports groups
+                <Menu.Item onClick={() => handleImportGroupOptions("sports")}>
+                  Sports
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <NumberInput
-              data-testid="maxOptionsInput"
-              withAsterisk
-              required
-              label="Maximum selectable options"
-              className={classes.inputStyle}
-              placeholder="Maximum selectable options"
-              defaultValue={1}
-              {...form.getInputProps("maximumOptions")}
-            />
-
-            <Button type="submit" mt={10} data-testid="submitButton">
-              Save
-            </Button>
-          </form>
+            <Flex gap="md" mt="md">
+              <Button
+                type="submit"
+                variant="filled"
+                styles={{
+                  root: {
+                    backgroundColor: "var(--mantine-color-ntnui-blue-0)",
+                    "&:hover": {
+                      backgroundColor: "var(--mantine-color-ntnui-blue-1)",
+                    },
+                  },
+                }}
+              >
+                Save
+              </Button>
+              <Button
+                onClick={() => {
+                  setEditable(false);
+                  if (initEditable) {
+                    deleteVote(votation);
+                  }
+                }}
+                variant="filled"
+                styles={{
+                  root: {
+                    backgroundColor: "var(--mantine-color-ntnui-red-0)",
+                    "&:hover": {
+                      backgroundColor: "var(--mantine-color-ntnui-red-1)",
+                    },
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+            </Flex>
+          </Box>
         </Accordion.Panel>
       ) : (
         <Accordion.Panel
-          sx={{
-            color: "white",
+          styles={{
+            content: {
+              color: "white",
+            },
           }}
         >
-          <Flex
-            style={{
-              justifyContent: "space-between",
-              flexDirection: "column",
-            }}
-          >
-            <Box pl={10} pb={10} ta={"left"}>
-              <Text fw={"700"}>Title:</Text>
-              <Text data-testid="title-field">{votation.title}</Text>
-              <Text fw={"700"}>Description:</Text>
-              <Text>{votation.voteText}</Text>
-              <Text fw={"700"}>Options:</Text>
-              <Text>
-                {votation.options.map((option, index) =>
-                  index != votation.options.length - 1
-                    ? option.title + ", "
-                    : option.title + ""
-                )}
-              </Text>
-              <Text fw={"700"}>Maximum selectable options:</Text>
-              <Text>{votation.maximumOptions}</Text>
-            </Box>
-          </Flex>
-          <Flex
-            direction={matches ? "row" : "column"}
-            justify={matches ? "space-between" : "center"}
-          >
-            {votation.isActive ? (
+          <Text size="sm" mb="xs">
+            {votation.voteText}
+          </Text>
+          <Flex gap="md">
+            {!votation.isActive && !votation.isFinished && (
               <Button
-                color={"red"}
-                m={matches ? 10 : 5}
-                onClick={
-                  !isFinishChecked
-                    ? () => setIsFinishChecked(true)
-                    : () => deactivateVote(votation)
-                }
-              >
-                {isFinishChecked ? (
-                  <Text>Yes - Finish votation</Text>
-                ) : (
-                  <Text>Finish</Text>
-                )}
-              </Button>
-            ) : (
-              <Button
-                color={"green"}
-                disabled={votation.isFinished}
-                m={5}
-                ml={10}
-                onClick={() => {
-                  activateVote(votation);
-                  setIsEndChecked(false);
+                onClick={() => activateVote(votation)}
+                variant="filled"
+                styles={{
+                  root: {
+                    backgroundColor: "var(--mantine-color-ntnui-blue-0)",
+                    "&:hover": {
+                      backgroundColor: "var(--mantine-color-ntnui-blue-1)",
+                    },
+                  },
                 }}
               >
                 Activate
               </Button>
             )}
-
-            <Box>
+            {votation.isActive && !votation.isFinished && (
               <Button
-                onClick={() => {
-                  setEditable(true);
+                onClick={() => deactivateVote(votation)}
+                variant="filled"
+                styles={{
+                  root: {
+                    backgroundColor: "var(--mantine-color-ntnui-red-0)",
+                    "&:hover": {
+                      backgroundColor: "var(--mantine-color-ntnui-red-1)",
+                    },
+                  },
                 }}
-                m={5}
-                disabled={votation.isFinished || votation.isActive}
-                data-testid="edit-case-button"
+              >
+                Deactivate
+              </Button>
+            )}
+            {!votation.isActive && !votation.isFinished && (
+              <Button
+                onClick={() => setEditable(true)}
+                variant="filled"
+                styles={{
+                  root: {
+                    backgroundColor: "var(--mantine-color-ntnui-yellow-0)",
+                    "&:hover": {
+                      backgroundColor: "var(--mantine-color-ntnui-yellow-1)",
+                    },
+                  },
+                }}
               >
                 Edit
               </Button>
+            )}
+            {!votation.isActive && !votation.isFinished && (
               <Button
-                onClick={() => {
-                  addCase(votation);
+                onClick={() => deleteVote(votation)}
+                variant="filled"
+                styles={{
+                  root: {
+                    backgroundColor: "var(--mantine-color-ntnui-red-0)",
+                    "&:hover": {
+                      backgroundColor: "var(--mantine-color-ntnui-red-1)",
+                    },
+                  },
                 }}
-                m={5}
-                disabled={votation.isFinished || votation.isActive}
-                data-testid="edit-case-button"
               >
-                Duplicate
+                Delete
               </Button>
-              <Button
-                color={"red"}
-                m={5}
-                disabled={votation.isFinished || votation.isActive}
-                onClick={
-                  !isEndChecked
-                    ? () => setIsEndChecked(true)
-                    : () => deleteVote(votation)
-                }
-              >
-                {isEndChecked ? <Text>Yes - delete</Text> : <Text>Delete</Text>}
-              </Button>
-            </Box>
+            )}
           </Flex>
         </Accordion.Panel>
       )}

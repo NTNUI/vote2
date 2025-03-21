@@ -37,12 +37,9 @@ export function AssemblyLogModal(state: { groupSlug: string }) {
         onClose={() => setOpenAddOrganizerModal(false)}
         size="lg"
         centered
-        transition="fade"
-        transitionDuration={200}
-        exitTransitionDuration={200}
-        // Styling is done like this to overwrite Mantine styling, therefore global color variables is not used.
+        transitionProps={{ duration: 200, exitDuration: 200 }}
         styles={{
-          modal: {
+          root: {
             backgroundColor: "#1b202c",
             color: "white",
             border: ".5px solid",
@@ -62,7 +59,7 @@ export function AssemblyLogModal(state: { groupSlug: string }) {
             <Flex
               direction="row"
               align="center"
-              justify={"space-between"}
+              justify="space-between"
               gap={10}
             >
               <Title mb={10}>Check-in/out logs</Title>
@@ -85,7 +82,7 @@ export function AssemblyLogModal(state: { groupSlug: string }) {
                     mb={10}
                     color={copied ? "teal" : "blue"}
                     onClick={copy}
-                    leftIcon={<Clipboard />}
+                    leftSection={<Clipboard />}
                   >
                     Copy logs
                   </Button>
@@ -98,7 +95,7 @@ export function AssemblyLogModal(state: { groupSlug: string }) {
               mah={400}
               mih={200}
               color="dark"
-              sx={{ overflowY: "scroll" }}
+              style={{ overflowY: "scroll" }}
             >
               {logs.map((log) => (
                 <Box key={log._id}>

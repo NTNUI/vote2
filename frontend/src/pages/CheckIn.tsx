@@ -1,5 +1,5 @@
 import { Box, Image, Container, Loader, Text } from "@mantine/core";
-import { QrScanner } from "@yudiel/react-qr-scanner";
+import { Scanner } from "@yudiel/react-qr-scanner";
 import { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { assemblyCheckin } from "../services/qr";
@@ -72,12 +72,21 @@ export function CheckIn() {
       <Container mt={50}>
         {!processing ? (
           <>
-            <QrScanner
-              constraints={{ facingMode: "environment" }}
-              containerStyle={matches ? { width: "80vw" } : { width: "50vw" }}
-              onDecode={(result) => setResult(result)}
-              onError={(error) => console.log(error?.message)}
-            />
+            <div style={matches ? { width: "80vw" } : { width: "50vw" }}>
+              <Scanner
+                constraints={{ facingMode: "environment" }}
+                onScan={(result) => {
+                  if (result && result.length > 0) {
+                    setResult(result[0].rawValue);
+                  }
+                }}
+                onError={(error) =>
+                  console.log(
+                    error instanceof Error ? error.message : "Unknown error"
+                  )
+                }
+              />
+            </div>
           </>
         ) : (
           <>

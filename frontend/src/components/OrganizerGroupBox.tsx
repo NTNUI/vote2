@@ -58,28 +58,28 @@ export function OrganizerGroupBox({
     <>
       <Space h="sm" />
       <Box
-        sx={(theme) => ({
+        style={{
           borderStyle: "solid",
-          borderColor: theme.colors.ntnui_yellow[0],
-          backgroundColor: theme.colors.ntnui_background[0],
+          borderColor: "var(--mantine-color-ntnui-yellow-0)",
+          backgroundColor: "var(--mantine-color-ntnui-background-0)",
           borderWidth: "0.01rem",
           textAlign: "center",
           marginLeft: "1rem",
           marginRight: "1rem",
-          borderRadius: theme.radius.md,
+          borderRadius: "var(--mantine-radius-md)",
           borderBottomRightRadius: 0,
           color: "white",
-        })}
+        }}
         data-testid={groupBoxTestID}
       >
         <Flex
           mih={50}
           gap="xl"
-          justify={"space-between"}
+          justify="space-between"
           align="center"
           direction="row"
           wrap="nowrap"
-          sx={{ padding: "1vw" }}
+          style={{ padding: "1vw" }}
         >
           <Box
             style={{

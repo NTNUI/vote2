@@ -1,12 +1,5 @@
-import {
-  Container,
-  Title,
-  Accordion,
-  createStyles,
-  Image,
-  Box,
-  Text,
-} from "@mantine/core";
+import { Container, Title, Accordion, Image, Box, Text, useMantineColorScheme } from "@mantine/core";
+import { createStyles } from "@mantine/emotion";
 import { useMediaQuery } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 import Arrow from "../assets/Arrow.svg";
@@ -28,9 +21,7 @@ const useStyles = createStyles((theme) => ({
     color: "black",
     borderRadius: theme.radius.md,
     marginBottom: theme.spacing.lg,
-    border: `1 solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
-    }`,
+    border: `1px solid ${theme.colors.gray[3]}`,
   },
 }));
 
@@ -61,7 +52,7 @@ export function FAQ() {
       </Box>
 
       <Container mt={40} miw={breakpoint ? 750 : 0}>
-        <Title align="center" size={25} mb={30} className={classes.title}>
+        <Title ta="center" order={2} mb={30} className={classes.title}>
           Frequently Asked Questions
         </Title>
 
