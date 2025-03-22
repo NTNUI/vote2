@@ -21,7 +21,39 @@ export async function login(req: Request, res: Response) {
     ) {
       return res.status(403).send({
         message: "Unauthorized",
-        info: "NTNUI membership is expired",
+        info: "No active NTNUI membership found for the given user",
+      });
+    }
+
+    // Check if start_date of one of the valid contracts is from the last month same date as today or earlier.
+    // if none of the contract has been valid for a month, the user is not allowed to log in
+    let validContract = false;
+    const today = new Date();
+    const oneMonthAgo = new Date(
+      today.getFullYear(),
+      today.getMonth() - 1,
+      today.getDate()
+    );
+
+    for (const contract of userProfile.data.contracts) {
+      const contractStartDate = new Date(contract.start_date);
+      if (contractStartDate <= oneMonthAgo) {
+        // Also check if the contract is still valid
+        if (
+          !contract.expiry_date ||
+          new Date(contract.expiry_date) >=
+            new Date(today.toISOString().split("T")[0])
+        ) {
+          validContract = true;
+          break;
+        }
+      }
+    }
+
+    if (!validContract) {
+      return res.status(403).send({
+        message: "Unauthorized",
+        info: "NTNUI membership has not been valid for a month",
       });
     }
 
