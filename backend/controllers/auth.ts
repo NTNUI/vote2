@@ -40,7 +40,7 @@ export async function login(req: Request, res: Response) {
     if (!validContract) {
       return res.status(403).send({
         message: "Unauthorized",
-        info: "NTNUI membership is not been valid for a month",
+        info: "NTNUI membership has not been valid for a month",
       });
     }
 
