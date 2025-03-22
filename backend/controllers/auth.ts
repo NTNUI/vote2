@@ -21,7 +21,7 @@ export async function login(req: Request, res: Response) {
     ) {
       return res.status(403).send({
         message: "Unauthorized",
-        info: "NTNUI membership is expired",
+        info: "No active NTNUI membership found for the given user",
       });
     }
 
@@ -38,8 +38,15 @@ export async function login(req: Request, res: Response) {
     for (const contract of userProfile.data.contracts) {
       const contractStartDate = new Date(contract.start_date);
       if (contractStartDate <= oneMonthAgo) {
-        validContract = true;
-        break;
+        // Also check if the contract is still valid
+        if (
+          !contract.expiry_date ||
+          new Date(contract.expiry_date) >=
+            new Date(today.toISOString().split("T")[0])
+        ) {
+          validContract = true;
+          break;
+        }
       }
     }
 
