@@ -25,18 +25,24 @@ export async function login(req: Request, res: Response) {
       });
     }
 
-    // Check if start_date of one of the valid contracts is 30 days or more back in time from today,
+    // Check if start_date of one of the valid contracts is from the last month same date as today or earlier.
     // if none of the contract has been valid for a month, the user is not allowed to log in
     let validContract = false;
+    const today = new Date();
+    const oneMonthAgo = new Date(
+      today.getFullYear(),
+      today.getMonth() - 1,
+      today.getDate()
+    );
+
     for (const contract of userProfile.data.contracts) {
-      if (
-        new Date(contract.start_date) <
-        new Date(new Date().setDate(new Date().getDate() - 30))
-      ) {
+      const contractStartDate = new Date(contract.start_date);
+      if (contractStartDate <= oneMonthAgo) {
         validContract = true;
         break;
       }
     }
+
     if (!validContract) {
       return res.status(403).send({
         message: "Unauthorized",
