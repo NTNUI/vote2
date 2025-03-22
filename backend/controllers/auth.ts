@@ -25,6 +25,25 @@ export async function login(req: Request, res: Response) {
       });
     }
 
+    // Check if start_date of one of the valid contracts is 30 days or more back in time from today,
+    // if none of the contract has been valid for a month, the user is not allowed to log in
+    let validContract = false;
+    for (const contract of userProfile.data.contracts) {
+      if (
+        new Date(contract.start_date) <
+        new Date(new Date().setDate(new Date().getDate() - 30))
+      ) {
+        validContract = true;
+        break;
+      }
+    }
+    if (!validContract) {
+      return res.status(403).send({
+        message: "Unauthorized",
+        info: "NTNUI membership is not been valid for a month",
+      });
+    }
+
     let mainAssemblyOrganizer = false;
 
     // Members of the Main Board can modify the main assembly
