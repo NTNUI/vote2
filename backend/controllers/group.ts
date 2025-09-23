@@ -7,7 +7,9 @@ export const getGroups = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const groups = await getAllGroups(req.body.category);
+    let groups = await getAllGroups();
+    groups = groups.filter((group) => group.category === req.body.category);
+
     return res.status(200).json(groups);
   } catch (error) {
     return res
