@@ -19,7 +19,10 @@ describe("membershipDenialReason", () => {
   test("ignores null contract entries", () => {
     expect(membershipDenialReason([null], today)).toBe(NO_MEMBERSHIP);
     expect(
-      membershipDenialReason([null, contract("2025-08-01", "2026-09-23")], today)
+      membershipDenialReason(
+        [null, contract("2025-08-01", "2026-09-23")],
+        today
+      )
     ).toBeNull();
   });
 
@@ -67,10 +70,16 @@ describe("membershipDenialReason", () => {
 
   test("counts 30 days across month boundaries", () => {
     expect(
-      membershipDenialReason([contract("2026-07-01", "2026-12-31")], "2026-07-31")
+      membershipDenialReason(
+        [contract("2026-07-01", "2026-12-31")],
+        "2026-07-31"
+      )
     ).toBeNull();
     expect(
-      membershipDenialReason([contract("2026-07-02", "2026-12-31")], "2026-07-31")
+      membershipDenialReason(
+        [contract("2026-07-02", "2026-12-31")],
+        "2026-07-31"
+      )
     ).toBe(TOO_NEW);
   });
 
@@ -213,7 +222,11 @@ describe("membershipDenialReason", () => {
 
     test("still accepts memberships active for 30 days", () => {
       expect(
-        membershipDenialReason([contract("2026-08-23", "2026-12-31")], today, false)
+        membershipDenialReason(
+          [contract("2026-08-23", "2026-12-31")],
+          today,
+          false
+        )
       ).toBeNull();
     });
 

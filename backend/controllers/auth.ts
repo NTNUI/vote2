@@ -6,7 +6,7 @@ import { groupOrganizers } from "../utils/user";
 
 // A user with a contract valid on this date is accepted, even if the
 // membership has not been active for 30 days. This is a consequence
-// of the switch to our own iBooking payment system, and can be turned 
+// of the switch to our own iBooking payment system, and can be turned
 // off with the DISABLE_MEMBERSHIP_CUTOFF_DATE_CHECK feature flag.
 export const MEMBERSHIP_CUTOFF_DATE = "2026-06-01";
 
@@ -26,10 +26,8 @@ const addDays = (date: string, days: number) => {
 const todayInNorway = () =>
   new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Oslo" });
 
-
 const coversDate = (contract: Contract, date: string) =>
   contract.start_date <= date && date <= contract.expiry_date;
-
 
 // Returns the start date of the continuous membership period covering the given date.
 // Renewals within one day are treated as a continuous period.
