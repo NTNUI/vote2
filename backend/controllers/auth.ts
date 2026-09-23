@@ -4,6 +4,87 @@ import { User } from "../models/user";
 import { GroupType } from "../types/user";
 import { groupOrganizers } from "../utils/user";
 
+// A user with a contract valid on this date is accepted, even if the
+// membership has not been active for 30 days. This is a consequence
+// of the switch to our own iBooking payment system, and can be turned 
+// off with the DISABLE_MEMBERSHIP_CUTOFF_DATE_CHECK feature flag.
+export const MEMBERSHIP_CUTOFF_DATE = "2026-06-01";
+
+const isCutoffDateCheckEnabled = () =>
+  process.env.DISABLE_MEMBERSHIP_CUTOFF_DATE_CHECK !== "true";
+
+// Contracts are nullable in medlem
+type MedlemContract = { start_date: string | null; expiry_date: string | null };
+type Contract = { start_date: string; expiry_date: string };
+
+const addDays = (date: string, days: number) => {
+  const d = new Date(date);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().split("T")[0];
+};
+
+const todayInNorway = () =>
+  new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Oslo" });
+
+
+const coversDate = (contract: Contract, date: string) =>
+  contract.start_date <= date && date <= contract.expiry_date;
+
+
+// Returns the start date of the continuous membership period covering the given date.
+// Renewals within one day are treated as a continuous period.
+const continuousMembershipStart = (contracts: Contract[], date: string) => {
+  const sorted = contracts
+    .filter((contract) => contract.start_date <= date)
+    .sort((a, b) => a.start_date.localeCompare(b.start_date));
+
+  let period: Contract | undefined;
+  for (const contract of sorted) {
+    if (period && contract.start_date <= addDays(period.expiry_date, 1)) {
+      if (contract.expiry_date > period.expiry_date) {
+        period.expiry_date = contract.expiry_date;
+      }
+    } else {
+      period = { ...contract };
+    }
+  }
+
+  return period && date <= period.expiry_date ? period.start_date : undefined;
+};
+
+// Returns the reason the user is not allowed to log in, or null if they are.
+// A user must have a currently valid membership, and either:
+// 1. the membership has been active for at least the last 30 days, or
+// 2. have had a valid contract on MEMBERSHIP_CUTOFF_DATE (unless disabled).
+export const membershipDenialReason = (
+  contracts: (MedlemContract | null)[] | undefined,
+  today: string = todayInNorway(),
+  cutoffDateCheckEnabled: boolean = isCutoffDateCheckEnabled()
+): string | null => {
+  // Contracts without both dates are not valid, matching NTNUI's own checks
+  const validContracts = (contracts || []).filter(
+    (contract): contract is Contract =>
+      !!contract?.start_date && !!contract.expiry_date
+  );
+
+  const membershipStart = continuousMembershipStart(validContracts, today);
+  if (!membershipStart) {
+    return "No active NTNUI membership found for the given user";
+  }
+
+  if (
+    membershipStart <= addDays(today, -30) ||
+    (cutoffDateCheckEnabled &&
+      validContracts.some((contract) =>
+        coversDate(contract, MEMBERSHIP_CUTOFF_DATE)
+      ))
+  ) {
+    return null;
+  }
+
+  return "NTNUI membership has not been valid for 30 days";
+};
+
 export async function login(req: Request, res: Response) {
   try {
     const tokens = await getNtnuiToken(
@@ -13,15 +94,12 @@ export async function login(req: Request, res: Response) {
     const userProfile = await getNtnuiProfile(tokens.access);
 
     // User must have a valid NTNUI membership for logging into the application.
-    // The membership are valid until and including the expiry date.
-    if (
-      !userProfile.data.contract_expiry_date ||
-      new Date(userProfile.data.contract_expiry_date || "") <
-        new Date(new Date().toISOString().split("T")[0])
-    ) {
+    // See membershipDenialReason for the full requirements.
+    const denialReason = membershipDenialReason(userProfile.data.contracts);
+    if (denialReason) {
       return res.status(403).send({
         message: "Unauthorized",
-        info: "NTNUI membership is expired",
+        info: denialReason,
       });
     }
 
