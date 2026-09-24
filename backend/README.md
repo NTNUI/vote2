@@ -15,6 +15,12 @@ MONGO_INITDB_ROOT_USERNAME="devUser"
 MONGO_INITDB_ROOT_PASSWORD="topSecret"
 
 NTNUI_TOOLS_API_URL = "https://dev.api.ntnui.no/"
+
+# Feature flags
+# Users who had a valid membership on 2026-06-01 are accepted even if their
+# current membership is less than 30 days old. Set to "true" to stop accepting
+# them, so every user needs a membership that has been active for 30 days.
+# DISABLE_MEMBERSHIP_CUTOFF_DATE_CHECK = "true"
 ```
 
 ### Then you need to create and start the database
